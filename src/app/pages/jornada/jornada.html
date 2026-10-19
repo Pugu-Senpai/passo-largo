@@ -1,1 +1,100 @@
-<p>jornada works!</p>
+<main class="pagina">
+  @switch (fase) {
+
+    @case ('escolha') {
+      <header class="cabecalho">
+        <p class="etiqueta">A jornada de hoje</p>
+        <h1>Prepara-te, {{ utilizador?.nome }}.</h1>
+      </header>
+
+      @if (carregando) {
+        <p class="estado" role="status">A preparar os exercícios...</p>
+
+      } @else if (erro) {
+        <div class="estado" role="alert">
+          <p>Não foi possível carregar os exercícios.</p>
+          <button type="button" class="botao-contorno" (click)="carregarExercicios()">Tentar novamente</button>
+        </div>
+
+      } @else {
+        <section class="cartao escolhas">
+
+          <fieldset>
+            <legend>Tipo de treino</legend>
+            <div class="chips">
+              <label class="chip">
+                <input type="radio" name="tipo" value="forca" [(ngModel)]="tipo">
+                <span>💪 Força</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="tipo" value="cardio" [(ngModel)]="tipo">
+                <span>🏃 Cardio</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="tipo" value="misto" [(ngModel)]="tipo">
+                <span>⚔ Misto</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Duração</legend>
+            <div class="chips">
+              <label class="chip">
+                <input type="radio" name="duracao" [value]="20" [(ngModel)]="duracao">
+                <span>20 min · suave</span>
+              </label>
+              <label class="chip">
+                <input type="radio" name="duracao" [value]="30" [(ngModel)]="duracao">
+                <span>30 min · completo</span>
+              </label>
+            </div>
+          </fieldset>
+
+          @if (tipo !== 'cardio' && opcoesFoco.length > 1) {
+            <fieldset>
+              <legend>Foco da força</legend>
+              <div class="chips">
+                @for (opcao of opcoesFoco; track opcao) {
+                  <label class="chip">
+                    <input type="radio" name="foco" [value]="opcao" [(ngModel)]="foco">
+                    <span>{{ rotuloFoco[opcao] }}</span>
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+
+          @if (tipo !== 'forca' && opcoesIntensidade.length > 1) {
+            <fieldset>
+              <legend>Intensidade do cardio</legend>
+              <div class="chips">
+                @for (opcao of opcoesIntensidade; track opcao) {
+                  <label class="chip">
+                    <input type="radio" name="intensidade" [value]="opcao" [(ngModel)]="intensidade">
+                    <span>{{ rotuloIntensidade[opcao] }}</span>
+                  </label>
+                }
+              </div>
+            </fieldset>
+          }
+
+          <p class="resumo">
+            Objetivo: <strong>{{ objetivo }} exercícios</strong> em {{ duracao }} minutos.
+          </p>
+        </section>
+
+        @if (semExercicios) {
+          <p class="aviso" role="alert">⚠ Não há exercícios para esta combinação. Experimenta outra opção.</p>
+        }
+
+        <button type="button" class="botao-principal" (click)="comecar()">Começar</button>
+        <a routerLink="/condado" class="voltar">Voltar ao Condado</a>
+      }
+    }
+
+    @case ('sessao') {
+      <p class="estado">A sessão vem no próximo passo ({{ sessao.length }} exercícios sorteados).</p>
+    }
+  }
+</main>

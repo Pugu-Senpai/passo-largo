@@ -1,0 +1,145 @@
+/* ===== Telemóvel ===== */
+.pagina {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.estado {
+  text-align: center;
+  color: var(--texto-sec);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1.25rem;
+}
+
+.escolhas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+legend {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  position: relative;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--fundo);
+  color: var(--texto);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.chip input:checked + span {
+  border-color: var(--destaque);
+  background: var(--cartao-alt);
+  color: var(--destaque);
+  font-weight: 700;
+}
+
+.chip input:checked + span::before {
+  content: "✓ ";
+}
+
+.chip input:focus-visible + span {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+.resumo {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divisor);
+  color: var(--texto-sec);
+}
+
+.resumo strong {
+  color: var(--texto);
+}
+
+.aviso {
+  margin: 0;
+  color: var(--estado-falha);
+  text-align: center;
+}
+
+.voltar {
+  align-self: center;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  color: var(--texto-sec);
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .cartao {
+    padding: 1.75rem;
+  }
+
+  .botao-principal {
+    align-self: center;
+    min-width: 320px;
+  }
+}
