@@ -1,0 +1,100 @@
+.pagina {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cabecalho {
+  text-align: center;
+}
+
+.logotipo {
+  font-family: var(--fonte-decorativa);
+  font-size: 2rem;
+  color: var(--destaque);
+  margin: 0;
+}
+
+.cabecalho .titulo-seccao {
+  font-size: 1.1rem;
+}
+
+.grelha {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem 1rem;
+}
+
+.novo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1rem 0.75rem;
+  border: 1px dashed var(--borda);
+  border-radius: var(--raio);
+  color: var(--texto-sec);
+  text-decoration: none;
+  text-align: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.novo:active {
+  border-color: var(--destaque);
+  color: var(--destaque);
+}
+
+.mais {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px dashed currentColor;
+  display: grid;
+  place-items: center;
+  font-size: 1.6rem;
+}
+
+.botao-contorno {
+  min-height: 44px;
+}
+
+@media (hover: hover) {
+  .novo:hover {
+    border-color: var(--destaque);
+    color: var(--destaque);
+  }
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 3rem 1rem;
+    gap: 2rem;
+  }
+
+  .logotipo {
+    font-size: 2.5rem;
+  }
+
+  .cabecalho .titulo-seccao {
+    font-size: 1.4rem;
+  }
+
+  .grelha {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 200px));
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .mais {
+    width: 72px;
+    height: 72px;
+    font-size: 2rem;
+  }
+}

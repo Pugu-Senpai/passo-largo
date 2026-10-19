@@ -1,0 +1,90 @@
+.cartao {
+  position: relative;
+}
+
+.principal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0.75rem;
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  color: var(--texto);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.principal:active:not(:disabled) {
+  border-color: var(--destaque);
+}
+
+.principal:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+.principal:disabled {
+  cursor: default;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--destaque);
+  display: grid;
+  place-items: center;
+  font-family: var(--fonte-decorativa);
+  font-size: 1.6rem;
+  color: var(--destaque);
+  background: var(--cartao-alt);
+}
+
+.nome {
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--texto-titulo);
+  overflow-wrap: anywhere;
+}
+
+.apagar {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--estado-falha);
+  background: var(--cartao);
+  color: var(--estado-falha);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .principal:hover:not(:disabled) {
+    border-color: var(--destaque);
+    transform: translateY(-3px);
+  }
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .principal {
+    padding: 1.5rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .avatar {
+    width: 72px;
+    height: 72px;
+    font-size: 2rem;
+  }
+
+  .nome {
+    font-size: 1.25rem;
+  }
+}

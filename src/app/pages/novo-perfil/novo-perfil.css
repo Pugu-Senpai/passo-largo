@@ -1,7 +1,7 @@
 .pagina {
   max-width: 640px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
 }
 
 .subtitulo {
@@ -16,7 +16,7 @@
   border: 1px solid var(--borda);
   border-radius: var(--raio);
   box-shadow: var(--sombra);
-  padding: 1.5rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -34,8 +34,8 @@
 
 .linha {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 label, legend {
@@ -46,12 +46,13 @@ label, legend {
 input[type="text"],
 input[type="number"],
 select {
+  min-height: 44px;
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--borda);
-  border-radius: var(--raio);
+  border-radius: var(--raio-pequeno);
   background: var(--fundo);
   color: var(--texto);
-  font: inherit;
+  font-family: inherit;
 }
 
 input:focus, select:focus {
@@ -64,7 +65,13 @@ input:focus, select:focus {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  min-height: 44px;
   margin-right: 1.25rem;
+}
+
+.opcao input {
+  width: 20px;
+  height: 20px;
 }
 
 .erro {
@@ -78,16 +85,18 @@ input:focus, select:focus {
 
 .acoes {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 0.75rem;
   margin-top: 0.5rem;
 }
 
 .botao {
+  min-height: 48px;
   background: var(--destaque);
   color: var(--fundo);
   border: none;
-  border-radius: var(--raio);
+  border-radius: var(--raio-pequeno);
   padding: 0.7rem 1.4rem;
   font-weight: 700;
 }
@@ -98,6 +107,30 @@ input:focus, select:focus {
 }
 
 .botao-secundario {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
   color: var(--texto-sec);
   text-decoration: none;
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1rem;
+  }
+
+  .cartao {
+    padding: 1.75rem;
+  }
+
+  .linha {
+    flex-direction: row;
+  }
+
+  .acoes {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
