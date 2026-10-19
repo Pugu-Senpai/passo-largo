@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Utilizador } from '../models/utilizador.model';
+import { ArmazenamentoService } from './armazenamento.service';
 
-// Os dados que o formulário envia: tudo menos o id e a data, que o Service gera
 export type NovoUtilizador = Omit<Utilizador, 'id' | 'dataCriacao'>;
 
 @Injectable({ providedIn: 'root' })
@@ -9,61 +9,50 @@ export class UtilizadorService {
   private readonly CHAVE_UTILIZADORES = 'pl_utilizadores';
   private readonly CHAVE_ATIVO = 'pl_utilizador_ativo';
 
+  constructor(private armazenamento: ArmazenamentoService) {}
+
   obterTodos(): Utilizador[] {
-    return this.ler();
+    return this.armazenamento.ler<Utilizador[]>(this.CHAVE_UTILIZADORES, []);
   }
 
   obterPorId(id: number): Utilizador | undefined {
-    return this.ler().find(u => u.id === id);
+    return this.obterTodos().find(u => u.id === id);
   }
 
   criar(dados: NovoUtilizador): Utilizador {
-    const utilizadores = this.ler();
+    const utilizadores = this.obterTodos();
     const novo: Utilizador = {
       ...dados,
-      id: utilizadores.length ? Math.max(...utilizadores.map(u => u.id)) + 1 : 1,
+      id: this.armazenamento.proximoId(utilizadores),
       dataCriacao: new Date().toISOString().slice(0, 10)
     };
-    utilizadores.push(novo);
-    this.guardar(utilizadores);
+    this.armazenamento.guardar(this.CHAVE_UTILIZADORES, [...utilizadores, novo]);
     return novo;
   }
 
   atualizar(atualizado: Utilizador): void {
-    const utilizadores = this.ler().map(u => u.id === atualizado.id ? atualizado : u);
-    this.guardar(utilizadores);
+    const utilizadores = this.obterTodos().map(u => u.id === atualizado.id ? atualizado : u);
+    this.armazenamento.guardar(this.CHAVE_UTILIZADORES, utilizadores);
   }
 
   apagar(id: number): void {
     if (this.obterAtivo()?.id === id) {
       this.terminarSessao();
     }
-    this.guardar(this.ler().filter(u => u.id !== id));
+    const restantes = this.obterTodos().filter(u => u.id !== id);
+    this.armazenamento.guardar(this.CHAVE_UTILIZADORES, restantes);
   }
 
   definirAtivo(id: number): void {
-    localStorage.setItem(this.CHAVE_ATIVO, String(id));
+    this.armazenamento.guardar(this.CHAVE_ATIVO, id);
   }
 
   obterAtivo(): Utilizador | undefined {
-    const id = Number(localStorage.getItem(this.CHAVE_ATIVO));
+    const id = this.armazenamento.ler<number | null>(this.CHAVE_ATIVO, null);
     return id ? this.obterPorId(id) : undefined;
   }
 
   terminarSessao(): void {
-    localStorage.removeItem(this.CHAVE_ATIVO);
-  }
-
-  private ler(): Utilizador[] {
-    try {
-      const texto = localStorage.getItem(this.CHAVE_UTILIZADORES);
-      return texto ? JSON.parse(texto) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private guardar(utilizadores: Utilizador[]): void {
-    localStorage.setItem(this.CHAVE_UTILIZADORES, JSON.stringify(utilizadores));
+    this.armazenamento.remover(this.CHAVE_ATIVO);
   }
 }
