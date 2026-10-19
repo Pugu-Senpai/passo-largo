@@ -1,1 +1,91 @@
-<p>condado works!</p>
+<main class="pagina">
+  <header class="cabecalho">
+    <h1>Bem-vindo de volta, {{ utilizador?.nome }}.</h1>
+    <p class="etiqueta">A caminho de Mount Doom</p>
+  </header>
+
+  @if (carregando) {
+    <p class="estado" role="status">A consultar os mapas...</p>
+
+  } @else if (erro) {
+    <div class="estado" role="alert">
+      <p>Não foi possível carregar o mapa da jornada.</p>
+      <button type="button" class="botao-contorno" (click)="carregarMarcos()">Tentar novamente</button>
+    </div>
+
+  } @else {
+    @if (derrota) {
+      <div class="aviso aviso-grave" role="alert">
+        <strong>☠ O inimigo venceu.</strong>
+        <p>Passaram demasiados dias sem treinar. A tua jornada recomeça no Condado.</p>
+      </div>
+    } @else if (houveRecuo) {
+      <div class="aviso" role="alert">
+        <strong>⚠ As forças das trevas avançam.</strong>
+        @if (kmRecuados > 0) {
+          <p>Aproveitaram o teu desleixo e recuaste {{ kmRecuados | number: '1.0-1' }} km.</p>
+        } @else {
+          <p>Aproveitaram o teu desleixo, mas o teu último marco protegeu-te.</p>
+        }
+      </div>
+    }
+
+    <section class="cartao" aria-labelledby="titulo-jornada">
+      <p class="etiqueta">Estás em</p>
+      <h2 id="titulo-jornada">{{ marcoAtual?.nome }}</h2>
+      <p class="descricao">{{ marcoAtual?.descricao }}</p>
+
+      <div class="barra" role="progressbar"
+           aria-label="Progresso da jornada"
+           aria-valuemin="0" aria-valuemax="100"
+           [attr.aria-valuenow]="progresso * 100 | number: '1.0-0'">
+        <div class="barra-preenchida" [style.width.%]="progresso * 100"></div>
+      </div>
+
+      <div class="numeros">
+        <span><strong>{{ jornada?.kmPercorridos | number: '1.0-1' }}</strong> km percorridos</span>
+        <span>{{ progresso | percent: '1.0-1' }}</span>
+      </div>
+
+      @if (proximoMarco) {
+        <p class="proximo">
+          Próximo marco: <strong>{{ proximoMarco.nome }}</strong>,
+          a {{ kmEmFalta | number: '1.0-1' }} km
+        </p>
+      } @else {
+        <p class="proximo">Chegaste a Mount Doom. A jornada está completa.</p>
+      }
+    </section>
+
+    <section class="cartao streak" aria-label="Sequência de dias">
+      <span class="streak-icone" aria-hidden="true">🔥</span>
+      <div>
+        <strong class="streak-numero">{{ streak }}</strong>
+        <span>{{ streak === 1 ? 'dia seguido' : 'dias seguidos' }}</span>
+      </div>
+    </section>
+
+    @if (registoHoje) {
+      <p class="estado-hoje">
+        @switch (registoHoje.estado) {
+          @case ('completo') { ✔ Hoje: avanço completo. }
+          @case ('suave') { ✔ Hoje: avanço suave. Ainda podes completar os 30 minutos. }
+          @case ('descanso') { ⛺ Hoje: acampamento. }
+          @case ('falha') { ✖ Hoje ainda não chegaste ao mínimo. Podes tentar novamente. }
+        }
+      </p>
+    }
+
+    @if (registoHoje?.estado !== 'descanso') {
+      <a routerLink="/jornada" class="botao-principal">Começar a jornada de hoje</a>
+    }
+
+    @if (!registoHoje) {
+      <button type="button" class="botao-contorno acampar" (click)="acampar()">⛺ Acampar hoje</button>
+    }
+
+    @if (mensagemDescanso) {
+      <p class="mensagem" role="status">{{ mensagemDescanso }}</p>
+    }
+  }
+</main>

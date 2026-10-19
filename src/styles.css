@@ -157,3 +157,26 @@ input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/*===== BOTÃO PRINCIPAL ===== */
+.botao-principal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0.8rem 1.5rem;
+  background: var(--destaque);
+  color: var(--fundo);
+  border: none;
+  border-radius: var(--raio-pequeno);
+  font-family: var(--fonte-ui);
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+}
+
+.botao-principal:focus-visible {
+  outline: 2px solid var(--texto-titulo);
+  outline-offset: 3px;
+}

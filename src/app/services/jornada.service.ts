@@ -3,6 +3,7 @@ import { ArmazenamentoService } from './armazenamento.service';
 import { Jornada } from '../models/jornada.model';
 import { Marco } from '../models/marco.model';
 import { REGRAS } from '../models/regras';
+import { hoje } from '../utils/datas';
 
 @Injectable({ providedIn: 'root' })
 export class JornadaService {
@@ -29,7 +30,8 @@ export class JornadaService {
       kmPercorridos: 0,
       ultimoMarcoId: null,
       numeroRecuos: 0,
-      dataInicio: new Date().toISOString().slice(0, 10)
+      dataUltimoRecuo: null,
+      dataInicio: hoje(),
     };
     this.guardarJornada(nova);
     return nova;
@@ -61,7 +63,8 @@ export class JornadaService {
     const atualizada: Jornada = {
       ...jornada,
       kmPercorridos: this.arredondar(Math.max(jornada.kmPercorridos - valorRecuo, kmMinimo)),
-      numeroRecuos: jornada.numeroRecuos + 1
+      numeroRecuos: jornada.numeroRecuos + 1,
+      dataUltimoRecuo: hoje(),
     };
     this.guardarJornada(atualizada);
     return atualizada;
@@ -111,3 +114,9 @@ export class JornadaService {
 
   private ordenar(marcos: Marco[]): Marco[] {
     return [...marcos].sort((a, b) => a.km - b.km);
+  }
+
+  private arredondar(valor: number): number {
+    return Math.round(valor * 10) / 10;
+  }
+}

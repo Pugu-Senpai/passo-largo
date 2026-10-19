@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Utilizador } from '../models/utilizador.model';
 import { ArmazenamentoService } from './armazenamento.service';
+import { hoje } from '../utils/datas';
 
 export type NovoUtilizador = Omit<Utilizador, 'id' | 'dataCriacao'>;
 
@@ -24,7 +25,7 @@ export class UtilizadorService {
     const novo: Utilizador = {
       ...dados,
       id: this.armazenamento.proximoId(utilizadores),
-      dataCriacao: new Date().toISOString().slice(0, 10)
+      dataCriacao: hoje(),
     };
     this.armazenamento.guardar(this.CHAVE_UTILIZADORES, [...utilizadores, novo]);
     return novo;

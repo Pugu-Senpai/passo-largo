@@ -1,0 +1,166 @@
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0 0 0.25rem;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.estado {
+  text-align: center;
+  color: var(--texto-sec);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1.25rem;
+}
+
+.cartao .etiqueta {
+  margin: 0;
+}
+
+.cartao h2 {
+  font-size: 1.6rem;
+  margin: 0.25rem 0 0.5rem;
+}
+
+.descricao {
+  font-family: var(--fonte-titulo);
+  font-style: italic;
+  color: var(--texto-sec);
+  margin: 0 0 1.25rem;
+}
+
+/* Barra de progresso (provisória) */
+.barra {
+  height: 10px;
+  background: var(--cartao-alt);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  height: 100%;
+  background: var(--destaque);
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.numeros {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--texto-sec);
+}
+
+.numeros strong {
+  font-size: 1.15rem;
+  color: var(--texto);
+}
+
+.proximo {
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divisor);
+}
+
+/* Avisos de recuo e derrota */
+.aviso {
+  border: 1px solid var(--estado-falha);
+  border-left-width: 4px;
+  border-radius: var(--raio-pequeno);
+  background: var(--cartao);
+  padding: 1rem;
+  color: var(--texto);
+}
+
+.aviso strong {
+  color: var(--estado-falha);
+}
+
+.aviso p {
+  margin: 0.25rem 0 0;
+}
+
+.aviso-grave {
+  border-width: 2px;
+  border-left-width: 6px;
+}
+
+/* Streak */
+.streak {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.streak-icone {
+  font-size: 2rem;
+}
+
+.streak-numero {
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  color: var(--destaque);
+  margin-right: 0.4rem;
+}
+
+/* Estado de hoje e mensagens */
+.estado-hoje,
+.mensagem {
+  margin: 0;
+  text-align: center;
+  color: var(--texto-sec);
+}
+
+.acampar {
+  align-self: center;
+  min-height: 44px;
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+    gap: 2rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .cartao {
+    padding: 1.75rem;
+  }
+
+  .cartao h2 {
+    font-size: 2rem;
+  }
+
+  .botao-principal {
+    align-self: center;
+    min-width: 320px;
+  }
+}

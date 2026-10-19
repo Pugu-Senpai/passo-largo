@@ -7,5 +7,6 @@ export interface Jornada {
   kmPercorridos: number;
   ultimoMarcoId: number | null;
   numeroRecuos: number;
+  dataUltimoRecuo: string | null;
   dataInicio: string;
 }

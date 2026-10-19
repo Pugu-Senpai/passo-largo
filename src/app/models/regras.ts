@@ -7,4 +7,6 @@ export const REGRAS = {
   diasSeguidosParaDerrota: 30,
   recuoInicialKm: 20,
   recuoIncrementoKm: 10,
+  minutosSuave: 20,
+  minutosCompleto: 30,
 };
