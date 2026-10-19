@@ -1,0 +1,8 @@
+export type NivelFisico = 'sedentario' | 'pouco-ativo' | 'ativo' | 'muito-ativo';
+export type TipoTreino = 'forca' | 'cardio' | 'misto';
+export type Zona = 'full-body' | 'upper' | 'lower';
+export type Intensidade = 'leve' | 'moderado' | 'vigoroso';
+export type Equipamento = 'nenhum' | 'kettlebell';
+export type Duracao = 20 | 30;
+export type EstadoDia = 'completo' | 'suave' | 'descanso' | 'falha';
+export type EstadoJornada = 'ativa' | 'concluida' | 'falhada';
