@@ -1,32 +1,40 @@
-/* ===== Modo claro (por defeito) ===== */
+/* ===== Modo claro ===== */
 :root {
-  --fundo: #F7F3EB;
-  --gradiente: none;
-  --cartao: #FFFDF8;
-  --cartao-alt: #FBF2E2;
-  --texto: #2B2420;
-  --texto-sec: #8A7F72;
-  --destaque: #8A6A14;
-  --borda: #E2D6BD;
-  --divisor: #ECE4D4;
+  color-scheme: light;
+
+  --fundo: #E9DFC6;
+  --gradiente:
+    radial-gradient(ellipse 70% 50% at 20% 0%, rgba(248, 242, 228, 0.7), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 100% 70%, rgba(214, 196, 158, 0.3), transparent 70%);
+  --cartao: #F3EBD9;
+  --cartao-alt: #EFE5CF;
+  --texto: #3B3228;
+  --texto-titulo: #2A2016;
+  --texto-sec: #6E6252;
+  --destaque: #8A6A2A;
+  --borda: #D6C9AC;
+  --divisor: #DDD1B6;
 
   --estado-completo: #2F6B3A;
-  --estado-suave: #6E9A5B;
+  --estado-suave: #5E8A4B;
   --estado-descanso: #2E5C8A;
   --estado-falha: #A3412E;
 
   --fonte-titulo: 'EB Garamond', Georgia, serif;
+  --fonte-seccao: 'Cinzel', 'EB Garamond', serif;
   --fonte-decorativa: 'Uncial Antiqua', 'EB Garamond', serif;
   --fonte-ui: 'Lato', Arial, sans-serif;
 
   --raio: 14px;
   --raio-pequeno: 8px;
-  --sombra: 0 2px 8px rgba(43, 36, 32, 0.08);
+  --sombra: 0 2px 10px rgba(74, 58, 30, 0.10);
 }
 
-/* ===== Modo escuro: cores (partilhadas pelos dois blocos abaixo) ===== */
+/* ===== Modo escuro ===== */
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="claro"]) {
+    color-scheme: dark;
+    ;
     --fundo: #0B0D0C;
     --gradiente:
       radial-gradient(ellipse 70% 45% at 35% 0%, rgba(90, 25, 20, 0.35), transparent 70%),
@@ -34,6 +42,7 @@
     --cartao: #141412;
     --cartao-alt: #1A1814;
     --texto: #EDE6D6;
+    --texto-titulo: #F2EBDC;
     --texto-sec: #A69F92;
     --destaque: #D9BE73;
     --borda: #3D3526;
@@ -47,6 +56,8 @@
 }
 
 :root[data-tema="escuro"] {
+  color-scheme: dark;;
+  
   --fundo: #0B0D0C;
   --gradiente:
     radial-gradient(ellipse 70% 45% at 35% 0%, rgba(90, 25, 20, 0.35), transparent 70%),
@@ -54,6 +65,7 @@
   --cartao: #141412;
   --cartao-alt: #1A1814;
   --texto: #EDE6D6;
+  --texto-titulo: #F2EBDC;
   --texto-sec: #A69F92;
   --destaque: #D9BE73;
   --borda: #3D3526;
@@ -82,6 +94,7 @@ h1, h2, h3 {
   font-family: var(--fonte-titulo);
   font-weight: 600;
   line-height: 1.2;
+  color: var(--texto-titulo);
 }
 
 a { color: var(--destaque); }
@@ -117,6 +130,16 @@ button {
 .botao-contorno:hover {
   border-color: var(--destaque);
   background: rgba(217, 190, 115, 0.08);
+}
+
+/* Título de secção espaçado, como "THE JOURNEY IS THE POINT" */
+.titulo-seccao {
+  font-family: var(--fonte-seccao);
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--texto-titulo);
 }
 
 /* ===== ESCONDER SPINNER ===== */
