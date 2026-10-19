@@ -1,0 +1,36 @@
+<article class="cartao">
+  <p class="etiqueta">Exercício {{ numero }}</p>
+  <h2>{{ exercicio.nome }}</h2>
+
+  <p class="volume">
+    {{ exercicio.series }} séries ×
+    @if (exercicio.repeticoes) {
+      {{ exercicio.repeticoes }} repetições
+    } @else if (exercicio.duracaoSegundos) {
+      {{ exercicio.duracaoSegundos }} segundos
+    }
+  </p>
+
+  <ul class="musculos" aria-label="Músculos trabalhados">
+    @for (musculo of exercicio.musculos; track musculo) {
+      <li>{{ rotuloMusculo[musculo] ?? musculo }}</li>
+    }
+  </ul>
+
+  <ol class="passos">
+    @for (passo of exercicio.passos; track $index) {
+      <li>{{ passo }}</li>
+    }
+  </ol>
+
+  @if (exercicio.video) {
+    <a [href]="exercicio.video" target="_blank" rel="noopener" class="video">▶ Ver demonstração</a>
+  }
+
+  @if (mostrarAcoes) {
+    <div class="acoes">
+      <button type="button" class="botao-contorno" (click)="aoTrocar()">↻ Trocar</button>
+      <button type="button" class="botao-principal" (click)="aoConcluir()">✓ Feito</button>
+    </div>
+  }
+</article>

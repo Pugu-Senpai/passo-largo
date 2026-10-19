@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { CartaoExercicio } from '../../components/cartao-exercicio/cartao-exercicio';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UtilizadorService } from '../../services/utilizador.service';
@@ -9,26 +10,42 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
 import { TipoTreino, Duracao, Zona, Intensidade } from '../../models/tipos';
+import { DecimalPipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { RegistoService } from '../../services/registo.service';
+import { Marco } from '../../models/marco.model';
+import { EstadoDia } from '../../models/tipos';
+import { REGRAS } from '../../models/regras';
 
 type Fase = 'escolha' | 'sessao' | 'fim';
 
 @Component({
   selector: 'app-jornada',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, CartaoExercicio, DecimalPipe],
   templateUrl: './jornada.html',
   styleUrl: './jornada.css'
 })
-export class Jornada implements OnInit {
+export class Jornada implements OnInit, OnDestroy {
   fase: Fase = 'escolha';
 
   utilizador?: Utilizador;
   jornada?: JornadaModelo;
   exercicios: Exercicio[] = [];
   sessao: Exercicio[] = [];
+  marcos: Marco[] = [];
+  kmReais: number | null = null;
+  guardado = false;
 
   carregando = true;
   erro = false;
   semExercicios = false;
+  indice = 0;
+  feitos = 0;
+  segundosRestantes = 0;
+  pausado = false;
+  minutosAtivos = 0;
+
+  private timerId?: ReturnType<typeof setInterval>;
 
   // Escolhas do utilizador (ligadas com [(ngModel)])
   tipo: TipoTreino = 'forca';
@@ -58,7 +75,8 @@ export class Jornada implements OnInit {
     private dadosService: DadosService,
     private treinoService: TreinoService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private registoService: RegistoService,
   ) {}
 
   ngOnInit(): void {
@@ -81,12 +99,16 @@ export class Jornada implements OnInit {
     this.carregando = true;
     this.erro = false;
 
-    this.dadosService.obterExercicios().subscribe({
-      next: (exercicios) => {
-        if (!Array.isArray(exercicios) || exercicios.length === 0) {
+    forkJoin({
+      exercicios: this.dadosService.obterExercicios(),
+      marcos: this.dadosService.obterMarcos()
+    }).subscribe({
+      next: ({ exercicios, marcos }) => {
+        if (!Array.isArray(exercicios) || exercicios.length === 0 || !Array.isArray(marcos)) {
           this.erro = true;
         } else {
           this.exercicios = exercicios;
+          this.marcos = marcos;
         }
         this.carregando = false;
         this.cdr.markForCheck();
@@ -112,8 +134,126 @@ export class Jornada implements OnInit {
     });
 
     this.semExercicios = this.sessao.length === 0;
-    if (!this.semExercicios) {
-      this.fase = 'sessao';
+    if (this.semExercicios) {
+      return;
     }
+
+    this.indice = 0;
+    this.feitos = 0;
+    this.segundosRestantes = this.duracao * 60;
+    this.pausado = false;
+    this.fase = 'sessao';
+    this.iniciarTimer();
+  }
+
+    // ===== Sessão =====
+
+  get exercicioAtual(): Exercicio {
+    return this.sessao[this.indice % this.sessao.length];
+  }
+
+  get tempoFormatado(): string {
+    const minutos = Math.floor(this.segundosRestantes / 60);
+    const segundos = this.segundosRestantes % 60;
+    return `${minutos}:${String(segundos).padStart(2, '0')}`;
+  }
+
+  get progressoTempo(): number {
+    return 1 - this.segundosRestantes / (this.duracao * 60);
+  }
+
+  concluirExercicio(): void {
+    this.feitos++;
+    this.indice++;
+  }
+
+  trocarExercicio(): void {
+    this.indice++;
+  }
+
+  alternarPausa(): void {
+    if (this.pausado) {
+      this.iniciarTimer();
+    } else {
+      this.pararTimer();
+    }
+    this.pausado = !this.pausado;
+  }
+
+  terminarAntes(): void {
+    if (confirm('Terminar a sessão agora? O tempo feito até aqui conta.')) {
+      this.terminar();
+    }
+  }
+
+  private terminar(): void {
+    this.pararTimer();
+    const segundosFeitos = this.duracao * 60 - Math.max(this.segundosRestantes, 0);
+    this.minutosAtivos = Math.round(segundosFeitos / 60);
+    this.fase = 'fim';
+  }
+
+  private iniciarTimer(): void {
+    this.pararTimer();
+    this.timerId = setInterval(() => {
+      this.segundosRestantes--;
+      if (this.segundosRestantes <= 0) {
+        this.terminar();
+      }
+      this.cdr.markForCheck();
+    }, 1000);
+  }
+
+  private pararTimer(): void {
+    if (this.timerId) {
+      clearInterval(this.timerId);
+      this.timerId = undefined;
+    }
+  }
+
+  get kmTreino(): number {
+    return this.treinoService.calcularKm(this.minutosAtivos, this.feitos, this.objetivo);
+  }
+
+  get kmReaisValidos(): number {
+    if (this.tipo === 'forca' || !this.kmReais || this.kmReais < 0) {
+      return 0;
+    }
+    return Math.min(this.kmReais, 100);
+  }
+
+  get kmTotal(): number {
+    return Math.round((this.kmTreino + this.kmReaisValidos) * 10) / 10;
+  }
+
+  get estadoPrevisto(): EstadoDia {
+    if (this.minutosAtivos >= REGRAS.minutosCompleto) return 'completo';
+    if (this.minutosAtivos >= REGRAS.minutosSuave) return 'suave';
+    return 'falha';
+  }
+
+  guardar(): void {
+    if (this.guardado) {
+      return;
+    }
+    this.guardado = true;
+
+    this.registoService.registarTreino({
+      utilizadorId: this.utilizador!.id,
+      jornadaId: this.jornada!.id,
+      tipoTreino: this.tipo,
+      minutosAtivos: this.minutosAtivos,
+      exerciciosFeitos: this.feitos,
+      objetivoExercicios: this.objetivo,
+      kmGanhos: this.kmTotal,
+      kmReais: this.kmReaisValidos || undefined
+    });
+
+    this.jornadaService.adicionarKm(this.jornada!, this.kmTotal, this.marcos);
+    this.router.navigate(['/condado']);
+  }
+
+  ngOnDestroy(): void {
+    this.pararTimer();
   }
 }

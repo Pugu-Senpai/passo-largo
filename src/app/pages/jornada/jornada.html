@@ -94,7 +94,62 @@
     }
 
     @case ('sessao') {
-      <p class="estado">A sessão vem no próximo passo ({{ sessao.length }} exercícios sorteados).</p>
+      <header class="sessao-topo">
+        <div class="relogio" role="timer" aria-live="off">
+          <span class="tempo">{{ tempoFormatado }}</span>
+          <span class="contador">{{ feitos }} / {{ objetivo }} feitos</span>
+        </div>
+        <div class="barra" aria-hidden="true">
+          <div class="barra-preenchida" [style.width.%]="progressoTempo * 100"></div>
+        </div>
+        <button type="button" class="botao-contorno" (click)="alternarPausa()">
+          {{ pausado ? '▶ Retomar' : '❚❚ Pausar' }}
+        </button>
+      </header>
+
+      @if (pausado) {
+        <p class="estado" role="status">Em pausa. Respira, bebe água e retoma quando estiveres pronto.</p>
+      } @else {
+        <app-cartao-exercicio
+          [exercicio]="exercicioAtual"
+          [numero]="indice + 1"
+          (concluido)="concluirExercicio()"
+          (trocado)="trocarExercicio()" />
+      }
+
+      <button type="button" class="voltar terminar" (click)="terminarAntes()">Terminar sessão</button>
+    }
+
+    @case ('fim') {
+      <section class="cartao fim">
+        <p class="etiqueta">Sessão terminada</p>
+        <h2>{{ feitos }} {{ feitos === 1 ? 'exercício' : 'exercícios' }} em {{ minutosAtivos }} minutos</h2>
+
+        <p class="estado-dia">
+          @switch (estadoPrevisto) {
+            @case ('completo') { ✔ Avanço completo. A Sociedade orgulha-se de ti. }
+            @case ('suave') { ✔ Avanço suave. Cada passo conta. }
+            @case ('falha') { ✖ Ainda não chegaste aos {{ 20 }} minutos. Os km contam, mas podes voltar a tentar hoje. }
+          }
+        </p>
+
+        @if (tipo !== 'forca') {
+          <div class="campo-km">
+            <label for="km-reais">Também correste ou caminhaste na rua? (opcional)</label>
+            <input id="km-reais" type="number" min="0" max="100" step="0.1"
+                   inputmode="decimal" placeholder="km" [(ngModel)]="kmReais">
+          </div>
+        }
+
+        <p class="km-ganhos">
+          <span class="etiqueta">Distância ganha</span>
+          <strong>{{ kmTotal | number: '1.0-1' }} km</strong>
+        </p>
+      </section>
+
+      <button type="button" class="botao-principal" (click)="guardar()" [disabled]="guardado">
+        Guardar e voltar ao Condado
+      </button>
     }
   }
 </main>

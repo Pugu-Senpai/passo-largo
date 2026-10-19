@@ -124,6 +124,114 @@ legend {
   color: var(--texto-sec);
 }
 
+/* Sessão */
+.sessao-topo {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--fundo);
+  padding: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.relogio {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.tempo {
+  font-family: var(--fonte-titulo);
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--texto-titulo);
+  font-variant-numeric: tabular-nums;
+}
+
+.contador {
+  color: var(--texto-sec);
+  font-weight: 700;
+}
+
+.barra {
+  height: 6px;
+  background: var(--cartao-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-preenchida {
+  height: 100%;
+  background: var(--destaque);
+  transition: width 1s linear;
+}
+
+.sessao-topo .botao-contorno {
+  align-self: flex-start;
+  min-height: 44px;
+}
+
+.terminar {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  font: inherit;
+}
+
+/* Fim da sessão */
+.fim h2 {
+  font-size: 1.6rem;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.estado-dia {
+  margin: 0 0 1.25rem;
+}
+
+.campo-km {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.campo-km label {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.campo-km input {
+  min-height: 44px;
+  max-width: 160px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--fundo);
+  color: var(--texto);
+}
+
+.km-ganhos {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divisor);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.km-ganhos strong {
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  color: var(--destaque);
+}
+
+.botao-principal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .pagina {
