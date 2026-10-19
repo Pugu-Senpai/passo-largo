@@ -9,4 +9,5 @@ export const REGRAS = {
   recuoIncrementoKm: 10,
   minutosSuave: 20,
   minutosCompleto: 30,
+  objetivoExercicios: { 20: 5, 30: 8 },
 };

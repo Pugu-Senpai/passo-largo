@@ -1,0 +1,171 @@
+[
+  {
+    "id": 1, "nome": "Flexões", "tipo": "forca", "zona": "upper",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["peito", "triceps", "ombros"],
+    "passos": ["Mãos no chão à largura dos ombros, corpo em linha reta.", "Desce o peito até quase tocar no chão.", "Empurra o chão para voltar à posição inicial."],
+    "series": 3, "repeticoes": 10
+  },
+  {
+    "id": 2, "nome": "Flexões inclinadas", "tipo": "forca", "zona": "upper",
+    "niveis": ["sedentario", "pouco-ativo"], "equipamento": "nenhum",
+    "musculos": ["peito", "triceps", "ombros"],
+    "passos": ["Apoia as mãos numa mesa ou bancada firme.", "Afasta os pés até o corpo ficar inclinado e em linha reta.", "Dobra os cotovelos para aproximar o peito e empurra para voltar."],
+    "series": 3, "repeticoes": 10
+  },
+  {
+    "id": 3, "nome": "Mergulhos na cadeira", "tipo": "forca", "zona": "upper",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["triceps", "ombros"],
+    "passos": ["De costas para uma cadeira estável, apoia as mãos na beira do assento.", "Com as pernas à frente, dobra os cotovelos e desce o corpo.", "Estica os braços para subir, sem encolher os ombros."],
+    "series": 3, "repeticoes": 10
+  },
+  {
+    "id": 4, "nome": "Prancha", "tipo": "forca", "zona": "full-body",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["abdominais", "lombar", "ombros"],
+    "passos": ["Apoia os antebraços no chão, cotovelos por baixo dos ombros.", "Estica as pernas e mantém o corpo em linha reta.", "Contrai o abdómen e respira devagar até ao fim do tempo."],
+    "series": 3, "duracaoSegundos": 30
+  },
+  {
+    "id": 5, "nome": "Agachamento", "tipo": "forca", "zona": "lower",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gluteos"],
+    "passos": ["Pés à largura dos ombros, pontas ligeiramente para fora.", "Desce como se te fosses sentar, com o peito erguido.", "Sobe a empurrar o chão pelos calcanhares."],
+    "series": 3, "repeticoes": 15
+  },
+  {
+    "id": 6, "nome": "Afundos alternados", "tipo": "forca", "zona": "lower",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gluteos", "isquiotibiais"],
+    "passos": ["De pé, dá um passo largo à frente com uma perna.", "Desce até os dois joelhos ficarem dobrados a cerca de 90 graus.", "Volta à posição inicial e alterna a perna."],
+    "series": 3, "repeticoes": 10
+  },
+  {
+    "id": 7, "nome": "Ponte de glúteos", "tipo": "forca", "zona": "lower",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["gluteos", "isquiotibiais", "lombar"],
+    "passos": ["Deitado de costas, joelhos dobrados e pés no chão.", "Eleva a anca até o corpo ficar em linha dos ombros aos joelhos.", "Aperta os glúteos no topo e desce devagar."],
+    "series": 3, "repeticoes": 15
+  },
+  {
+    "id": 8, "nome": "Elevação de gémeos", "tipo": "forca", "zona": "lower",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["gemeos"],
+    "passos": ["De pé, junto a uma parede para equilíbrio.", "Sobe para a ponta dos pés o mais alto que conseguires.", "Desce devagar até os calcanhares tocarem no chão."],
+    "series": 3, "repeticoes": 20
+  },
+  {
+    "id": 9, "nome": "Super-homem", "tipo": "forca", "zona": "upper",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["costas", "lombar", "gluteos"],
+    "passos": ["Deitado de barriga para baixo, braços esticados à frente.", "Eleva ao mesmo tempo braços, peito e pernas do chão.", "Segura dois segundos e desce com controlo."],
+    "series": 3, "repeticoes": 12
+  },
+  {
+    "id": 10, "nome": "Flexões diamante", "tipo": "forca", "zona": "upper",
+    "niveis": ["ativo", "muito-ativo"], "equipamento": "nenhum",
+    "musculos": ["triceps", "peito"],
+    "passos": ["Em posição de flexão, junta as mãos formando um losango com os dedos.", "Desce o peito em direção às mãos, cotovelos junto ao corpo.", "Empurra para voltar acima."],
+    "series": 3, "repeticoes": 8
+  },
+  {
+    "id": 11, "nome": "Kettlebell swing", "tipo": "forca", "zona": "full-body",
+    "niveis": ["ativo", "muito-ativo"], "equipamento": "kettlebell",
+    "musculos": ["gluteos", "isquiotibiais", "lombar", "ombros"],
+    "passos": ["Pés afastados, kettlebell entre eles, segura com as duas mãos.", "Dobra a anca para trás com as costas direitas e balança o peso entre as pernas.", "Projeta a anca à frente para lançar o peso até à altura do peito."],
+    "series": 3, "repeticoes": 15
+  },
+  {
+    "id": 12, "nome": "Agachamento goblet", "tipo": "forca", "zona": "lower",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "equipamento": "kettlebell",
+    "musculos": ["quadriceps", "gluteos", "abdominais"],
+    "passos": ["Segura o kettlebell junto ao peito, com as duas mãos.", "Desce em agachamento mantendo o peito erguido e os cotovelos entre os joelhos.", "Sobe a empurrar pelos calcanhares."],
+    "series": 3, "repeticoes": 12
+  },
+
+  {
+    "id": 13, "nome": "Marcha no lugar", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["sedentario", "pouco-ativo"], "intensidade": "leve", "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gemeos"],
+    "passos": ["De pé, levanta um joelho de cada vez a um ritmo confortável.", "Acompanha com o balanço dos braços.", "Mantém a respiração regular."],
+    "series": 3, "duracaoSegundos": 60
+  },
+  {
+    "id": 14, "nome": "Passos laterais", "tipo": "cardio", "zona": "lower",
+    "niveis": ["sedentario", "pouco-ativo"], "intensidade": "leve", "equipamento": "nenhum",
+    "musculos": ["gluteos", "quadriceps"],
+    "passos": ["Com os joelhos ligeiramente dobrados, dá dois passos para a direita.", "Volta com dois passos para a esquerda.", "Mantém um ritmo contínuo e os braços ativos."],
+    "series": 3, "duracaoSegundos": 60
+  },
+  {
+    "id": 15, "nome": "Corrida no lugar", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["sedentario", "pouco-ativo", "ativo"], "intensidade": "leve", "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gemeos", "isquiotibiais"],
+    "passos": ["Corre sem sair do sítio, apoiado na parte da frente dos pés.", "Mantém os braços dobrados a acompanhar o movimento.", "Ajusta a velocidade para conseguires falar com algum esforço."],
+    "series": 3, "duracaoSegundos": 60
+  },
+  {
+    "id": 16, "nome": "Polichinelos", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "intensidade": "moderado", "equipamento": "nenhum",
+    "musculos": ["ombros", "gemeos", "gluteos"],
+    "passos": ["De pé, pés juntos e braços ao lado do corpo.", "Salta abrindo as pernas e levantando os braços acima da cabeça.", "Salta de novo para voltar à posição inicial."],
+    "series": 3, "duracaoSegundos": 45
+  },
+  {
+    "id": 17, "nome": "Boxe no ar", "tipo": "cardio", "zona": "upper",
+    "niveis": ["sedentario", "pouco-ativo", "ativo", "muito-ativo"], "intensidade": "moderado", "equipamento": "nenhum",
+    "musculos": ["ombros", "obliquos", "abdominais"],
+    "passos": ["Pés afastados, um ligeiramente à frente, mãos junto ao rosto.", "Lança socos alternados, rodando o tronco.", "Mantém-te em movimento leve sobre os pés."],
+    "series": 3, "duracaoSegundos": 60
+  },
+  {
+    "id": 18, "nome": "Calcanhares aos glúteos", "tipo": "cardio", "zona": "lower",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "intensidade": "moderado", "equipamento": "nenhum",
+    "musculos": ["isquiotibiais", "gemeos"],
+    "passos": ["Corre no lugar levando os calcanhares em direção aos glúteos.", "Mantém o tronco direito.", "Usa os braços para manter o ritmo."],
+    "series": 3, "duracaoSegundos": 45
+  },
+  {
+    "id": 19, "nome": "Subidas ao degrau", "tipo": "cardio", "zona": "lower",
+    "niveis": ["pouco-ativo", "ativo", "muito-ativo"], "intensidade": "moderado", "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gluteos"],
+    "passos": ["Usa um degrau baixo e estável.", "Sobe com um pé, depois com o outro, e desce pela mesma ordem.", "Alterna o pé que começa a cada minuto."],
+    "series": 3, "duracaoSegundos": 45
+  },
+  {
+    "id": 20, "nome": "Saltos de patinador", "tipo": "cardio", "zona": "lower",
+    "niveis": ["ativo", "muito-ativo"], "intensidade": "moderado", "equipamento": "nenhum",
+    "musculos": ["gluteos", "quadriceps", "gemeos"],
+    "passos": ["Salta para o lado aterrando sobre uma só perna.", "Leva a outra perna cruzada atrás, sem tocar no chão.", "Salta para o lado oposto e repete."],
+    "series": 3, "duracaoSegundos": 40
+  },
+  {
+    "id": 21, "nome": "Skipping alto", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["ativo", "muito-ativo"], "intensidade": "vigoroso", "equipamento": "nenhum",
+    "musculos": ["quadriceps", "abdominais", "gemeos"],
+    "passos": ["Corre no lugar levantando os joelhos até à altura da anca.", "Apoia-te na parte da frente dos pés.", "Mantém o ritmo rápido e os braços ativos."],
+    "series": 3, "duracaoSegundos": 40
+  },
+  {
+    "id": 22, "nome": "Escaladores", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["ativo", "muito-ativo"], "intensidade": "vigoroso", "equipamento": "nenhum",
+    "musculos": ["abdominais", "ombros", "quadriceps"],
+    "passos": ["Em posição de flexão, braços esticados.", "Leva um joelho ao peito e troca rapidamente de perna.", "Mantém a anca baixa e o corpo estável."],
+    "series": 3, "duracaoSegundos": 40
+  },
+  {
+    "id": 23, "nome": "Agachamento com salto", "tipo": "cardio", "zona": "lower",
+    "niveis": ["ativo", "muito-ativo"], "intensidade": "vigoroso", "equipamento": "nenhum",
+    "musculos": ["quadriceps", "gluteos", "gemeos"],
+    "passos": ["Desce em agachamento.", "Salta para cima com força, esticando o corpo.", "Aterra suavemente com os joelhos ligeiramente dobrados e repete."],
+    "series": 3, "repeticoes": 12
+  },
+  {
+    "id": 24, "nome": "Burpees", "tipo": "cardio", "zona": "full-body",
+    "niveis": ["muito-ativo"], "intensidade": "vigoroso", "equipamento": "nenhum",
+    "musculos": ["peito", "quadriceps", "abdominais", "ombros"],
+    "passos": ["De pé, agacha e apoia as mãos no chão.", "Salta com os pés para trás até ficares em posição de flexão.", "Volta a trazer os pés às mãos e salta para cima com os braços esticados."],
+    "series": 3, "repeticoes": 10
+  }
+]

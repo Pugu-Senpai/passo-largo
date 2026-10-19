@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Marco } from '../models/marco.model';
+import { Exercicio } from '../models/exercicio.model';
 
 @Injectable({ providedIn: 'root' })
 export class DadosService {
@@ -11,5 +12,9 @@ export class DadosService {
 
   obterMarcos(): Observable<Marco[]> {
     return this.http.get<Marco[]>(`${this.BASE}/marcos.json`);
+  }
+
+  obterExercicios(): Observable<Exercicio[]> {
+    return this.http.get<Exercicio[]>(`${this.BASE}/exercicios.json`);
   }
 }
