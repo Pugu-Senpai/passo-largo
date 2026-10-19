@@ -1,1 +1,80 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===== Modo claro ===== */
+:root {
+  --fundo: #F7F3EB;
+  --cartao: #FFFDF8;
+  --cartao-alt: #FBF2E2;
+  --texto: #2B2420;
+  --texto-sec: #8A7F72;
+  --destaque: #8A6A14;
+  --borda: #E6DDCC;
+
+  /* Estados dos dias */
+  --estado-completo: #2F6B3A;
+  --estado-suave: #6E9A5B;
+  --estado-descanso: #2E5C8A;
+  --estado-falha: #A3412E;
+
+  --fonte-titulo: 'EB Garamond', Georgia, serif;
+  --fonte-decorativa: 'Uncial Antiqua', 'EB Garamond', serif;
+  --fonte-ui: 'Lato', Arial, sans-serif;
+
+  --raio: 8px;
+  --sombra: 0 2px 8px rgba(43, 36, 32, 0.08);
+}
+
+/* ===== Modo escuro ===== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --fundo: #141C19;
+    --cartao: #2A211B;
+    --cartao-alt: #1E2622;
+    --texto: #EFE6D4;
+    --texto-sec: #B8AD9C;
+    --destaque: #D4B25A;
+    --borda: #3A322A;
+    --estado-completo: #6FBF7E;
+    --estado-suave: #A8CF8E;
+    --estado-descanso: #7FB0E0;
+    --estado-falha: #E08A72;
+    --sombra: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-tema="escuro"] {
+  --fundo: #141C19;
+  --cartao: #2A211B;
+  --cartao-alt: #1E2622;
+  --texto: #EFE6D4;
+  --texto-sec: #B8AD9C;
+  --destaque: #D4B25A;
+  --borda: #3A322A;
+  --estado-completo: #6FBF7E;
+  --estado-suave: #A8CF8E;
+  --estado-descanso: #7FB0E0;
+  --estado-falha: #E08A72;
+  --sombra: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: var(--fonte-ui);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+a { color: var(--destaque); }
+
+button {
+  font-family: var(--fonte-ui);
+  cursor: pointer;
+}
