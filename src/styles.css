@@ -1,14 +1,15 @@
-/* ===== Modo claro ===== */
+/* ===== Modo claro (por defeito) ===== */
 :root {
   --fundo: #F7F3EB;
+  --gradiente: none;
   --cartao: #FFFDF8;
   --cartao-alt: #FBF2E2;
   --texto: #2B2420;
   --texto-sec: #8A7F72;
   --destaque: #8A6A14;
-  --borda: #E6DDCC;
+  --borda: #E2D6BD;
+  --divisor: #ECE4D4;
 
-  /* Estados dos dias */
   --estado-completo: #2F6B3A;
   --estado-suave: #6E9A5B;
   --estado-descanso: #2E5C8A;
@@ -18,41 +19,50 @@
   --fonte-decorativa: 'Uncial Antiqua', 'EB Garamond', serif;
   --fonte-ui: 'Lato', Arial, sans-serif;
 
-  --raio: 8px;
+  --raio: 14px;
+  --raio-pequeno: 8px;
   --sombra: 0 2px 8px rgba(43, 36, 32, 0.08);
 }
 
-/* ===== Modo escuro ===== */
+/* ===== Modo escuro: cores (partilhadas pelos dois blocos abaixo) ===== */
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="claro"]) {
-    --fundo: #141C19;
-    --cartao: #2A211B;
-    --cartao-alt: #1E2622;
-    --texto: #EFE6D4;
-    --texto-sec: #B8AD9C;
-    --destaque: #D4B25A;
-    --borda: #3A322A;
-    --estado-completo: #6FBF7E;
-    --estado-suave: #A8CF8E;
-    --estado-descanso: #7FB0E0;
-    --estado-falha: #E08A72;
-    --sombra: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --fundo: #0B0D0C;
+    --gradiente:
+      radial-gradient(ellipse 70% 45% at 35% 0%, rgba(90, 25, 20, 0.35), transparent 70%),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(40, 60, 40, 0.30), transparent 70%);
+    --cartao: #141412;
+    --cartao-alt: #1A1814;
+    --texto: #EDE6D6;
+    --texto-sec: #A69F92;
+    --destaque: #D9BE73;
+    --borda: #3D3526;
+    --divisor: #262219;
+    --estado-completo: #7FC08A;
+    --estado-suave: #B5CF8A;
+    --estado-descanso: #8DB4E0;
+    --estado-falha: #E0866C;
+    --sombra: 0 4px 20px rgba(0, 0, 0, 0.5);
   }
 }
 
 :root[data-tema="escuro"] {
-  --fundo: #141C19;
-  --cartao: #2A211B;
-  --cartao-alt: #1E2622;
-  --texto: #EFE6D4;
-  --texto-sec: #B8AD9C;
-  --destaque: #D4B25A;
-  --borda: #3A322A;
-  --estado-completo: #6FBF7E;
-  --estado-suave: #A8CF8E;
-  --estado-descanso: #7FB0E0;
-  --estado-falha: #E08A72;
-  --sombra: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --fundo: #0B0D0C;
+  --gradiente:
+    radial-gradient(ellipse 70% 45% at 35% 0%, rgba(90, 25, 20, 0.35), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(40, 60, 40, 0.30), transparent 70%);
+  --cartao: #141412;
+  --cartao-alt: #1A1814;
+  --texto: #EDE6D6;
+  --texto-sec: #A69F92;
+  --destaque: #D9BE73;
+  --borda: #3D3526;
+  --divisor: #262219;
+  --estado-completo: #7FC08A;
+  --estado-suave: #B5CF8A;
+  --estado-descanso: #8DB4E0;
+  --estado-falha: #E0866C;
+  --sombra: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ===== Base ===== */
@@ -60,7 +70,9 @@
 
 body {
   margin: 0;
-  background: var(--fundo);
+  min-height: 100vh;
+  background: var(--gradiente), var(--fundo);
+  background-attachment: fixed;
   color: var(--texto);
   font-family: var(--fonte-ui);
   line-height: 1.6;
@@ -77,4 +89,44 @@ a { color: var(--destaque); }
 button {
   font-family: var(--fonte-ui);
   cursor: pointer;
+}
+
+/* ===== Utilitários reutilizáveis ===== */
+
+/* Pequena etiqueta em maiúsculas, como o "DAILY" da imagem */
+.etiqueta {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+
+/* Botão em forma de pílula com contorno dourado, como o "Enter →" */
+.botao-contorno {
+  background: transparent;
+  color: var(--destaque);
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.botao-contorno:hover {
+  border-color: var(--destaque);
+  background: rgba(217, 190, 115, 0.08);
+}
+
+/* ===== ESCONDER SPINNER ===== */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
 }
