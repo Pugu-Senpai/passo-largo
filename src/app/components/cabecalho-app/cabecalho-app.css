@@ -95,6 +95,20 @@
   min-height: 44px;
 }
 
+.quem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--destaque);
+  object-fit: cover;
+}
+
 /* ===== Computador: links na barra, sem botão ===== */
 @media (min-width: 1024px) {
   .cabecalho {

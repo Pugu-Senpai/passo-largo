@@ -6,3 +6,4 @@ export type Equipamento = 'nenhum' | 'kettlebell';
 export type Duracao = 20 | 30;
 export type EstadoDia = 'completo' | 'suave' | 'descanso' | 'falha';
 export type EstadoJornada = 'ativa' | 'concluida' | 'falhada';
+export type Genero = 'masculino' | 'feminino' | 'nao-dizer';

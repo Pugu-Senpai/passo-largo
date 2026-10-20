@@ -1,2 +1,29 @@
-<h1>Passo Largo</h1>
-<p>Quem vem lá?</p>
+<main class="pagina">
+  <header class="cabecalho">
+    <p class="logotipo">Passo Largo</p>
+    <h1 class="titulo-seccao">Quem vem lá?</h1>
+  </header>
+
+  <section class="grelha" aria-label="Perfis">
+    @for (u of utilizadores; track u.id) {
+      <app-cartao-perfil
+        [utilizador]="u"
+        [modoGestao]="modoGestao"
+        (selecionado)="entrar($event)"
+        (apagar)="apagar($event)" />
+    }
+
+    @if (!modoGestao) {
+      <a routerLink="/novo-perfil" class="novo">
+        <span class="mais" aria-hidden="true">+</span>
+        <span>Novo aventureiro</span>
+      </a>
+    }
+  </section>
+
+  @if (utilizadores.length > 0) {
+    <button type="button" class="botao-contorno" (click)="alternarGestao()">
+      {{ modoGestao ? 'Concluído' : 'Gerir perfis' }}
+    </button>
+  }
+</main>

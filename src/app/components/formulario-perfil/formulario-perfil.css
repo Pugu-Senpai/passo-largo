@@ -30,7 +30,8 @@ fieldset.campo {
   gap: 1.25rem;
 }
 
-label, legend {
+label,
+legend {
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -48,7 +49,8 @@ select {
   width: 100%;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   outline: 2px solid var(--destaque);
   outline-offset: 1px;
 }
@@ -110,6 +112,141 @@ input:focus, select:focus {
   text-decoration: underline;
 }
 
+/* Grelha de avatares: 4 por linha no telemóvel */
+.avatares {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+}
+
+.opcao-avatar {
+  position: relative;
+  cursor: pointer;
+}
+
+.opcao-avatar input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.opcao-avatar img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: var(--cartao-alt);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.opcao-avatar input:checked+img {
+  border-color: var(--destaque);
+  transform: scale(1.05);
+}
+
+.opcao-avatar:has(input:checked)::after {
+  content: "✓";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--destaque);
+  color: var(--fundo);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.opcao-avatar input:focus-visible+img {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+/* Avatar escolhido, centrado no topo */
+.zona-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-atual {
+  position: relative;
+  width: 120px;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 3px solid var(--destaque);
+  border-radius: 50%;
+  background: var(--cartao-alt);
+  transition: transform 0.2s;
+}
+
+.avatar-atual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-atual:focus-visible {
+  outline: 2px solid var(--texto-titulo);
+  outline-offset: 3px;
+}
+
+.lapis {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--destaque);
+  color: var(--fundo);
+  font-weight: 700;
+}
+
+.dica {
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+}
+
+.seletor {
+  width: 100%;
+  margin: 0.25rem 0 0;
+  padding: 1rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--fundo);
+  animation: abrir 0.2s ease;
+}
+
+@keyframes abrir {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (hover: hover) {
+  .avatar-atual:hover {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seletor {
+    animation: none;
+  }
+}
+
 /* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .cartao {
@@ -124,5 +261,9 @@ input:focus, select:focus {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .avatares {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   }
 }

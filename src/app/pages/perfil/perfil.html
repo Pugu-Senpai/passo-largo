@@ -3,7 +3,7 @@
 <main class="pagina">
   @if (utilizador && resumo) {
   <header class="cabecalho">
-    <span class="avatar" aria-hidden="true">{{ utilizador.nome.charAt(0) }}</span>
+    <img class="avatar" [src]="caminhoAvatar(utilizador.avatar)" alt="" width="80" height="80">
     <div>
       <h1>{{ utilizador.nome }}</h1>
       <p class="etiqueta">
@@ -69,6 +69,16 @@
         <div>
           <dt>Idade</dt>
           <dd>{{ utilizador.idade }} anos</dd>
+        </div>
+        <div>
+          <dt>Género</dt>
+          <dd>
+            @switch (utilizador.genero) {
+            @case ('masculino') { Masculino }
+            @case ('feminino') { Feminino }
+            @default { Prefiro não dizer }
+            }
+          </dd>
         </div>
         <div>
           <dt>Peso</dt>

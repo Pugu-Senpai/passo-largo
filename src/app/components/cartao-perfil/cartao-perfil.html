@@ -1,1 +1,21 @@
-<p>cartao-perfil works!</p>
+<div class="cartao">
+  <button type="button" class="principal" (click)="aoSelecionar()" [disabled]="modoGestao">
+    <img class="avatar" [src]="caminhoAvatar(utilizador.avatar)" alt="" width="72" height="72">
+    <span class="nome">{{ utilizador.nome }}</span>
+    <span class="etiqueta">
+      @switch (utilizador.nivelFisico) {
+        @case ('sedentario') { Sedentário }
+        @case ('pouco-ativo') { Pouco ativo }
+        @case ('ativo') { Ativo }
+        @case ('muito-ativo') { Muito ativo }
+      }
+    </span>
+  </button>
+
+  @if (modoGestao) {
+    <button type="button" class="apagar" (click)="aoApagar()"
+            [attr.aria-label]="'Apagar perfil de ' + utilizador.nome">
+      ✕
+    </button>
+  }
+</div>

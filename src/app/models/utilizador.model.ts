@@ -1,8 +1,10 @@
-import { NivelFisico } from './tipos';
+import { NivelFisico, Genero } from './tipos';
 
 export interface Utilizador {
   id: number;
   nome: string;
+  genero: Genero;
+  avatar: string;
   idade: number;
   peso: number;
   altura: number;

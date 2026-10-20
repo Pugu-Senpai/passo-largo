@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NovoUtilizador } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
-import { NivelFisico } from '../../models/tipos';
+import { NivelFisico, Genero } from '../../models/tipos';
+import { AVATARES, AVATAR_PADRAO, caminhoAvatar } from '../../models/avatares';
 
 @Component({
   selector: 'app-formulario-perfil',
@@ -17,6 +18,10 @@ export class FormularioPerfil implements OnInit {
   @Output() submetido = new EventEmitter<NovoUtilizador>();
   @Output() cancelado = new EventEmitter<void>();
 
+  seletorAberto = false;
+
+  @ViewChild('zonaAvatar') zonaAvatar?: ElementRef<HTMLElement>;
+
   niveis: { valor: NivelFisico; rotulo: string }[] = [
     { valor: 'sedentario', rotulo: 'Sedentário' },
     { valor: 'pouco-ativo', rotulo: 'Pouco ativo' },
@@ -24,11 +29,22 @@ export class FormularioPerfil implements OnInit {
     { valor: 'muito-ativo', rotulo: 'Muito ativo' }
   ];
 
+  generos: { valor: Genero; rotulo: string }[] = [
+    { valor: 'masculino', rotulo: 'Masculino' },
+    { valor: 'feminino', rotulo: 'Feminino' },
+    { valor: 'nao-dizer', rotulo: 'Prefiro não dizer' }
+  ];
+
+  readonly avatares = AVATARES;
+  readonly caminhoAvatar = caminhoAvatar;
+
   form = new FormGroup({
     nome: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(20)]
     }),
+    genero: new FormControl<Genero | null>(null, Validators.required),
+    avatar: new FormControl(AVATAR_PADRAO, { nonNullable: true }),
     idade: new FormControl<number | null>(null, [Validators.required, Validators.min(16), Validators.max(100)]),
     peso: new FormControl<number | null>(null, [Validators.required, Validators.min(30), Validators.max(300)]),
     altura: new FormControl<number | null>(null, [Validators.required, Validators.min(100), Validators.max(250)]),
@@ -57,6 +73,8 @@ export class FormularioPerfil implements OnInit {
     const valores = this.form.getRawValue();
     this.submetido.emit({
       nome: valores.nome.trim(),
+      genero: valores.genero!,
+      avatar: valores.avatar,
       idade: valores.idade!,
       peso: valores.peso!,
       altura: valores.altura!,
@@ -68,5 +86,27 @@ export class FormularioPerfil implements OnInit {
 
   cancelar(): void {
     this.cancelado.emit();
+  }
+
+    alternarSeletor(): void {
+    this.seletorAberto = !this.seletorAberto;
+  }
+
+  escolherAvatar(): void {
+    this.seletorAberto = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  @HostListener('document:focusin', ['$event'])
+  aoInteragirFora(evento: Event): void {
+    const zona = this.zonaAvatar?.nativeElement;
+    if (this.seletorAberto && zona && !zona.contains(evento.target as Node)) {
+      this.seletorAberto = false;
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  aoCarregarEscape(): void {
+    this.seletorAberto = false;
   }
 }

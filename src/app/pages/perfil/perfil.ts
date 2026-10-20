@@ -11,6 +11,7 @@ import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
 import { TemaService, Tema } from '../../services/tema.service';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
+import { caminhoAvatar } from '../../models/avatares';
 
 @Component({
   selector: 'app-perfil',
@@ -27,6 +28,8 @@ export class Perfil implements OnInit {
   editar = false;
   mensagem = '';
   tema: Tema = 'automatico';
+
+  readonly caminhoAvatar = caminhoAvatar;
 
   constructor(
     private utilizadorService: UtilizadorService,

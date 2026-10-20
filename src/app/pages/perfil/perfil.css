@@ -26,6 +26,8 @@
   font-size: 1.8rem;
   color: var(--destaque);
   background: var(--cartao-alt);
+  object-fit: cover;
+  padding: 0;
 }
 
 .cabecalho h1 {

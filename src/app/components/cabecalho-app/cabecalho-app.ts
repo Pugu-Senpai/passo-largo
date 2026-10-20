@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
+import { caminhoAvatar } from '../../models/avatares';
 
 @Component({
   selector: 'app-cabecalho-app',
@@ -21,10 +22,12 @@ export class CabecalhoApp implements OnInit {
     { rota: '/perfil', texto: 'Perfil', icone: '🧝' }
   ];
 
+  readonly caminhoAvatar = caminhoAvatar;
+
   constructor(
     private utilizadorService: UtilizadorService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();

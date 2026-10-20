@@ -1,10 +1,8 @@
 <header class="cabecalho">
   <a routerLink="/condado" class="logotipo" (click)="fechar()">Passo Largo</a>
 
-  <button type="button" class="botao-menu"
-          [attr.aria-expanded]="aberto"
-          aria-controls="menu-principal"
-          (click)="alternar()">
+  <button type="button" class="botao-menu" [attr.aria-expanded]="aberto" aria-controls="menu-principal"
+    (click)="alternar()">
     <span aria-hidden="true">{{ aberto ? '✕' : '☰' }}</span>
     <span class="sr-only">{{ aberto ? 'Fechar menu' : 'Abrir menu' }}</span>
   </button>
@@ -12,17 +10,20 @@
   <nav id="menu-principal" class="menu" [class.aberto]="aberto" aria-label="Navegação principal">
     <ul>
       @for (link of links; track link.rota) {
-        <li>
-          <a [routerLink]="link.rota" routerLinkActive="ativo" (click)="fechar()">
-            <span aria-hidden="true">{{ link.icone }}</span> {{ link.texto }}
-          </a>
-        </li>
+      <li>
+        <a [routerLink]="link.rota" routerLinkActive="ativo" (click)="fechar()">
+          <span aria-hidden="true">{{ link.icone }}</span> {{ link.texto }}
+        </a>
+      </li>
       }
     </ul>
 
     <div class="menu-rodape">
       @if (utilizador) {
-        <span class="quem">{{ utilizador.nome }}</span>
+      <span class="quem">
+        <img class="mini-avatar" [src]="caminhoAvatar(utilizador.avatar)" alt="" width="32" height="32">
+        {{ utilizador.nome }}
+      </span>
       }
       <button type="button" class="botao-contorno" (click)="trocarAventureiro()">Trocar aventureiro</button>
     </div>

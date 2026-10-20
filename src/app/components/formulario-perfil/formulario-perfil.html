@@ -1,25 +1,65 @@
 <form [formGroup]="form" (ngSubmit)="submeter()" class="cartao" novalidate>
 
+  <div class="zona-avatar" #zonaAvatar>
+    <button type="button" class="avatar-atual" (click)="alternarSeletor()" [attr.aria-expanded]="seletorAberto"
+      aria-controls="seletor-avatares">
+      <img [src]="caminhoAvatar(form.controls.avatar.value)" alt="" width="120" height="120">
+      <span class="lapis" aria-hidden="true">✎</span>
+      <span class="sr-only">Escolher avatar</span>
+    </button>
+    <span class="dica">{{ seletorAberto ? 'Escolhe o teu avatar' : 'Toca no avatar para o mudar' }}</span>
+
+    @if (seletorAberto) {
+    <fieldset id="seletor-avatares" class="seletor">
+      <legend class="sr-only">Avatar</legend>
+      <div class="avatares">
+        @for (a of avatares; track a; let i = $index) {
+        <label class="opcao-avatar">
+          <input type="radio" formControlName="avatar" [value]="a" (change)="escolherAvatar()">
+          <img [src]="caminhoAvatar(a)" [alt]="i === 0 ? 'Avatar genérico' : 'Avatar ' + i" width="96" height="96"
+            loading="lazy">
+        </label>
+        }
+      </div>
+    </fieldset>
+    }
+  </div>
+
   <div class="campo">
     <label for="nome">Nome</label>
     <input id="nome" type="text" formControlName="nome">
     @if (campoInvalido('nome')) {
-      @if (form.controls.nome.hasError('required')) {
-        <span class="erro">O nome é obrigatório.</span>
-      } @else if (form.controls.nome.hasError('minlength')) {
-        <span class="erro">O nome deve ter pelo menos 2 caracteres.</span>
-      } @else if (form.controls.nome.hasError('maxlength')) {
-        <span class="erro">O nome pode ter no máximo 20 caracteres.</span>
-      }
+    @if (form.controls.nome.hasError('required')) {
+    <span class="erro">O nome é obrigatório.</span>
+    } @else if (form.controls.nome.hasError('minlength')) {
+    <span class="erro">O nome deve ter pelo menos 2 caracteres.</span>
+    } @else if (form.controls.nome.hasError('maxlength')) {
+    <span class="erro">O nome pode ter no máximo 20 caracteres.</span>
+    }
     }
   </div>
+
+  <fieldset class="campo">
+    <legend>Género</legend>
+    <div class="chips">
+      @for (g of generos; track g.valor) {
+      <label class="chip">
+        <input type="radio" formControlName="genero" [value]="g.valor">
+        <span>{{ g.rotulo }}</span>
+      </label>
+      }
+    </div>
+    @if (campoInvalido('genero')) {
+    <span class="erro">Escolhe uma opção.</span>
+    }
+  </fieldset>
 
   <div class="linha">
     <div class="campo">
       <label for="idade">Idade</label>
       <input id="idade" type="number" inputmode="numeric" formControlName="idade">
       @if (campoInvalido('idade')) {
-        <span class="erro">Indica uma idade entre 16 e 100.</span>
+      <span class="erro">Indica uma idade entre 16 e 100.</span>
       }
     </div>
 
@@ -27,7 +67,7 @@
       <label for="peso">Peso (kg)</label>
       <input id="peso" type="number" inputmode="decimal" formControlName="peso">
       @if (campoInvalido('peso')) {
-        <span class="erro">Indica um peso entre 30 e 300 kg.</span>
+      <span class="erro">Indica um peso entre 30 e 300 kg.</span>
       }
     </div>
 
@@ -35,7 +75,7 @@
       <label for="altura">Altura (cm)</label>
       <input id="altura" type="number" inputmode="numeric" formControlName="altura">
       @if (campoInvalido('altura')) {
-        <span class="erro">Indica uma altura entre 100 e 250 cm.</span>
+      <span class="erro">Indica uma altura entre 100 e 250 cm.</span>
       }
     </div>
   </div>
@@ -45,11 +85,11 @@
     <select id="nivel" formControlName="nivelFisico">
       <option [ngValue]="null" disabled>Escolhe uma opção</option>
       @for (nivel of niveis; track nivel.valor) {
-        <option [ngValue]="nivel.valor">{{ nivel.rotulo }}</option>
+      <option [ngValue]="nivel.valor">{{ nivel.rotulo }}</option>
       }
     </select>
     @if (campoInvalido('nivelFisico')) {
-      <span class="erro">Escolhe o teu estado físico.</span>
+    <span class="erro">Escolhe o teu estado físico.</span>
     }
   </div>
 

@@ -71,7 +71,6 @@
   }
 }
 
-/* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .principal {
     padding: 1.5rem 1rem;
@@ -82,6 +81,7 @@
     width: 72px;
     height: 72px;
     font-size: 2rem;
+    object-fit: cover;
   }
 
   .nome {

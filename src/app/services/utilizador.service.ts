@@ -4,6 +4,7 @@ import { ArmazenamentoService } from './armazenamento.service';
 import { hoje } from '../utils/datas';
 import { JornadaService } from './jornada.service';
 import { RegistoService } from './registo.service';
+import { AVATAR_PADRAO } from '../models/avatares';
 
 export type NovoUtilizador = Omit<Utilizador, 'id' | 'dataCriacao'>;
 
@@ -19,7 +20,13 @@ export class UtilizadorService {
   ) { }
 
   obterTodos(): Utilizador[] {
-    return this.armazenamento.ler<Utilizador[]>(this.CHAVE_UTILIZADORES, []);
+    return this.armazenamento
+      .ler<Utilizador[]>(this.CHAVE_UTILIZADORES, [])
+      .map(u => ({
+        ...u,
+        genero: u.genero ?? 'nao-dizer',
+        avatar: u.avatar ?? AVATAR_PADRAO
+      }));
   }
 
   obterPorId(id: number): Utilizador | undefined {
