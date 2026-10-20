@@ -74,4 +74,12 @@ export class Perfil implements OnInit {
   mudarTema(tema: Tema): void {
     this.temaService.definir(tema);
   }
+
+  apagarPerfil(): void {
+    const confirmar = confirm('Todo o progresso será eliminado e não pode ser recuperado. Tens a certeza?');
+    if (confirmar) {
+      this.utilizadorService.apagar(this.utilizador!.id);
+      this.router.navigate(['/']);
+    }
+  }
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Utilizador } from '../models/utilizador.model';
 import { ArmazenamentoService } from './armazenamento.service';
 import { hoje } from '../utils/datas';
+import { JornadaService } from './jornada.service';
+import { RegistoService } from './registo.service';
 
 export type NovoUtilizador = Omit<Utilizador, 'id' | 'dataCriacao'>;
 
@@ -10,7 +12,11 @@ export class UtilizadorService {
   private readonly CHAVE_UTILIZADORES = 'pl_utilizadores';
   private readonly CHAVE_ATIVO = 'pl_utilizador_ativo';
 
-  constructor(private armazenamento: ArmazenamentoService) { }
+  constructor(
+    private armazenamento: ArmazenamentoService,
+    private jornadaService: JornadaService,
+    private registoService: RegistoService
+  ) { }
 
   obterTodos(): Utilizador[] {
     return this.armazenamento.ler<Utilizador[]>(this.CHAVE_UTILIZADORES, []);
@@ -40,6 +46,9 @@ export class UtilizadorService {
     if (this.obterAtivo()?.id === id) {
       this.terminarSessao();
     }
+    this.registoService.apagarDoUtilizador(id);
+    this.jornadaService.apagarDoUtilizador(id);
+
     const restantes = this.obterTodos().filter(u => u.id !== id);
     this.armazenamento.guardar(this.CHAVE_UTILIZADORES, restantes);
   }

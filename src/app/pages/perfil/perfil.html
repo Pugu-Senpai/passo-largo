@@ -2,115 +2,133 @@
 
 <main class="pagina">
   @if (utilizador && resumo) {
-    <header class="cabecalho">
-      <span class="avatar" aria-hidden="true">{{ utilizador.nome.charAt(0) }}</span>
-      <div>
-        <h1>{{ utilizador.nome }}</h1>
-        <p class="etiqueta">
-          @switch (utilizador.nivelFisico) {
-            @case ('sedentario') { Sedentário }
-            @case ('pouco-ativo') { Pouco ativo }
-            @case ('ativo') { Ativo }
-            @case ('muito-ativo') { Muito ativo }
-          }
-          · aventureiro desde {{ utilizador.dataCriacao | date: 'MMMM yyyy' }}
-        </p>
-      </div>
-    </header>
-
-    <section aria-labelledby="titulo-resumo">
-      <h2 id="titulo-resumo" class="titulo-seccao">Resumo</h2>
-      <div class="grelha">
-        <div class="cartao estatistica">
-          <strong>{{ resumo.treinos }}</strong>
-          <span>treinos</span>
-        </div>
-        <div class="cartao estatistica">
-          <strong>{{ resumo.minutos | number }}</strong>
-          <span>minutos ativos</span>
-        </div>
-        <div class="cartao estatistica">
-          <strong>{{ resumo.km | number: '1.0-1' }}</strong>
-          <span>km no total</span>
-        </div>
-        <div class="cartao estatistica">
-          <strong>{{ jornada?.kmPercorridos | number: '1.0-1' }}</strong>
-          <span>km nesta jornada</span>
-        </div>
-        <div class="cartao estatistica">
-          <strong>{{ resumo.descansos }}</strong>
-          <span>⛺ acampamentos</span>
-        </div>
-        <div class="cartao estatistica">
-          <strong>{{ resumo.falhas }}</strong>
-          <span>✖ falhas</span>
-        </div>
-      </div>
-    </section>
-
-    <section aria-labelledby="titulo-corpo">
-      <div class="titulo-com-acao">
-        <h2 id="titulo-corpo" class="titulo-seccao">Corpo</h2>
-        @if (!editar) {
-          <button type="button" class="botao-contorno" (click)="iniciarEdicao()">✎ Editar dados</button>
+  <header class="cabecalho">
+    <span class="avatar" aria-hidden="true">{{ utilizador.nome.charAt(0) }}</span>
+    <div>
+      <h1>{{ utilizador.nome }}</h1>
+      <p class="etiqueta">
+        @switch (utilizador.nivelFisico) {
+        @case ('sedentario') { Sedentário }
+        @case ('pouco-ativo') { Pouco ativo }
+        @case ('ativo') { Ativo }
+        @case ('muito-ativo') { Muito ativo }
         }
+        · aventureiro desde {{ utilizador.dataCriacao | date: 'MMMM yyyy' }}
+      </p>
+    </div>
+  </header>
+
+  <section aria-labelledby="titulo-resumo">
+    <h2 id="titulo-resumo" class="titulo-seccao">Resumo</h2>
+    <div class="grelha">
+      <div class="cartao estatistica">
+        <strong>{{ resumo.treinos }}</strong>
+        <span>treinos</span>
       </div>
+      <div class="cartao estatistica">
+        <strong>{{ resumo.minutos | number }}</strong>
+        <span>minutos ativos</span>
+      </div>
+      <div class="cartao estatistica">
+        <strong>{{ resumo.km | number: '1.0-1' }}</strong>
+        <span>km no total</span>
+      </div>
+      <div class="cartao estatistica">
+        <strong>{{ jornada?.kmPercorridos | number: '1.0-1' }}</strong>
+        <span>km nesta jornada</span>
+      </div>
+      <div class="cartao estatistica">
+        <strong>{{ resumo.descansos }}</strong>
+        <span>⛺ acampamentos</span>
+      </div>
+      <div class="cartao estatistica">
+        <strong>{{ resumo.falhas }}</strong>
+        <span>✖ falhas</span>
+      </div>
+    </div>
+  </section>
 
-      @if (mensagem) {
-        <p class="mensagem" role="status">✔ {{ mensagem }}</p>
+  <section aria-labelledby="titulo-corpo">
+    <div class="titulo-com-acao">
+      <h2 id="titulo-corpo" class="titulo-seccao">Corpo</h2>
+      @if (!editar) {
+      <button type="button" class="botao-contorno" (click)="iniciarEdicao()">✎ Editar dados</button>
       }
+    </div>
 
-      @if (editar) {
-        <app-formulario-perfil
-          [valoresIniciais]="utilizador"
-          textoBotao="Guardar alterações"
-          (submetido)="guardarAlteracoes($event)"
-          (cancelado)="cancelarEdicao()" />
-      } @else {
-        <div class="cartao corpo">
-          <dl class="dados">
-            <div><dt>Idade</dt><dd>{{ utilizador.idade }} anos</dd></div>
-            <div><dt>Peso</dt><dd>{{ utilizador.peso | number: '1.0-1' }} kg</dd></div>
-            <div><dt>Altura</dt><dd>{{ utilizador.altura }} cm</dd></div>
-            <div><dt>Kettlebell</dt><dd>{{ utilizador.temKettlebell ? 'Sim' : 'Não' }}</dd></div>
-            <div><dt>Descanso</dt><dd>{{ utilizador.diasDescansoSemana }} {{ utilizador.diasDescansoSemana === 1 ? 'dia' : 'dias' }} por semana</dd></div>
-          </dl>
+    @if (mensagem) {
+    <p class="mensagem" role="status">✔ {{ mensagem }}</p>
+    }
 
-          <div class="imc">
-            <span class="etiqueta">IMC</span>
-            <strong>{{ imc | number: '1.1-1' }}</strong>
-            <span>{{ classificacaoImc }}</span>
-          </div>
-          <p class="nota">O IMC é apenas indicativo: não distingue massa muscular de gordura.</p>
+    @if (editar) {
+    <app-formulario-perfil [valoresIniciais]="utilizador" textoBotao="Guardar alterações"
+      (submetido)="guardarAlteracoes($event)" (cancelado)="cancelarEdicao()" />
+    } @else {
+    <div class="cartao corpo">
+      <dl class="dados">
+        <div>
+          <dt>Idade</dt>
+          <dd>{{ utilizador.idade }} anos</dd>
         </div>
-      }
-    </section>
+        <div>
+          <dt>Peso</dt>
+          <dd>{{ utilizador.peso | number: '1.0-1' }} kg</dd>
+        </div>
+        <div>
+          <dt>Altura</dt>
+          <dd>{{ utilizador.altura }} cm</dd>
+        </div>
+        <div>
+          <dt>Kettlebell</dt>
+          <dd>{{ utilizador.temKettlebell ? 'Sim' : 'Não' }}</dd>
+        </div>
+        <div>
+          <dt>Descanso</dt>
+          <dd>{{ utilizador.diasDescansoSemana }} {{ utilizador.diasDescansoSemana === 1 ? 'dia' : 'dias' }} por semana
+          </dd>
+        </div>
+      </dl>
 
-    <section aria-labelledby="titulo-definicoes">
-      <h2 id="titulo-definicoes" class="titulo-seccao">Definições</h2>
-      <div class="cartao">
-        <fieldset class="definicao">
-          <legend>Tema</legend>
-          <div class="chips">
-            <label class="chip">
-              <input type="radio" name="tema" value="automatico"
-                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
-              <span>◐ Automático</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="tema" value="claro"
-                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
-              <span>☀ Claro</span>
-            </label>
-            <label class="chip">
-              <input type="radio" name="tema" value="escuro"
-                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
-              <span>☾ Escuro</span>
-            </label>
-          </div>
-          <p class="nota">O modo automático segue as definições do teu dispositivo.</p>
-        </fieldset>
+      <div class="imc">
+        <span class="etiqueta">IMC</span>
+        <strong>{{ imc | number: '1.1-1' }}</strong>
+        <span>{{ classificacaoImc }}</span>
       </div>
-    </section>
+      <p class="nota">O IMC é apenas indicativo: não distingue massa muscular de gordura.</p>
+    </div>
+    }
+  </section>
+
+  <section aria-labelledby="titulo-definicoes">
+    <h2 id="titulo-definicoes" class="titulo-seccao">Definições</h2>
+    <div class="cartao">
+      <fieldset class="definicao">
+        <legend>Tema</legend>
+        <div class="chips">
+          <label class="chip">
+            <input type="radio" name="tema" value="automatico" [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+            <span>◐ Automático</span>
+          </label>
+          <label class="chip">
+            <input type="radio" name="tema" value="claro" [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+            <span>☀ Claro</span>
+          </label>
+          <label class="chip">
+            <input type="radio" name="tema" value="escuro" [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+            <span>☾ Escuro</span>
+          </label>
+        </div>
+        <p class="nota">O modo automático segue as definições do teu dispositivo.</p>
+      </fieldset>
+    </div>
+  </section>
+
+  <section aria-labelledby="titulo-perigo" class="perigo">
+    <h2 id="titulo-perigo" class="titulo-seccao">Zona de perigo</h2>
+    <div class="cartao">
+      <p>Apagar este perfil remove para sempre a jornada, os treinos e todo o progresso de {{ utilizador.nome }}.</p>
+      <button type="button" class="botao-perigo" (click)="apagarPerfil()">✖ Apagar perfil</button>
+    </div>
+  </section>
   }
 </main>
