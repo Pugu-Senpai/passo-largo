@@ -137,6 +137,18 @@
   font-weight: 700;
 }
 
+.definicao {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.definicao legend {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
 /* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .pagina {

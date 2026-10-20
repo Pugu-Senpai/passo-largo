@@ -85,5 +85,32 @@
         </div>
       }
     </section>
+
+    <section aria-labelledby="titulo-definicoes">
+      <h2 id="titulo-definicoes" class="titulo-seccao">Definições</h2>
+      <div class="cartao">
+        <fieldset class="definicao">
+          <legend>Tema</legend>
+          <div class="chips">
+            <label class="chip">
+              <input type="radio" name="tema" value="automatico"
+                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+              <span>◐ Automático</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="tema" value="claro"
+                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+              <span>☀ Claro</span>
+            </label>
+            <label class="chip">
+              <input type="radio" name="tema" value="escuro"
+                     [(ngModel)]="tema" (ngModelChange)="mudarTema($event)">
+              <span>☾ Escuro</span>
+            </label>
+          </div>
+          <p class="nota">O modo automático segue as definições do teu dispositivo.</p>
+        </fieldset>
+      </div>
+    </section>
   }
 </main>

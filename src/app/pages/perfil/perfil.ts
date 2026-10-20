@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { DecimalPipe, DatePipe } from '@angular/common';
 import { UtilizadorService, NovoUtilizador } from '../../services/utilizador.service';
 import { JornadaService } from '../../services/jornada.service';
@@ -8,10 +9,11 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
+import { TemaService, Tema } from '../../services/tema.service';
 
 @Component({
   selector: 'app-perfil',
-  imports: [DecimalPipe, DatePipe, CabecalhoApp, FormularioPerfil],
+  imports: [DecimalPipe, DatePipe, CabecalhoApp, FormularioPerfil, FormsModule],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css'
 })
@@ -23,13 +25,15 @@ export class Perfil implements OnInit {
   classificacaoImc = '';
   editar = false;
   mensagem = '';
+  tema: Tema = 'automatico';
 
   constructor(
     private utilizadorService: UtilizadorService,
     private jornadaService: JornadaService,
     private registoService: RegistoService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private temaService: TemaService,
+  ) { }
 
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();
@@ -38,6 +42,7 @@ export class Perfil implements OnInit {
       return;
     }
     this.carregarDados();
+    this.tema = this.temaService.obter();
   }
 
   carregarDados(): void {
@@ -64,5 +69,9 @@ export class Perfil implements OnInit {
     this.carregarDados();
     this.editar = false;
     this.mensagem = 'Alterações guardadas.';
+  }
+
+  mudarTema(tema: Tema): void {
+    this.temaService.definir(tema);
   }
 }

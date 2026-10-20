@@ -53,52 +53,6 @@ legend {
   margin-bottom: 0.5rem;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.chip {
-  position: relative;
-}
-
-.chip input {
-  position: absolute;
-  opacity: 0;
-  width: 1px;
-  height: 1px;
-}
-
-.chip span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--borda);
-  border-radius: 999px;
-  background: var(--fundo);
-  color: var(--texto);
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.chip input:checked + span {
-  border-color: var(--destaque);
-  background: var(--cartao-alt);
-  color: var(--destaque);
-  font-weight: 700;
-}
-
-.chip input:checked + span::before {
-  content: "✓ ";
-}
-
-.chip input:focus-visible + span {
-  outline: 2px solid var(--destaque);
-  outline-offset: 2px;
-}
-
 .resumo {
   margin: 0;
   padding-top: 1rem;
