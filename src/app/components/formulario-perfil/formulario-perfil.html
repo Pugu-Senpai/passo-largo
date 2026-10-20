@@ -1,0 +1,75 @@
+<form [formGroup]="form" (ngSubmit)="submeter()" class="cartao" novalidate>
+
+  <div class="campo">
+    <label for="nome">Nome</label>
+    <input id="nome" type="text" formControlName="nome">
+    @if (campoInvalido('nome')) {
+      @if (form.controls.nome.hasError('required')) {
+        <span class="erro">O nome é obrigatório.</span>
+      } @else if (form.controls.nome.hasError('minlength')) {
+        <span class="erro">O nome deve ter pelo menos 2 caracteres.</span>
+      } @else if (form.controls.nome.hasError('maxlength')) {
+        <span class="erro">O nome pode ter no máximo 20 caracteres.</span>
+      }
+    }
+  </div>
+
+  <div class="linha">
+    <div class="campo">
+      <label for="idade">Idade</label>
+      <input id="idade" type="number" inputmode="numeric" formControlName="idade">
+      @if (campoInvalido('idade')) {
+        <span class="erro">Indica uma idade entre 16 e 100.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="peso">Peso (kg)</label>
+      <input id="peso" type="number" inputmode="decimal" formControlName="peso">
+      @if (campoInvalido('peso')) {
+        <span class="erro">Indica um peso entre 30 e 300 kg.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="altura">Altura (cm)</label>
+      <input id="altura" type="number" inputmode="numeric" formControlName="altura">
+      @if (campoInvalido('altura')) {
+        <span class="erro">Indica uma altura entre 100 e 250 cm.</span>
+      }
+    </div>
+  </div>
+
+  <div class="campo">
+    <label for="nivel">Estado físico</label>
+    <select id="nivel" formControlName="nivelFisico">
+      <option [ngValue]="null" disabled>Escolhe uma opção</option>
+      @for (nivel of niveis; track nivel.valor) {
+        <option [ngValue]="nivel.valor">{{ nivel.rotulo }}</option>
+      }
+    </select>
+    @if (campoInvalido('nivelFisico')) {
+      <span class="erro">Escolhe o teu estado físico.</span>
+    }
+  </div>
+
+  <fieldset class="campo">
+    <legend>Dias de descanso por semana</legend>
+    <label class="opcao">
+      <input type="radio" formControlName="diasDescansoSemana" [value]="1"> 1 dia
+    </label>
+    <label class="opcao">
+      <input type="radio" formControlName="diasDescansoSemana" [value]="2"> 2 dias
+    </label>
+  </fieldset>
+
+  <label class="opcao">
+    <input type="checkbox" formControlName="temKettlebell">
+    Tenho um kettlebell
+  </label>
+
+  <div class="acoes">
+    <button type="button" class="botao-secundario" (click)="cancelar()">Cancelar</button>
+    <button type="submit" class="botao" [disabled]="form.invalid">{{ textoBotao }}</button>
+  </div>
+</form>

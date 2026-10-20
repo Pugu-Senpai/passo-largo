@@ -115,6 +115,28 @@
   font-style: italic;
 }
 
+.titulo-com-acao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.titulo-com-acao .titulo-seccao {
+  margin: 0;
+}
+
+.titulo-com-acao .botao-contorno {
+  min-height: 40px;
+}
+
+.mensagem {
+  margin: 0 0 0.75rem;
+  color: var(--estado-completo);
+  font-weight: 700;
+}
+
 /* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .pagina {

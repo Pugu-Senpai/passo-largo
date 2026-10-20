@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DecimalPipe, DatePipe } from '@angular/common';
-import { UtilizadorService } from '../../services/utilizador.service';
+import { UtilizadorService, NovoUtilizador } from '../../services/utilizador.service';
 import { JornadaService } from '../../services/jornada.service';
 import { RegistoService, ResumoAtividade } from '../../services/registo.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
+import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
 
 @Component({
   selector: 'app-perfil',
-  imports: [DecimalPipe, DatePipe, CabecalhoApp],
+  imports: [DecimalPipe, DatePipe, CabecalhoApp, FormularioPerfil],
   templateUrl: './perfil.html',
   styleUrl: './perfil.css'
 })
@@ -20,6 +21,8 @@ export class Perfil implements OnInit {
   resumo?: ResumoAtividade;
   imc = 0;
   classificacaoImc = '';
+  editar = false;
+  mensagem = '';
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -43,5 +46,23 @@ export class Perfil implements OnInit {
     this.resumo = this.registoService.resumo(u.id);
     this.imc = this.utilizadorService.calcularImc(u);
     this.classificacaoImc = this.utilizadorService.classificarImc(this.imc);
+  }
+
+  iniciarEdicao(): void {
+    this.editar = true;
+    this.mensagem = '';
+  }
+
+  cancelarEdicao(): void {
+    this.editar = false;
+  }
+
+  guardarAlteracoes(dados: NovoUtilizador): void {
+    const atualizado: Utilizador = { ...this.utilizador!, ...dados };
+    this.utilizadorService.atualizar(atualizado);
+    this.utilizador = atualizado;
+    this.carregarDados();
+    this.editar = false;
+    this.mensagem = 'Alterações guardadas.';
   }
 }

@@ -59,7 +59,7 @@ export class UtilizadorService {
 
   calcularImc(utilizador: Utilizador): number {
     const alturaMetros = utilizador.altura / 100;
-    const imc = utilizador.peso / (alturaMetros * alturaMetros)
+    const imc = utilizador.peso / (alturaMetros * alturaMetros);
     return Math.round(imc * 10) / 10;
   }
 

@@ -49,22 +49,41 @@
     </section>
 
     <section aria-labelledby="titulo-corpo">
-      <h2 id="titulo-corpo" class="titulo-seccao">Corpo</h2>
-      <div class="cartao corpo">
-        <dl class="dados">
-          <div><dt>Idade</dt><dd>{{ utilizador.idade }} anos</dd></div>
-          <div><dt>Peso</dt><dd>{{ utilizador.peso | number: '1.0-1' }} kg</dd></div>
-          <div><dt>Altura</dt><dd>{{ utilizador.altura }} cm</dd></div>
-          <div><dt>Kettlebell</dt><dd>{{ utilizador.temKettlebell ? 'Sim' : 'Não' }}</dd></div>
-        </dl>
-
-        <div class="imc">
-          <span class="etiqueta">IMC</span>
-          <strong>{{ imc | number: '1.1-1' }}</strong>
-          <span>{{ classificacaoImc }}</span>
-        </div>
-        <p class="nota">O IMC é apenas indicativo: não distingue massa muscular de gordura.</p>
+      <div class="titulo-com-acao">
+        <h2 id="titulo-corpo" class="titulo-seccao">Corpo</h2>
+        @if (!editar) {
+          <button type="button" class="botao-contorno" (click)="iniciarEdicao()">✎ Editar dados</button>
+        }
       </div>
+
+      @if (mensagem) {
+        <p class="mensagem" role="status">✔ {{ mensagem }}</p>
+      }
+
+      @if (editar) {
+        <app-formulario-perfil
+          [valoresIniciais]="utilizador"
+          textoBotao="Guardar alterações"
+          (submetido)="guardarAlteracoes($event)"
+          (cancelado)="cancelarEdicao()" />
+      } @else {
+        <div class="cartao corpo">
+          <dl class="dados">
+            <div><dt>Idade</dt><dd>{{ utilizador.idade }} anos</dd></div>
+            <div><dt>Peso</dt><dd>{{ utilizador.peso | number: '1.0-1' }} kg</dd></div>
+            <div><dt>Altura</dt><dd>{{ utilizador.altura }} cm</dd></div>
+            <div><dt>Kettlebell</dt><dd>{{ utilizador.temKettlebell ? 'Sim' : 'Não' }}</dd></div>
+            <div><dt>Descanso</dt><dd>{{ utilizador.diasDescansoSemana }} {{ utilizador.diasDescansoSemana === 1 ? 'dia' : 'dias' }} por semana</dd></div>
+          </dl>
+
+          <div class="imc">
+            <span class="etiqueta">IMC</span>
+            <strong>{{ imc | number: '1.1-1' }}</strong>
+            <span>{{ classificacaoImc }}</span>
+          </div>
+          <p class="nota">O IMC é apenas indicativo: não distingue massa muscular de gordura.</p>
+        </div>
+      }
     </section>
   }
 </main>
