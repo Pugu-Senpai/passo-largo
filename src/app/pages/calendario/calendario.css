@@ -1,0 +1,164 @@
+/* ===== Telemóvel (base) ===== */
+.pagina {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+}
+
+/* Navegação entre meses */
+.navegacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.navegacao h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  text-transform: capitalize;
+}
+
+.seta {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--borda);
+  background: none;
+  color: var(--destaque);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.seta:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Grelha de 7 colunas */
+.grelha {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+}
+
+.nome-dia {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--texto-sec);
+  padding-bottom: 0.25rem;
+}
+
+.dia {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  border-radius: var(--raio-pequeno);
+  border: 1px solid transparent;
+  font-size: 0.85rem;
+}
+
+.dia .icone {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.dia.fora {
+  opacity: 0.3;
+}
+
+.dia.hoje {
+  border-color: var(--destaque);
+  font-weight: 700;
+}
+
+/* Cores por estado (sempre com ícone, por causa do daltonismo) */
+.estado-completo { color: var(--estado-completo); }
+.estado-suave    { color: var(--estado-suave); }
+.estado-descanso { color: var(--estado-descanso); }
+.estado-falha    { color: var(--estado-falha); }
+
+.dia.estado-completo,
+.dia.estado-suave,
+.dia.estado-descanso,
+.dia.estado-falha {
+  background: var(--cartao-alt);
+}
+
+/* Legenda e resumo */
+.legenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem 1rem;
+}
+
+.legenda li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.legenda strong {
+  margin-left: auto;
+  color: var(--texto);
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .cartao {
+    padding: 1.5rem;
+  }
+
+  .grelha {
+    gap: 0.5rem;
+  }
+
+  .dia {
+    font-size: 1rem;
+  }
+
+  .dia .icone {
+    font-size: 0.9rem;
+  }
+
+  .legenda {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
