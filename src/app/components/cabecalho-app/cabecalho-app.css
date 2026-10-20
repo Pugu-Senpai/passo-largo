@@ -1,0 +1,112 @@
+/* ===== Telemóvel (base) ===== */
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--fundo);
+  border-bottom: 1px solid var(--divisor);
+}
+
+.logotipo {
+  font-family: var(--fonte-decorativa);
+  font-size: 1.4rem;
+  color: var(--destaque);
+  text-decoration: none;
+}
+
+.botao-menu {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.4rem;
+  background: none;
+  border: 1px solid var(--borda);
+  border-radius: 50%;
+  color: var(--destaque);
+}
+
+/* Painel fechado por defeito */
+.menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--cartao);
+  border-bottom: 1px solid var(--borda);
+  box-shadow: var(--sombra);
+  padding: 0.5rem 1rem 1rem;
+}
+
+.menu.aberto {
+  display: block;
+}
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0 0.5rem;
+  color: var(--texto);
+  text-decoration: none;
+  border-radius: var(--raio-pequeno);
+}
+
+.menu a.ativo {
+  color: var(--destaque);
+  font-weight: 700;
+  background: var(--cartao-alt);
+}
+
+.menu a.ativo::after {
+  content: "•";
+  margin-left: auto;
+}
+
+.menu-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--divisor);
+}
+
+.quem {
+  color: var(--texto-sec);
+  font-family: var(--fonte-titulo);
+  font-style: italic;
+}
+
+.menu-rodape .botao-contorno {
+  min-height: 44px;
+}
+
+/* ===== Computador: links na barra, sem botão ===== */
+@media (min-width: 1024px) {
+  .cabecalho {
+    padding: 0.75rem 2rem;
+  }
+
+  .menu {
+    left: auto;
+    right: 2rem;
+    top: calc(100% + 0.5rem);
+    width: 280px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+  }
+}

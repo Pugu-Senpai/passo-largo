@@ -11,10 +11,11 @@ import { Jornada } from '../../models/jornada.model';
 import { Marco } from '../../models/marco.model';
 import { RegistoDia } from '../../models/registo-dia.model';
 import { hoje } from '../../utils/datas';
+import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 
 @Component({
   selector: 'app-condado',
-  imports: [RouterLink, DecimalPipe, PercentPipe],
+  imports: [RouterLink, DecimalPipe, PercentPipe, CabecalhoApp],
   templateUrl: './condado.html',
   styleUrl: './condado.css'
 })
