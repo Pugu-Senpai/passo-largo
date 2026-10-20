@@ -10,7 +10,7 @@ export class UtilizadorService {
   private readonly CHAVE_UTILIZADORES = 'pl_utilizadores';
   private readonly CHAVE_ATIVO = 'pl_utilizador_ativo';
 
-  constructor(private armazenamento: ArmazenamentoService) {}
+  constructor(private armazenamento: ArmazenamentoService) { }
 
   obterTodos(): Utilizador[] {
     return this.armazenamento.ler<Utilizador[]>(this.CHAVE_UTILIZADORES, []);
@@ -55,5 +55,18 @@ export class UtilizadorService {
 
   terminarSessao(): void {
     this.armazenamento.remover(this.CHAVE_ATIVO);
+  }
+
+  calcularImc(utilizador: Utilizador): number {
+    const alturaMetros = utilizador.altura / 100;
+    const imc = utilizador.peso / (alturaMetros * alturaMetros)
+    return Math.round(imc * 10) / 10;
+  }
+
+  classificarImc(imc: number): string {
+    if (imc < 18.5) return 'Abaixo do peso';
+    if (imc < 25) return 'Peso normal';
+    if (imc < 30) return 'Excesso de peso';
+    return 'Obesidade';
   }
 }

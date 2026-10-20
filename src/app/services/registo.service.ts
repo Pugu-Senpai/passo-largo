@@ -9,6 +9,14 @@ import { hoje, inicioSemana, somarDias, diferencaDias } from '../utils/datas';
 
 export type NovoTreino = Omit<RegistoDia, 'id' | 'data' | 'estado'>;
 
+export interface ResumoAtividade {
+  treinos: number;
+  minutos: number;
+  km: number;
+  descansos: number;
+  falhas: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class RegistoService {
   private readonly CHAVE = 'pl_registos';
@@ -37,6 +45,17 @@ export class RegistoService {
 
   podeDescansar(utilizador: Utilizador, data: string = hoje()): boolean {
     return this.descansosNaSemana(utilizador.id, data) < utilizador.diasDescansoSemana;
+  }
+
+  resumo(utilizadorId: number): ResumoAtividade {
+    const registos = this.obterDoUtilizador(utilizadorId);
+    return {
+      treinos: registos.filter(r => r.minutosAtivos > 0).length,
+      minutos: registos.reduce((total, r) => total + r.minutosAtivos, 0),
+      km: Math.round(registos.reduce((total, r) => total + r.kmGanhos, 0) * 10) / 10,
+      descansos: registos.filter(r => r.estado === 'descanso').length,
+      falhas: registos.filter(r => r.estado === 'falha').length
+    };
   }
 
   // ===== Registar o dia de hoje =====

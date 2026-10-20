@@ -1,1 +1,21 @@
-<p>exercicio-detalhe works!</p>
+<app-cabecalho-app />
+
+<main class="pagina">
+  <a routerLink="/exercicios" class="voltar">‹ Voltar à biblioteca</a>
+
+  @if (carregando) {
+    <p class="estado" role="status">A abrir o pergaminho...</p>
+
+  } @else if (erro) {
+    <p class="estado" role="alert">Não foi possível carregar o exercício.</p>
+
+  } @else if (naoEncontrado) {
+    <div class="estado" role="alert">
+      <p>Este exercício não existe nos arquivos.</p>
+      <a routerLink="/exercicios" class="botao-contorno">Ver todos os exercícios</a>
+    </div>
+
+  } @else if (exercicio) {
+    <app-cartao-exercicio [exercicio]="exercicio" [mostrarAcoes]="false" />
+  }
+</main>

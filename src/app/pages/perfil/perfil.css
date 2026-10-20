@@ -1,0 +1,145 @@
+/* ===== Telemóvel (base) ===== */
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--destaque);
+  display: grid;
+  place-items: center;
+  font-family: var(--fonte-decorativa);
+  font-size: 1.8rem;
+  color: var(--destaque);
+  background: var(--cartao-alt);
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0.2rem 0 0;
+}
+
+.titulo-seccao {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+}
+
+/* Estatísticas: 2 colunas no telemóvel */
+.grelha {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.estatistica {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.estatistica strong {
+  font-family: var(--fonte-titulo);
+  font-size: 1.8rem;
+  color: var(--destaque);
+  line-height: 1.1;
+}
+
+.estatistica span {
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+}
+
+/* Corpo */
+.dados {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.dados dt {
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+}
+
+.dados dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.imc {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divisor);
+}
+
+.imc strong {
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  color: var(--texto-titulo);
+}
+
+.nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+  font-style: italic;
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 2.2rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .grelha {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cartao {
+    padding: 1.25rem;
+  }
+
+  .dados {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

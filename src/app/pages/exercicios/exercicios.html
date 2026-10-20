@@ -1,1 +1,77 @@
-<p>exercicios works!</p>
+<app-cabecalho-app />
+
+<main class="pagina">
+  <header class="cabecalho">
+    <p class="etiqueta">Biblioteca</p>
+    <h1>Exercícios</h1>
+  </header>
+
+  @if (carregando) {
+    <p class="estado" role="status">A abrir os pergaminhos...</p>
+
+  } @else if (erro) {
+    <div class="estado" role="alert">
+      <p>Não foi possível carregar os exercícios.</p>
+      <button type="button" class="botao-contorno" (click)="carregar()">Tentar novamente</button>
+    </div>
+
+  } @else {
+    <section class="filtros" aria-label="Pesquisa e filtros">
+      <label class="campo">
+        <span class="sr-only">Pesquisar exercício</span>
+        <input type="search" placeholder="🔍 Pesquisar exercício..." [(ngModel)]="pesquisa">
+      </label>
+
+      <div class="linha-filtros">
+        <label class="campo">
+          <span>Tipo</span>
+          <select [(ngModel)]="filtroTipo">
+            <option value="todos">Todos</option>
+            <option value="forca">Força</option>
+            <option value="cardio">Cardio</option>
+          </select>
+        </label>
+
+        <label class="campo">
+          <span>Zona</span>
+          <select [(ngModel)]="filtroZona">
+            <option value="todas">Todas</option>
+            <option value="full-body">Corpo inteiro</option>
+            <option value="upper">Parte superior</option>
+            <option value="lower">Parte inferior</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="resultado">
+        <span role="status">{{ filtrados.length }} de {{ exercicios.length }} exercícios</span>
+        @if (temFiltros) {
+          <button type="button" class="limpar" (click)="limparFiltros()">Limpar filtros</button>
+        }
+      </div>
+    </section>
+
+    <ul class="lista">
+      @for (e of filtrados; track e.id) {
+        <li>
+          <a [routerLink]="['/exercicios', e.id]" class="item">
+            <span class="tipo" [class.cardio]="e.tipo === 'cardio'">
+              @switch (e.tipo) {
+                @case ('forca') { 💪 Força }
+                @case ('cardio') { 🏃 Cardio }
+              }
+            </span>
+            <strong class="nome">{{ e.nome }}</strong>
+            <span class="detalhes">
+              {{ rotuloZona[e.zona] }}
+              @if (e.equipamento === 'kettlebell') { · Kettlebell }
+            </span>
+            <span class="seta" aria-hidden="true">›</span>
+          </a>
+        </li>
+      } @empty {
+        <li class="vazio">Nenhum exercício encontrado. Experimenta outra pesquisa.</li>
+      }
+    </ul>
+  }
+</main>

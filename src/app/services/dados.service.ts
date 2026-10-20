@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { Marco } from '../models/marco.model';
 import { Exercicio } from '../models/exercicio.model';
 
@@ -16,5 +16,11 @@ export class DadosService {
 
   obterExercicios(): Observable<Exercicio[]> {
     return this.http.get<Exercicio[]>(`${this.BASE}/exercicios.json`);
+  }
+
+  obterExercicio(id: number): Observable<Exercicio | undefined> {
+    return this.obterExercicios().pipe(
+      map(lista => lista.find(e => e.id === id))
+    );
   }
 }

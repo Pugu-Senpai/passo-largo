@@ -1,0 +1,194 @@
+/* ===== Telemóvel (base) ===== */
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.estado {
+  text-align: center;
+  color: var(--texto-sec);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Filtros */
+.filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.linha-filtros {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.campo input,
+.campo select {
+  min-height: 44px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cartao);
+  color: var(--texto);
+  font-family: inherit;
+  font-weight: 400;
+}
+
+.campo input:focus,
+.campo select:focus {
+  outline: 2px solid var(--destaque);
+  outline-offset: 1px;
+}
+
+.resultado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--texto-sec);
+}
+
+.limpar {
+  min-height: 44px;
+  background: none;
+  border: none;
+  color: var(--destaque);
+  text-decoration: underline;
+  font: inherit;
+}
+
+/* Lista */
+.lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "tipo seta"
+    "nome seta"
+    "detalhes seta";
+  align-items: center;
+  gap: 0.15rem 1rem;
+  padding: 0.9rem 1rem;
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  color: var(--texto);
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.item:active {
+  border-color: var(--destaque);
+}
+
+.tipo {
+  grid-area: tipo;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+
+.tipo.cardio {
+  color: var(--estado-descanso);
+}
+
+.nome {
+  grid-area: nome;
+  font-family: var(--fonte-titulo);
+  font-size: 1.2rem;
+  color: var(--texto-titulo);
+}
+
+.detalhes {
+  grid-area: detalhes;
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+}
+
+.seta {
+  grid-area: seta;
+  font-size: 1.6rem;
+  color: var(--texto-sec);
+}
+
+.vazio {
+  text-align: center;
+  color: var(--texto-sec);
+  padding: 2rem 1rem;
+}
+
+@media (hover: hover) {
+  .item:hover {
+    border-color: var(--destaque);
+  }
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .filtros {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .filtros > .campo {
+    flex: 2 1 260px;
+  }
+
+  .linha-filtros {
+    flex: 1 1 260px;
+  }
+
+  .resultado {
+    flex-basis: 100%;
+  }
+
+  .lista {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
