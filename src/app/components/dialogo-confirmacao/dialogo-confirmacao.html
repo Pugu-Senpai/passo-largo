@@ -1,0 +1,21 @@
+@if (confirmacao.pedido(); as pedido) {
+  <div class="fundo" (click)="confirmacao.responder(false)">
+    <div class="dialogo" role="alertdialog" aria-modal="true"
+         aria-labelledby="dialogo-titulo" aria-describedby="dialogo-mensagem"
+         [class.perigoso]="pedido.perigoso"
+         (click)="$event.stopPropagation()">
+
+      <h2 id="dialogo-titulo">{{ pedido.titulo }}</h2>
+      <p id="dialogo-mensagem">{{ pedido.mensagem }}</p>
+
+      <div class="acoes">
+        <button type="button" class="botao-contorno" (click)="confirmacao.responder(false)">
+          {{ pedido.textoCancelar ?? 'Cancelar' }}
+        </button>
+        <button type="button" class="confirmar" (click)="confirmacao.responder(true)">
+          {{ pedido.textoConfirmar ?? 'Confirmar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

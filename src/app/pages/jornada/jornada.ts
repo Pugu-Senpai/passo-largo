@@ -9,14 +9,14 @@ import { TreinoService } from '../../services/treino.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
-import { TipoTreino, Duracao, Zona, Intensidade } from '../../models/tipos';
+import { TipoTreino, Duracao, Zona, Intensidade, EstadoDia } from '../../models/tipos';
 import { DecimalPipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { RegistoService } from '../../services/registo.service';
 import { Marco } from '../../models/marco.model';
-import { EstadoDia } from '../../models/tipos';
 import { REGRAS } from '../../models/regras';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
+import { ConfirmacaoService } from '../../services/confirmacao.service';
 
 type Fase = 'escolha' | 'sessao' | 'fim';
 
@@ -78,6 +78,7 @@ export class Jornada implements OnInit, OnDestroy {
     private router: Router,
     private cdr: ChangeDetectorRef,
     private registoService: RegistoService,
+    private confirmacao: ConfirmacaoService,
   ) {}
 
   ngOnInit(): void {
@@ -181,10 +182,25 @@ export class Jornada implements OnInit, OnDestroy {
     this.pausado = !this.pausado;
   }
 
-  terminarAntes(): void {
-    if (confirm('Terminar a sessão agora? O tempo feito até aqui conta.')) {
-      this.terminar();
+  async terminarAntes(): Promise<void> {
+    const estavaPausado = this.pausado;
+    if (!estavaPausado) {
+      this.alternarPausa();
     }
+
+    const confirmar = await this.confirmacao.perguntar({
+      titulo: 'Terminar a sessão?',
+      mensagem: 'O tempo que já fizeste conta para a jornada de hoje.',
+      textoConfirmar: 'Terminar',
+      textoCancelar: 'Continuar'
+    });
+
+    if (confirmar) {
+      this.terminar();
+    } else if (!estavaPausado) {
+      this.alternarPausa();
+    }
+    this.cdr.markForCheck();
   }
 
   private terminar(): void {

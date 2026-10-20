@@ -10,6 +10,7 @@ import { Jornada } from '../../models/jornada.model';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
 import { TemaService, Tema } from '../../services/tema.service';
+import { ConfirmacaoService } from '../../services/confirmacao.service';
 
 @Component({
   selector: 'app-perfil',
@@ -33,6 +34,7 @@ export class Perfil implements OnInit {
     private registoService: RegistoService,
     private router: Router,
     private temaService: TemaService,
+    private confirmacao: ConfirmacaoService,
   ) { }
 
   ngOnInit(): void {
@@ -75,8 +77,14 @@ export class Perfil implements OnInit {
     this.temaService.definir(tema);
   }
 
-  apagarPerfil(): void {
-    const confirmar = confirm('Todo o progresso será eliminado e não pode ser recuperado. Tens a certeza?');
+  async apagarPerfil(): Promise<void> {
+    const confirmar = await this.confirmacao.perguntar({
+      titulo: 'Apagar perfil?',
+      mensagem: `Todo o progresso de ${this.utilizador!.nome} será eliminado e não pode ser recuperado.`,
+      textoConfirmar: 'Apagar',
+      perigoso: true
+    });
+
     if (confirmar) {
       this.utilizadorService.apagar(this.utilizador!.id);
       this.router.navigate(['/']);
