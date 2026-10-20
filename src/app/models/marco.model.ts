@@ -3,4 +3,6 @@ export interface Marco {
   nome: string;
   km: number;
   descricao: string;
+  icone: string;
+  posicao: number;
 }

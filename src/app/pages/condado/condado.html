@@ -31,27 +31,29 @@
       </div>
     }
 
-    <section class="cartao" aria-labelledby="titulo-jornada">
-      <p class="etiqueta">Estás em</p>
-      <h2 id="titulo-jornada">{{ marcoAtual?.nome }}</h2>
+    <section class="jornada" aria-labelledby="titulo-jornada">
+      <div class="local">
+        <span class="icone-marco" aria-hidden="true"
+              [style.--icone]="'url(imagens/marcos/' + marcoAtual?.icone + '.svg)'"></span>
+        <div>
+          <p class="etiqueta">Estás em</p>
+          <h2 id="titulo-jornada">{{ marcoAtual?.nome }}</h2>
+        </div>
+      </div>
       <p class="descricao">{{ marcoAtual?.descricao }}</p>
 
-      <div class="barra" role="progressbar"
-           aria-label="Progresso da jornada"
-           aria-valuemin="0" aria-valuemax="100"
-           [attr.aria-valuenow]="progresso * 100 | number: '1.0-0'">
-        <div class="barra-preenchida" [style.width.%]="progresso * 100"></div>
-      </div>
+      <app-mapa-percurso [marcos]="marcos" [km]="jornada?.kmPercorridos ?? 0" />
 
       <div class="numeros">
-        <span><strong>{{ jornada?.kmPercorridos | number: '1.0-1' }}</strong> km percorridos</span>
+        <span><strong>{{ jornada?.kmPercorridos | number: '1.0-1' }}</strong> de 2 855 km</span>
         <span>{{ progresso | percent: '1.0-1' }}</span>
       </div>
 
       @if (proximoMarco) {
         <p class="proximo">
-          Próximo marco: <strong>{{ proximoMarco.nome }}</strong>,
-          a {{ kmEmFalta | number: '1.0-1' }} km
+          <span class="icone-marco pequeno" aria-hidden="true"
+                [style.--icone]="'url(imagens/marcos/' + proximoMarco.icone + '.svg)'"></span>
+          Próximo marco: <strong>{{ proximoMarco.nome }}</strong>, a {{ kmEmFalta | number: '1.0-1' }} km
         </p>
       } @else {
         <p class="proximo">Chegaste a Mount Doom. A jornada está completa.</p>

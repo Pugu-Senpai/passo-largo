@@ -12,10 +12,11 @@ import { Marco } from '../../models/marco.model';
 import { RegistoDia } from '../../models/registo-dia.model';
 import { hoje } from '../../utils/datas';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
+import { MapaPercurso } from '../../components/mapa-percurso/mapa-percurso';
 
 @Component({
   selector: 'app-condado',
-  imports: [RouterLink, DecimalPipe, PercentPipe, CabecalhoApp],
+  imports: [RouterLink, DecimalPipe, PercentPipe, CabecalhoApp, MapaPercurso],
   templateUrl: './condado.html',
   styleUrl: './condado.css'
 })
@@ -44,7 +45,7 @@ export class Condado implements OnInit {
     private progressoService: ProgressoService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();

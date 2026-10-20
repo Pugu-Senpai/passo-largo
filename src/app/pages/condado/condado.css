@@ -50,20 +50,23 @@
   margin: 0 0 1.25rem;
 }
 
-/* Barra de progresso (provisória) */
-.barra {
-  height: 10px;
-  background: var(--cartao-alt);
-  border: 1px solid var(--borda);
-  border-radius: 999px;
-  overflow: hidden;
+.local {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
 }
 
-.barra-preenchida {
-  height: 100%;
-  background: var(--destaque);
-  border-radius: 999px;
-  transition: width 0.6s ease;
+.local .etiqueta {
+  margin: 0;
+}
+
+.local h2 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.jornada .descricao {
+  margin: 0.5rem 0 0;
 }
 
 .numeros {
@@ -162,5 +165,13 @@
   .botao-principal {
     align-self: center;
     min-width: 320px;
+  }
+}
+
+/* ===== Computador: página mais larga ===== */
+@media (min-width: 1024px) {
+  .pagina {
+    max-width: 1000px;
+    padding-inline: 2rem;
   }
 }

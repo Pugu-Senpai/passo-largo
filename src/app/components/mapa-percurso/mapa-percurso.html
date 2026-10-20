@@ -1,0 +1,30 @@
+<div class="contentor">
+  <div class="mapa" role="img"
+       [attr.aria-label]="'Percurso até Mount Doom: ' + (progresso * 100).toFixed(1) + '% concluído'">
+
+    <div class="silhueta" style="--silhueta: url(imagens/percurso/silhueta.svg)"></div>
+
+    <svg class="linhas" [attr.viewBox]="'0 0 ' + percurso.largura + ' ' + percurso.altura"
+         preserveAspectRatio="none" aria-hidden="true">
+      <path class="caminho" [attr.d]="percurso.d" pathLength="1000" />
+      <path class="progresso" [attr.d]="percurso.d" pathLength="1000"
+            [attr.stroke-dashoffset]="1000 * (1 - fracaoMapa)" />
+
+      @for (m of marcosNoMapa; track m.marco.id) {
+        <circle class="ponto" [class.alcancado]="m.alcancado"
+                [attr.cx]="m.x * percurso.largura / 100"
+                [attr.cy]="m.y * percurso.altura / 100" r="34" />
+      }
+    </svg>
+
+    @for (m of marcosNoMapa; track m.marco.id) {
+      <span class="marco" [class.alcancado]="m.alcancado"
+            [style.left.%]="m.x" [style.top.%]="m.y"
+            [style.--icone]="'url(imagens/marcos/' + m.marco.icone + '.svg)'"
+            [attr.title]="m.marco.nome + ' (' + m.marco.km + ' km)'"></span>
+    }
+
+    <span class="viajante" style="--icone: url(imagens/percurso/viajante.svg)"
+          [style.left.%]="viajante.x" [style.top.%]="viajante.y"></span>
+  </div>
+</div>

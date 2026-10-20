@@ -1,0 +1,116 @@
+:host {
+  display: block;
+}
+
+/* Telemóvel: o mapa tem largura mínima e desliza na horizontal */
+.contentor {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-inline: -1rem;
+  padding: 3rem 1rem 3.5rem;
+  scrollbar-width: thin;
+}
+
+.mapa {
+  position: relative;
+  min-width: 640px;
+  aspect-ratio: 6667 / 1667;
+}
+
+/* Silhueta: gradiente só na parte de cima, recortado pela forma do SVG */
+.silhueta {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    var(--silhueta-topo) 0%,
+    var(--silhueta-meio) 35%,
+    transparent 85%);
+  -webkit-mask: var(--silhueta) 0 0 / 100% 100% no-repeat;
+  mask: var(--silhueta) 0 0 / 100% 100% no-repeat;
+}
+
+.linhas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Percurso completo: tracejado, como um trilho */
+.caminho {
+  fill: none;
+  stroke: var(--marco-pendente);
+  stroke-width: 22;
+  stroke-linecap: round;
+  stroke-dasharray: 6 8;
+}
+
+/* Progresso: linha contínua dourada */
+.progresso {
+  fill: none;
+  stroke: var(--destaque);
+  stroke-width: 30;
+  stroke-linecap: round;
+  stroke-dasharray: 1000;
+  transition: stroke-dashoffset 1.2s ease;
+}
+
+.ponto {
+  fill: var(--fundo);
+  stroke: var(--marco-pendente);
+  stroke-width: 16;
+}
+
+.ponto.alcancado {
+  fill: var(--destaque);
+  stroke: var(--destaque);
+}
+
+/* Ícones dos marcos, por baixo da linha */
+.marco {
+  position: absolute;
+  width: 4.5%;
+  aspect-ratio: 1;
+  transform: translate(-50%, 35%);
+  background: var(--marco-pendente);
+  -webkit-mask: var(--icone) center / contain no-repeat;
+  mask: var(--icone) center / contain no-repeat;
+  transition: background 0.4s;
+}
+
+.marco.alcancado {
+  background: var(--destaque);
+}
+
+/* Viajante, de pé sobre a linha */
+.viajante {
+  position: absolute;
+  width: 5.5%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -96%);
+  background: var(--texto-titulo);
+  -webkit-mask: var(--icone) center / contain no-repeat;
+  mask: var(--icone) center / contain no-repeat;
+  transition: left 1.2s ease, top 1.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progresso, .viajante {
+    transition: none;
+  }
+}
+
+/* Tablet e computador: o mapa cabe inteiro */
+@media (min-width: 600px) {
+  .contentor {
+    overflow: visible;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .mapa {
+    min-width: 0;
+  }
+}
+

@@ -35,6 +35,10 @@
   --raio: 14px;
   --raio-pequeno: 8px;
   --sombra: 0 2px 10px rgba(74, 58, 30, 0.10);
+
+  --marco-pendente: #C9BB9C;
+  --silhueta-topo: rgba(138, 106, 42, 0.35);
+  --silhueta-meio: rgba(138, 106, 42, 0.12);
 }
 
 /* ===== Modo escuro ===== */
@@ -58,12 +62,15 @@
     --estado-descanso: #8DB4E0;
     --estado-falha: #E0866C;
     --sombra: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --marco-pendente: #4A4234;
+    --silhueta-topo: rgba(217, 190, 115, 0.28);
+    --silhueta-meio: rgba(217, 190, 115, 0.08);
   }
 }
 
 :root[data-tema="escuro"] {
   color-scheme: dark;
-  
+
   --fundo: #0B0D0C;
   --gradiente:
     radial-gradient(ellipse 70% 45% at 35% 0%, rgba(90, 25, 20, 0.35), transparent 70%),
@@ -81,14 +88,23 @@
   --estado-descanso: #8DB4E0;
   --estado-falha: #E0866C;
   --sombra: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --marco-pendente: #4A4234;
+  --silhueta-topo: rgba(217, 190, 115, 0.28);
+  --silhueta-meio: rgba(217, 190, 115, 0.08);
 }
 
 /* ===== Base ===== */
-*, *::before, *::after { box-sizing: border-box; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-input, select, textarea {
+input,
+select,
+textarea {
   font-size: 1rem;
-  
+
 }
 
 input[type="radio"],
@@ -106,14 +122,18 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--fonte-titulo);
   font-weight: 600;
   line-height: 1.2;
   color: var(--texto-titulo);
 }
 
-a { color: var(--destaque); }
+a {
+  color: var(--destaque);
+}
 
 button {
   font-family: var(--fonte-ui);
@@ -235,18 +255,35 @@ input[type="number"] {
   transition: border-color 0.2s, background 0.2s;
 }
 
-.chip input:checked + span {
+.chip input:checked+span {
   border-color: var(--destaque);
   background: var(--cartao-alt);
   color: var(--destaque);
   font-weight: 700;
 }
 
-.chip input:checked + span::before {
+.chip input:checked+span::before {
   content: "✓ ";
 }
 
-.chip input:focus-visible + span {
+.chip input:focus-visible+span {
   outline: 2px solid var(--destaque);
   outline-offset: 2px;
+}
+
+/* ===== MARCO ===== */
+.icone-marco {
+  display: inline-block;
+  width: 2.75rem;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  background: var(--destaque);
+  -webkit-mask: var(--icone) center / contain no-repeat;
+  mask: var(--icone) center / contain no-repeat;
+}
+
+.icone-marco.pequeno {
+  width: 1.5rem;
+  vertical-align: middle;
+  background: var(--texto-sec);
 }
