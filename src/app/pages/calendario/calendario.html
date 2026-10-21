@@ -27,7 +27,6 @@
           <span class="numero">{{ dia.numero }}</span>
           @switch (dia.estado) {
             @case ('completo') { <span class="icone" aria-hidden="true">✔</span> }
-            @case ('suave') { <span class="icone" aria-hidden="true">◐</span> }
             @case ('descanso') { <span class="icone" aria-hidden="true">⛺</span> }
             @case ('falha') { <span class="icone" aria-hidden="true">✖</span> }
           }
@@ -39,7 +38,6 @@
   <section class="cartao" aria-label="Resumo do mês">
     <ul class="legenda">
       <li class="estado-completo"><span aria-hidden="true">✔</span> Completo <strong>{{ contar('completo') }}</strong></li>
-      <li class="estado-suave"><span aria-hidden="true">◐</span> Suave <strong>{{ contar('suave') }}</strong></li>
       <li class="estado-descanso"><span aria-hidden="true">⛺</span> Acampamento <strong>{{ contar('descanso') }}</strong></li>
       <li class="estado-falha"><span aria-hidden="true">✖</span> Falha <strong>{{ contar('falha') }}</strong></li>
     </ul>

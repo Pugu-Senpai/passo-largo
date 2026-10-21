@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { DecimalPipe, PercentPipe } from '@angular/common';
+import { DecimalPipe, PercentPipe, DatePipe } from '@angular/common';
 import { JornadaService } from '../../services/jornada.service';
 import { DadosService } from '../../services/dados.service';
 import { UtilizadorService } from '../../services/utilizador.service';
@@ -10,13 +10,13 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { Marco } from '../../models/marco.model';
 import { RegistoDia } from '../../models/registo-dia.model';
-import { hoje } from '../../utils/datas';
+import { hoje, diferencaDias } from '../../utils/datas';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { MapaPercurso } from '../../components/mapa-percurso/mapa-percurso';
 
 @Component({
   selector: 'app-condado',
-  imports: [RouterLink, DecimalPipe, PercentPipe, CabecalhoApp, MapaPercurso],
+  imports: [RouterLink, DecimalPipe, PercentPipe, DatePipe, CabecalhoApp, MapaPercurso],
   templateUrl: './condado.html',
   styleUrl: './condado.css'
 })
@@ -28,14 +28,15 @@ export class Condado implements OnInit {
   proximoMarco?: Marco;
   registoHoje?: RegistoDia;
   streak = 0;
-
   carregando = true;
   erro = false;
-
   derrota = false;
   houveRecuo = false;
   kmRecuados = 0;
   mensagemDescanso = '';
+  concluida = false;
+  treinosJornada = 0;
+  descansosRestantes = 0;
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -53,7 +54,14 @@ export class Condado implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    this.jornada = this.jornadaService.obterOuCriar(this.utilizador.id);
+    const ultima = this.jornadaService.obterUltima(this.utilizador.id);
+    if (ultima?.estado === 'concluida') {
+      this.jornada = ultima;
+      this.concluida = true;
+      this.treinosJornada = this.registoService.treinosDaJornada(ultima.id);
+    } else {
+      this.jornada = this.jornadaService.obterOuCriar(this.utilizador.id);
+    }
     this.carregarMarcos();
   }
 
@@ -71,11 +79,13 @@ export class Condado implements OnInit {
         }
         this.marcos = marcos;
 
-        const resultado = this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada!, marcos);
-        this.jornada = resultado.jornada;
-        this.derrota = resultado.derrota;
-        this.houveRecuo = resultado.houveRecuo;
-        this.kmRecuados = resultado.kmRecuados;
+        if (!this.concluida) {
+          const resultado = this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada!, marcos);
+          this.jornada = resultado.jornada;
+          this.derrota = resultado.derrota;
+          this.houveRecuo = resultado.houveRecuo;
+          this.kmRecuados = resultado.kmRecuados;
+        }
 
         this.atualizarResumo();
         this.carregando = false;
@@ -103,6 +113,7 @@ export class Condado implements OnInit {
     this.proximoMarco = this.jornadaService.proximoMarco(km, this.marcos);
     this.streak = this.registoService.streak(this.jornada!.id);
     this.registoHoje = this.registoService.obterDia(this.utilizador!.id, hoje());
+    this.descansosRestantes = this.registoService.descansosRestantes(this.utilizador!);
   }
 
   get progresso(): number {
@@ -114,5 +125,23 @@ export class Condado implements OnInit {
       return 0;
     }
     return this.proximoMarco.km - this.jornada.kmPercorridos;
+  }
+
+  get diasDeJornada(): number {
+    if (!this.jornada) {
+      return 0;
+    }
+    return diferencaDias(this.jornada.dataInicio, this.jornada.dataFim ?? hoje()) + 1;
+  }
+
+  get podeAcampar(): boolean {
+    const estado = this.registoHoje?.estado;
+    return !estado || estado === 'falha';
+  }
+
+  novaJornada(): void {
+    this.concluida = false;
+    this.jornada = this.jornadaService.obterOuCriar(this.utilizador!.id);
+    this.atualizarResumo();
   }
 }

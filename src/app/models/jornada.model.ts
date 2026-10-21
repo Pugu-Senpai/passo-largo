@@ -9,4 +9,5 @@ export interface Jornada {
   numeroRecuos: number;
   dataUltimoRecuo: string | null;
   dataInicio: string;
+  dataFim?: string;
 }

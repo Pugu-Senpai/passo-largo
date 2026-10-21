@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Exercicio } from '../models/exercicio.model';
 import { Utilizador } from '../models/utilizador.model';
-import { NivelFisico, Zona, Intensidade, TipoTreino, Duracao } from '../models/tipos';
+import { NivelFisico, Zona, Intensidade, TipoTreino } from '../models/tipos';
 import { REGRAS } from '../models/regras';
 
 export interface ConfigTreino {
   tipo: TipoTreino;
-  duracao: Duracao;
   foco: Zona;
   intensidade: Intensidade;
 }
@@ -34,10 +33,6 @@ export class TreinoService {
 
   opcoesIntensidade(nivel: NivelFisico): Intensidade[] {
     return this.INTENSIDADE_POR_NIVEL[nivel];
-  }
-
-  objetivo(duracao: Duracao): number {
-    return REGRAS.objetivoExercicios[duracao];
   }
 
   // ===== Sorteio =====
@@ -69,12 +64,10 @@ export class TreinoService {
 
   // ===== Distância =====
 
-  calcularKm(minutos: number, feitos: number, objetivo: number): number {
-    const taxaMin = REGRAS.taxaMin;
-    const taxaMax = REGRAS.taxaMax;
-    const taxa = taxaMin + (taxaMax - taxaMin) * Math.min(feitos / objetivo, 1);
-    const distancia = minutos * taxa;
-    return Math.round(distancia * 10)/10;
+  calcularKm(minutos: number, feitos: number): number {
+    const desempenho = Math.min(feitos / REGRAS.exerciciosTaxaMaxima, 1);
+    const taxa = REGRAS.taxaMin + (REGRAS.taxaMax - REGRAS.taxaMin) * desempenho;
+    return Math.round(minutos * taxa * 10) / 10;
   }
 
   // ===== Auxiliares =====

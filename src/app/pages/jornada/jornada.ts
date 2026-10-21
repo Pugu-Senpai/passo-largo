@@ -9,7 +9,7 @@ import { TreinoService } from '../../services/treino.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
-import { TipoTreino, Duracao, Zona, Intensidade, EstadoDia } from '../../models/tipos';
+import { TipoTreino, Zona, Intensidade, EstadoDia } from '../../models/tipos';
 import { DecimalPipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { RegistoService } from '../../services/registo.service';
@@ -48,16 +48,13 @@ export class Jornada implements OnInit, OnDestroy {
 
   private timerId?: ReturnType<typeof setInterval>;
 
-  // Escolhas do utilizador (ligadas com [(ngModel)])
   tipo: TipoTreino = 'forca';
-  duracao: Duracao = 30;
   foco: Zona = 'full-body';
   intensidade: Intensidade = 'leve';
 
   opcoesFoco: Zona[] = [];
   opcoesIntensidade: Intensidade[] = [];
 
-  // Textos a mostrar para cada valor
   readonly rotuloFoco: Record<Zona, string> = {
     'full-body': 'Corpo inteiro',
     'upper': 'Parte superior',
@@ -70,6 +67,8 @@ export class Jornada implements OnInit, OnDestroy {
     'vigoroso': 'Vigoroso'
   };
 
+  private readonly DURACAO_SEGUNDOS = REGRAS.minutosCompleto * 60;
+
   constructor(
     private utilizadorService: UtilizadorService,
     private jornadaService: JornadaService,
@@ -79,7 +78,7 @@ export class Jornada implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private registoService: RegistoService,
     private confirmacao: ConfirmacaoService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();
@@ -123,14 +122,9 @@ export class Jornada implements OnInit, OnDestroy {
     });
   }
 
-  get objetivo(): number {
-    return this.treinoService.objetivo(this.duracao);
-  }
-
   comecar(): void {
     this.sessao = this.treinoService.sortear(this.exercicios, this.utilizador!, {
       tipo: this.tipo,
-      duracao: this.duracao,
       foco: this.foco,
       intensidade: this.intensidade
     });
@@ -142,13 +136,13 @@ export class Jornada implements OnInit, OnDestroy {
 
     this.indice = 0;
     this.feitos = 0;
-    this.segundosRestantes = this.duracao * 60;
+    this.segundosRestantes = this.DURACAO_SEGUNDOS;
     this.pausado = false;
     this.fase = 'sessao';
     this.iniciarTimer();
   }
 
-    // ===== Sessão =====
+  // ===== Sessão =====
 
   get exercicioAtual(): Exercicio {
     return this.sessao[this.indice % this.sessao.length];
@@ -161,7 +155,7 @@ export class Jornada implements OnInit, OnDestroy {
   }
 
   get progressoTempo(): number {
-    return 1 - this.segundosRestantes / (this.duracao * 60);
+    return 1 - this.segundosRestantes / this.DURACAO_SEGUNDOS;
   }
 
   concluirExercicio(): void {
@@ -205,7 +199,7 @@ export class Jornada implements OnInit, OnDestroy {
 
   private terminar(): void {
     this.pararTimer();
-    const segundosFeitos = this.duracao * 60 - Math.max(this.segundosRestantes, 0);
+    const segundosFeitos = this.DURACAO_SEGUNDOS - Math.max(this.segundosRestantes, 0);
     this.minutosAtivos = Math.round(segundosFeitos / 60);
     this.fase = 'fim';
   }
@@ -229,7 +223,7 @@ export class Jornada implements OnInit, OnDestroy {
   }
 
   get kmTreino(): number {
-    return this.treinoService.calcularKm(this.minutosAtivos, this.feitos, this.objetivo);
+    return this.treinoService.calcularKm(this.minutosAtivos, this.feitos);
   }
 
   get kmReaisValidos(): number {
@@ -244,9 +238,7 @@ export class Jornada implements OnInit, OnDestroy {
   }
 
   get estadoPrevisto(): EstadoDia {
-    if (this.minutosAtivos >= REGRAS.minutosCompleto) return 'completo';
-    if (this.minutosAtivos >= REGRAS.minutosSuave) return 'suave';
-    return 'falha';
+    return this.minutosAtivos >= REGRAS.minutosCompleto ? 'completo' : 'falha';
   }
 
   guardar(): void {
@@ -261,7 +253,6 @@ export class Jornada implements OnInit, OnDestroy {
       tipoTreino: this.tipo,
       minutosAtivos: this.minutosAtivos,
       exerciciosFeitos: this.feitos,
-      objetivoExercicios: this.objetivo,
       kmGanhos: this.kmTotal,
       kmReais: this.kmReaisValidos || undefined
     });

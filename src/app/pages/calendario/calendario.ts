@@ -31,7 +31,6 @@ export class Calendario implements OnInit {
 
   readonly rotuloEstado: Record<EstadoDia, string> = {
     completo: 'avanço completo',
-    suave: 'avanço suave',
     descanso: 'acampamento',
     falha: 'falha'
   };

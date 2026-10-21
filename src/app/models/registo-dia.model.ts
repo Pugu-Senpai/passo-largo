@@ -9,7 +9,6 @@ export interface RegistoDia {
   tipoTreino?: TipoTreino;
   minutosAtivos: number;
   exerciciosFeitos: number;
-  objetivoExercicios: number;
   kmGanhos: number;
   kmReais?: number;
 }

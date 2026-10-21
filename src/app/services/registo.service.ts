@@ -21,7 +21,7 @@ export interface ResumoAtividade {
 export class RegistoService {
   private readonly CHAVE = 'pl_registos';
 
-  constructor(private armazenamento: ArmazenamentoService) {}
+  constructor(private armazenamento: ArmazenamentoService) { }
 
   // ===== Consultas =====
 
@@ -58,14 +58,20 @@ export class RegistoService {
     };
   }
 
+  treinosDaJornada(jornadaId: number): number {
+    return this.registosDaJornada(jornadaId).filter(r => r.minutosAtivos > 0).length;
+  }
+
+  descansosRestantes(utilizador: Utilizador, data: string = hoje()): number {
+    return Math.max(utilizador.diasDescansoSemana - this.descansosNaSemana(utilizador.id, data), 0);
+  }
+
   // ===== Registar o dia de hoje =====
 
   registarTreino(dados: NovoTreino): RegistoDia {
     const data = hoje();
     const existente = this.obterDia(dados.utilizadorId, data);
     const jaTreinou = !!existente && existente.minutosAtivos > 0;
-
-    // Se já treinou hoje, soma ao que já tinha; senão, começa do zero
     const minutosAtivos = (jaTreinou ? existente.minutosAtivos : 0) + dados.minutosAtivos;
     const kmGanhos = (jaTreinou ? existente.kmGanhos : 0) + dados.kmGanhos;
     const exerciciosFeitos = (jaTreinou ? existente.exerciciosFeitos : 0) + dados.exerciciosFeitos;
@@ -87,15 +93,22 @@ export class RegistoService {
     const data = hoje();
     const existente = this.obterDia(utilizador.id, data);
 
-    if (existente || !this.podeDescansar(utilizador, data)) {
+    if (existente && (existente.estado === 'completo' || existente.estado === 'descanso')) {
+      return false;
+    }
+    if (!this.podeDescansar(utilizador, data)) {
       return false;
     }
 
-    this.guardarRegisto(this.criarRegistoVazio(utilizador.id, jornadaId, data, 'descanso'));
+    if (existente) {
+      this.guardarRegisto({ ...existente, estado: 'descanso' });
+    } else {
+      this.guardarRegisto(this.criarRegistoVazio(utilizador.id, jornadaId, data, 'descanso'));
+    }
     return true;
   }
 
-    // ===== Cálculos da jornada =====
+  // ===== Cálculos da jornada =====
 
   preencherDiasEmFalta(utilizador: Utilizador, jornada: Jornada): number {
     const registos = this.registosDaJornada(jornada.id);
@@ -117,7 +130,6 @@ export class RegistoService {
     const porData = new Map(this.registosDaJornada(jornadaId).map(r => [r.data, r]));
     let data = hoje();
 
-    // Se hoje ainda não há treino válido, não quebra: a pessoa ainda pode treinar
     const deHoje = porData.get(data);
     if (!deHoje || deHoje.estado === 'falha') {
       data = somarDias(data, -1);
@@ -181,7 +193,6 @@ export class RegistoService {
       estado,
       minutosAtivos: 0,
       exerciciosFeitos: 0,
-      objetivoExercicios: 0,
       kmGanhos: 0
     };
   }
@@ -196,9 +207,7 @@ export class RegistoService {
   }
 
   private estadoPorMinutos(minutos: number): EstadoDia {
-    if (minutos >= REGRAS.minutosCompleto) return 'completo';
-    if (minutos >= REGRAS.minutosSuave) return 'suave';
-    return 'falha';
+    return minutos >= REGRAS.minutosCompleto ? 'completo' : 'falha';
   }
 
   private obterTodos(): RegistoDia[] {

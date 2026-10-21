@@ -9,7 +9,7 @@ import { hoje } from '../utils/datas';
 export class JornadaService {
   private readonly CHAVE = 'pl_jornadas';
 
-  constructor(private armazenamento: ArmazenamentoService) {}
+  constructor(private armazenamento: ArmazenamentoService) { }
 
   // ===== Leitura e criação =====
 
@@ -37,6 +37,12 @@ export class JornadaService {
     return nova;
   }
 
+  obterUltima(utilizadorId: number): Jornada | undefined {
+    return this.obterTodas()
+      .filter(j => j.utilizadorId === utilizadorId)
+      .sort((a, b) => b.id - a.id)[0];
+  }
+
   // ===== Regras da jornada =====
 
   adicionarKm(jornada: Jornada, km: number, marcos: Marco[]): Jornada {
@@ -49,7 +55,8 @@ export class JornadaService {
       kmPercorridos: this.arredondar(kmNovos),
       ultimoMarcoId: marco?.id ?? jornada.ultimoMarcoId,
       numeroRecuos: alcancouNovoMarco ? 0 : jornada.numeroRecuos,
-      estado: kmNovos >= REGRAS.distanciaTotalKm ? 'concluida' : jornada.estado
+      estado: kmNovos >= REGRAS.distanciaTotalKm ? 'concluida' : jornada.estado,
+      dataFim: kmNovos >= REGRAS.distanciaTotalKm ? hoje() : jornada.dataFim,
     };
     this.guardarJornada(atualizada);
     return atualizada;
