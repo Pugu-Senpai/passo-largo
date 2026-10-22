@@ -11,7 +11,6 @@ export class TituloPagina extends TitleStrategy {
 
   override updateTitle(estado: RouterStateSnapshot): void {
     const tituloRota = this.buildTitle(estado);
-    console.log('Título da rota:', tituloRota);
     this.titulo.setTitle(tituloRota ? `${tituloRota} · Passo Largo` : 'Passo Largo');
   }
   
