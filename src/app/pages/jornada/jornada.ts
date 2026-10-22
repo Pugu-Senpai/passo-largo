@@ -67,7 +67,20 @@ export class Jornada implements OnInit, OnDestroy {
     'vigoroso': 'Vigoroso'
   };
 
+  readonly racaPorTipo: Record<TipoTreino, string> = {
+    forca: 'anao',
+    cardio: 'elfo',
+    misto: 'humano'
+  };
+
+  readonly textoTipo: Record<TipoTreino, { titulo: string; frase: string }> = {
+    forca: { titulo: 'Força de Anão', frase: 'Firme como a pedra das montanhas.' },
+    cardio: { titulo: 'Fôlego de Elfo', frase: 'Leve e incansável pelos caminhos.' },
+    misto: { titulo: 'Coragem de Humano', frase: 'Um pouco de tudo, pronto para qualquer estrada.' }
+  };
+
   private readonly DURACAO_SEGUNDOS = REGRAS.minutosCompleto * 60;
+  private readonly variante = String(Math.floor(Math.random() * 3) + 1).padStart(2, '0');
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -239,6 +252,10 @@ export class Jornada implements OnInit, OnDestroy {
 
   get estadoPrevisto(): EstadoDia {
     return this.minutosAtivos >= REGRAS.minutosCompleto ? 'completo' : 'falha';
+  }
+
+  get imagemTipo(): string {
+    return `imagens/boneco/boneco-${this.racaPorTipo[this.tipo]}-${this.variante}.png`;
   }
 
   guardar(): void {

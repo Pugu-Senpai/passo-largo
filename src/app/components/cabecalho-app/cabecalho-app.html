@@ -1,13 +1,13 @@
 <header class="cabecalho">
   <a routerLink="/condado" class="logotipo" (click)="fechar()">Passo Largo</a>
 
-  <button type="button" class="botao-menu" [attr.aria-expanded]="aberto" aria-controls="menu-principal"
+  <button type="button" class="botao-menu" #botaoMenu [attr.aria-expanded]="aberto" aria-controls="menu-principal"
     (click)="alternar()">
     <span aria-hidden="true">{{ aberto ? '✕' : '☰' }}</span>
     <span class="sr-only">{{ aberto ? 'Fechar menu' : 'Abrir menu' }}</span>
   </button>
 
-  <nav id="menu-principal" class="menu" [class.aberto]="aberto" aria-label="Navegação principal">
+  <nav id="menu-principal" class="menu" #menu [class.aberto]="aberto" aria-label="Navegação principal">
     <ul>
       @for (link of links; track link.rota) {
       <li>

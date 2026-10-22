@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef, ViewChild, Injector, afterNextRender } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
@@ -24,17 +24,18 @@ export class CabecalhoApp implements OnInit {
 
   readonly caminhoAvatar = caminhoAvatar;
 
+  @ViewChild('botaoMenu') botaoMenu?: ElementRef<HTMLButtonElement>;
+  @ViewChild('menu') menu?: ElementRef<HTMLElement>;
+
   constructor(
     private utilizadorService: UtilizadorService,
-    private router: Router
+    private router: Router,
+    private injector: Injector,
+    private host: ElementRef<HTMLElement>
   ) { }
 
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();
-  }
-
-  alternar(): void {
-    this.aberto = !this.aberto;
   }
 
   fechar(): void {
@@ -47,8 +48,27 @@ export class CabecalhoApp implements OnInit {
     this.router.navigate(['/']);
   }
 
+  alternar(): void {
+    this.aberto = !this.aberto;
+    if (this.aberto) {
+      afterNextRender(() => {
+        this.menu?.nativeElement.querySelector<HTMLElement>('a')?.focus();
+      }, { injector: this.injector });
+    }
+  }
+
   @HostListener('document:keydown.escape')
   aoCarregarEscape(): void {
-    this.fechar();
+    if (this.aberto) {
+      this.fechar();
+      this.botaoMenu?.nativeElement.focus();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  aoClicarFora(evento: Event): void {
+    if (this.aberto && !this.host.nativeElement.contains(evento.target as Node)) {
+      this.fechar();
+    }
   }
 }

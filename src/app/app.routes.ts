@@ -9,13 +9,13 @@ import { Perfil } from './pages/perfil/perfil';
 import { Calendario } from './pages/calendario/calendario';
 
 export const routes: Routes = [
-  { path: '', component: SelecaoPerfil },
-  { path: 'novo-perfil', component: NovoPerfil },
-  { path: 'condado', component: Condado },
-  { path: 'jornada', component: Jornada },
-  { path: 'exercicios', component: Exercicios },
-  { path: 'exercicios/:id', component: ExercicioDetalhe },
-  { path: 'perfil', component: Perfil },
-  { path: 'calendario', component: Calendario },
+  { path: '', component: SelecaoPerfil, title: 'Quem vem lá?' },
+  { path: 'novo-perfil', component: NovoPerfil, title: 'Novo aventureiro' },
+  { path: 'condado', component: Condado, title: 'Condado' },
+  { path: 'jornada', component: Jornada, title: 'Jornada de hoje' },
+  { path: 'exercicios', component: Exercicios, title: 'Exercícios' },
+  { path: 'exercicios/:id', component: ExercicioDetalhe, title: 'Exercício' },
+  { path: 'perfil', component: Perfil, title: 'Perfil' },
+  { path: 'calendario', component: Calendario, title: 'Calendário' },
   { path: '**', redirectTo: '' }
 ];

@@ -3,13 +3,15 @@
     <div class="dialogo" role="alertdialog" aria-modal="true"
          aria-labelledby="dialogo-titulo" aria-describedby="dialogo-mensagem"
          [class.perigoso]="pedido.perigoso"
+         #caixa
+         (keydown)="manterFocoDentro($event)"
          (click)="$event.stopPropagation()">
 
       <h2 id="dialogo-titulo">{{ pedido.titulo }}</h2>
       <p id="dialogo-mensagem">{{ pedido.mensagem }}</p>
 
       <div class="acoes">
-        <button type="button" class="botao-contorno" (click)="confirmacao.responder(false)">
+        <button type="button" class="botao-contorno" #botaoCancelar (click)="confirmacao.responder(false)">
           {{ pedido.textoCancelar ?? 'Cancelar' }}
         </button>
         <button type="button" class="confirmar" (click)="confirmacao.responder(true)">

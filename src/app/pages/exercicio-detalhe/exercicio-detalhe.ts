@@ -1,9 +1,10 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DadosService } from '../../services/dados.service';
 import { Exercicio } from '../../models/exercicio.model';
 import { CartaoExercicio } from '../../components/cartao-exercicio/cartao-exercicio';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-exercicio-detalhe',
@@ -20,8 +21,10 @@ export class ExercicioDetalhe implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private dadosService: DadosService,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private location: Location,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -45,5 +48,13 @@ export class ExercicioDetalhe implements OnInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  voltar(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/exercicios']);
+    }
   }
 }

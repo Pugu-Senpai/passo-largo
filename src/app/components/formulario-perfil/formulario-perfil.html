@@ -1,5 +1,6 @@
-<form [formGroup]="form" (ngSubmit)="submeter()" class="cartao" novalidate>
+<form #formulario [formGroup]="form" (ngSubmit)="submeter()" class="cartao" novalidate>
 
+  <!-- ===== Avatar ===== -->
   <div class="zona-avatar" #zonaAvatar>
     <button type="button" class="avatar-atual" (click)="alternarSeletor()" [attr.aria-expanded]="seletorAberto"
       aria-controls="seletor-avatares">
@@ -25,21 +26,29 @@
     }
   </div>
 
+  <p class="nota-obrigatorio">Todos os campos são obrigatórios.</p>
+
+  <!-- ===== Nome ===== -->
   <div class="campo">
     <label for="nome">Nome</label>
-    <input id="nome" type="text" formControlName="nome">
+    <input id="nome" type="text" formControlName="nome" autocomplete="given-name" aria-required="true"
+      [attr.aria-invalid]="campoInvalido('nome')" [attr.aria-describedby]="campoInvalido('nome') ? 'erro-nome' : null">
     @if (campoInvalido('nome')) {
-    @if (form.controls.nome.hasError('required')) {
-    <span class="erro">O nome é obrigatório.</span>
-    } @else if (form.controls.nome.hasError('minlength')) {
-    <span class="erro">O nome deve ter pelo menos 2 caracteres.</span>
-    } @else if (form.controls.nome.hasError('maxlength')) {
-    <span class="erro">O nome pode ter no máximo 20 caracteres.</span>
-    }
+    <span class="erro" id="erro-nome">
+      @if (form.controls.nome.hasError('required')) {
+      O nome é obrigatório.
+      } @else if (form.controls.nome.hasError('minlength')) {
+      O nome deve ter pelo menos 2 caracteres.
+      } @else {
+      O nome pode ter no máximo 20 caracteres.
+      }
+    </span>
     }
   </div>
 
-  <fieldset class="campo">
+  <!-- ===== Género ===== -->
+  <fieldset class="campo" tabindex="-1" [attr.aria-invalid]="campoInvalido('genero')"
+    [attr.aria-describedby]="campoInvalido('genero') ? 'erro-genero' : null">
     <legend>Género</legend>
     <div class="chips">
       @for (g of generos; track g.valor) {
@@ -50,49 +59,60 @@
       }
     </div>
     @if (campoInvalido('genero')) {
-    <span class="erro">Escolhe uma opção.</span>
+    <span class="erro" id="erro-genero">Escolhe uma opção.</span>
     }
   </fieldset>
 
+  <!-- ===== Idade, peso e altura ===== -->
   <div class="linha">
     <div class="campo">
       <label for="idade">Idade</label>
-      <input id="idade" type="number" inputmode="numeric" formControlName="idade">
+      <input id="idade" type="number" inputmode="numeric" formControlName="idade" aria-required="true"
+        [attr.aria-invalid]="campoInvalido('idade')"
+        [attr.aria-describedby]="campoInvalido('idade') ? 'erro-idade' : null">
       @if (campoInvalido('idade')) {
-      <span class="erro">Indica uma idade entre 16 e 100.</span>
+      <span class="erro" id="erro-idade">Indica uma idade entre 16 e 100.</span>
       }
     </div>
 
     <div class="campo">
       <label for="peso">Peso (kg)</label>
-      <input id="peso" type="number" inputmode="decimal" formControlName="peso">
+      <input id="peso" type="number" inputmode="decimal" formControlName="peso" aria-required="true"
+        [attr.aria-invalid]="campoInvalido('peso')"
+        [attr.aria-describedby]="campoInvalido('peso') ? 'erro-peso' : null">
       @if (campoInvalido('peso')) {
-      <span class="erro">Indica um peso entre 30 e 300 kg.</span>
+      <span class="erro" id="erro-peso">Indica um peso entre 30 e 300 kg.</span>
       }
     </div>
 
     <div class="campo">
       <label for="altura">Altura (cm)</label>
-      <input id="altura" type="number" inputmode="numeric" formControlName="altura">
+      <input id="altura" type="number" inputmode="numeric" formControlName="altura" aria-required="true"
+        [attr.aria-invalid]="campoInvalido('altura')"
+        [attr.aria-describedby]="campoInvalido('altura') ? 'erro-altura' : null">
       @if (campoInvalido('altura')) {
-      <span class="erro">Indica uma altura entre 100 e 250 cm.</span>
+      <span class="erro" id="erro-altura">Indica uma altura entre 100 e 250 cm.</span>
       }
     </div>
   </div>
 
+  <!-- ===== Estado físico ===== -->
   <div class="campo">
     <label for="nivel">Estado físico</label>
-    <select id="nivel" formControlName="nivelFisico">
+    <select id="nivel" formControlName="nivelFisico" aria-required="true"
+      [attr.aria-invalid]="campoInvalido('nivelFisico')"
+      [attr.aria-describedby]="campoInvalido('nivelFisico') ? 'erro-nivel' : null">
       <option [ngValue]="null" disabled>Escolhe uma opção</option>
       @for (nivel of niveis; track nivel.valor) {
       <option [ngValue]="nivel.valor">{{ nivel.rotulo }}</option>
       }
     </select>
     @if (campoInvalido('nivelFisico')) {
-    <span class="erro">Escolhe o teu estado físico.</span>
+    <span class="erro" id="erro-nivel">Escolhe o teu estado físico.</span>
     }
   </div>
 
+  <!-- ===== Descanso ===== -->
   <fieldset class="campo">
     <legend>Dias de descanso por semana</legend>
     <label class="opcao">
@@ -103,13 +123,15 @@
     </label>
   </fieldset>
 
+  <!-- ===== Kettlebell ===== -->
   <label class="opcao">
     <input type="checkbox" formControlName="temKettlebell">
     Tenho um kettlebell
   </label>
 
+  <!-- ===== Ações ===== -->
   <div class="acoes">
     <button type="button" class="botao-secundario" (click)="cancelar()">Cancelar</button>
-    <button type="submit" class="botao" [disabled]="form.invalid">{{ textoBotao }}</button>
+    <button type="submit" class="botao">{{ textoBotao }}</button>
   </div>
 </form>

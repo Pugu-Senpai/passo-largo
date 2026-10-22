@@ -41,7 +41,7 @@ input[type="number"],
 select {
   min-height: 44px;
   padding: 0.6rem 0.75rem;
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   border-radius: var(--raio-pequeno);
   background: var(--fundo);
   color: var(--texto);
@@ -112,7 +112,6 @@ select:focus {
   text-decoration: underline;
 }
 
-/* Grelha de avatares: 4 por linha no telemóvel */
 .avatares {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -169,7 +168,6 @@ select:focus {
   outline-offset: 2px;
 }
 
-/* Avatar escolhido, centrado no topo */
 .zona-avatar {
   display: flex;
   flex-direction: column;
@@ -230,9 +228,43 @@ select:focus {
   animation: abrir 0.2s ease;
 }
 
+.nota-obrigatorio {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+  text-align: center;
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: var(--estado-falha);
+}
+
 @keyframes abrir {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) {
+  .botao:hover:not(:disabled) {
+    background: var(--destaque-hover);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--destaque) 35%, transparent);
+  }
+
+  .botao-secundario:hover {
+    color: var(--texto-titulo);
+  }
+
+  .opcao-avatar:hover img {
+    border-color: color-mix(in srgb, var(--destaque) 50%, transparent);
+  }
 }
 
 @media (hover: hover) {

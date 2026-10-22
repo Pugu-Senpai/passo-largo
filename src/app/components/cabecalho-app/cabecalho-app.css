@@ -25,12 +25,11 @@
   place-items: center;
   font-size: 1.4rem;
   background: none;
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   border-radius: 50%;
   color: var(--destaque);
 }
 
-/* Painel fechado por defeito */
 .menu {
   display: none;
   position: absolute;
@@ -107,6 +106,17 @@
   border-radius: 50%;
   border: 1px solid var(--destaque);
   object-fit: cover;
+}
+
+@media (hover: hover) {
+  .botao-menu:hover {
+    border-color: var(--destaque);
+    background: var(--destaque-suave);
+  }
+
+  .menu a:not(.ativo):hover {
+    background: var(--superficie-hover);
+  }
 }
 
 /* ===== Computador: links na barra, sem botão ===== */

@@ -12,8 +12,29 @@
   min-height: 44px;
   display: flex;
   align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem;
+  margin-left: -0.5rem;
+  background: none;
+  border: none;
+  border-radius: var(--raio-pequeno);
   color: var(--texto-sec);
-  text-decoration: none;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .voltar:hover {
+    color: var(--destaque);
+    background: var(--destaque-suave);
+    text-decoration-thickness: 2px;
+  }
+}
+
+.voltar:active {
+  transform: scale(0.97);
 }
 
 .estado {

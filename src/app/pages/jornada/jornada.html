@@ -1,138 +1,156 @@
 <app-cabecalho-app />
+
 <main class="pagina">
   @switch (fase) {
 
-  @case ('escolha') {
-  <header class="cabecalho">
-    <p class="etiqueta">A jornada de hoje</p>
-    <h1>Prepara-te, {{ utilizador?.nome }}.</h1>
-  </header>
+    <!-- ===== Fase 1: escolha ===== -->
+    @case ('escolha') {
+      <header class="cabecalho">
+        <p class="etiqueta">A jornada de hoje</p>
+        <h1>Prepara-te, {{ utilizador?.nome }}.</h1>
+      </header>
 
-  @if (carregando) {
-  <p class="estado" role="status">A preparar os exercícios...</p>
+      @if (carregando) {
+        <p class="estado" role="status">A preparar os exercícios...</p>
 
-  } @else if (erro) {
-  <div class="estado" role="alert">
-    <p>Não foi possível carregar os exercícios.</p>
-    <button type="button" class="botao-contorno" (click)="carregarExercicios()">Tentar novamente</button>
-  </div>
+      } @else if (erro) {
+        <div class="estado" role="alert">
+          <p>Não foi possível carregar os exercícios.</p>
+          <button type="button" class="botao-contorno" (click)="carregarExercicios()">Tentar novamente</button>
+        </div>
 
-  } @else {
-  <section class="cartao escolhas">
+      } @else {
+        <div class="escolha-com-ilustracao">
+          @for (src of [imagemTipo]; track src) {
+            <figure class="ilustracao">
+              <img [src]="src" [alt]="textoTipo[tipo].titulo" width="320" height="480">
+              <figcaption>
+                <strong>{{ textoTipo[tipo].titulo }}</strong>
+                <span>{{ textoTipo[tipo].frase }}</span>
+              </figcaption>
+            </figure>
+          }
 
-    <fieldset>
-      <legend>Tipo de treino</legend>
-      <div class="chips">
-        <label class="chip">
-          <input type="radio" name="tipo" value="forca" [(ngModel)]="tipo">
-          <span>💪 Força</span>
-        </label>
-        <label class="chip">
-          <input type="radio" name="tipo" value="cardio" [(ngModel)]="tipo">
-          <span>🏃 Cardio</span>
-        </label>
-        <label class="chip">
-          <input type="radio" name="tipo" value="misto" [(ngModel)]="tipo">
-          <span>⚔ Misto</span>
-        </label>
-      </div>
-    </fieldset>
+          <section class="cartao escolhas">
+            <fieldset>
+              <legend>Tipo de treino</legend>
+              <div class="chips">
+                <label class="chip">
+                  <input type="radio" name="tipo" value="forca" [(ngModel)]="tipo">
+                  <span>Força</span>
+                </label>
+                <label class="chip">
+                  <input type="radio" name="tipo" value="cardio" [(ngModel)]="tipo">
+                  <span>Cardio</span>
+                </label>
+                <label class="chip">
+                  <input type="radio" name="tipo" value="misto" [(ngModel)]="tipo">
+                  <span>Misto</span>
+                </label>
+              </div>
+            </fieldset>
 
-    @if (tipo !== 'cardio' && opcoesFoco.length > 1) {
-    <fieldset>
-      <legend>Foco da força</legend>
-      <div class="chips">
-        @for (opcao of opcoesFoco; track opcao) {
-        <label class="chip">
-          <input type="radio" name="foco" [value]="opcao" [(ngModel)]="foco">
-          <span>{{ rotuloFoco[opcao] }}</span>
-        </label>
+            @if (tipo !== 'cardio' && opcoesFoco.length > 1) {
+              <fieldset>
+                <legend>Foco da força</legend>
+                <div class="chips">
+                  @for (opcao of opcoesFoco; track opcao) {
+                    <label class="chip">
+                      <input type="radio" name="foco" [value]="opcao" [(ngModel)]="foco">
+                      <span>{{ rotuloFoco[opcao] }}</span>
+                    </label>
+                  }
+                </div>
+              </fieldset>
+            }
+
+            @if (tipo !== 'forca' && opcoesIntensidade.length > 1) {
+              <fieldset>
+                <legend>Intensidade do cardio</legend>
+                <div class="chips">
+                  @for (opcao of opcoesIntensidade; track opcao) {
+                    <label class="chip">
+                      <input type="radio" name="intensidade" [value]="opcao" [(ngModel)]="intensidade">
+                      <span>{{ rotuloIntensidade[opcao] }}</span>
+                    </label>
+                  }
+                </div>
+              </fieldset>
+            }
+
+            <p class="resumo">
+              Sessão de <strong>30 minutos</strong>. Faz o máximo de exercícios que conseguires.
+            </p>
+          </section>
+        </div>
+
+        @if (semExercicios) {
+          <p class="aviso" role="alert">⚠ Não há exercícios para esta combinação. Experimenta outra opção.</p>
         }
-      </div>
-    </fieldset>
-    }
 
-    @if (tipo !== 'forca' && opcoesIntensidade.length > 1) {
-    <fieldset>
-      <legend>Intensidade do cardio</legend>
-      <div class="chips">
-        @for (opcao of opcoesIntensidade; track opcao) {
-        <label class="chip">
-          <input type="radio" name="intensidade" [value]="opcao" [(ngModel)]="intensidade">
-          <span>{{ rotuloIntensidade[opcao] }}</span>
-        </label>
-        }
-      </div>
-    </fieldset>
-    }
-
-    <p class="resumo">
-      Sessão de <strong>30 minutos</strong>. Faz o máximo de exercícios que conseguires.
-    </p>
-  </section>
-
-  @if (semExercicios) {
-  <p class="aviso" role="alert">⚠ Não há exercícios para esta combinação. Experimenta outra opção.</p>
-  }
-
-  <button type="button" class="botao-principal" (click)="comecar()">Começar</button>
-  <a routerLink="/condado" class="voltar">Voltar ao Condado</a>
-  }
-  }
-
-  @case ('sessao') {
-  <header class="sessao-topo">
-    <div class="relogio" role="timer" aria-live="off">
-      <span class="tempo">{{ tempoFormatado }}</span>
-      <span class="contador">{{ feitos }} {{ feitos === 1 ? 'feito' : 'feitos' }}</span>
-    </div>
-    <div class="barra" aria-hidden="true">
-      <div class="barra-preenchida" [style.width.%]="progressoTempo * 100"></div>
-    </div>
-    <button type="button" class="botao-contorno" (click)="alternarPausa()">
-      {{ pausado ? '▶ Retomar' : '❚❚ Pausar' }}
-    </button>
-  </header>
-
-  @if (pausado) {
-  <p class="estado" role="status">Em pausa. Respira, bebe água e retoma quando estiveres pronto.</p>
-  } @else {
-  <app-cartao-exercicio [exercicio]="exercicioAtual" [numero]="indice + 1" (concluido)="concluirExercicio()"
-    (trocado)="trocarExercicio()" />
-  }
-
-  <button type="button" class="voltar terminar" (click)="terminarAntes()">Terminar sessão</button>
-  }
-
-  @case ('fim') {
-  <section class="cartao fim">
-    <p class="etiqueta">Sessão terminada</p>
-    <h2>{{ feitos }} {{ feitos === 1 ? 'exercício' : 'exercícios' }} em {{ minutosAtivos }} minutos</h2>
-
-    <p class="estado-dia">
-      @switch (estadoPrevisto) {
-      @case ('completo') { ✔ Avanço completo. A Sociedade orgulha-se de ti. }
-      @case ('falha') { ✖ Ainda não chegaste aos 30 minutos. Os km contam, e podes voltar a tentar ou acampar hoje. }
+        <button type="button" class="botao-principal" (click)="comecar()">Começar</button>
+        <a routerLink="/condado" class="voltar">Voltar ao Condado</a>
       }
-    </p>
-
-    @if (tipo !== 'forca') {
-    <div class="campo-km">
-      <label for="km-reais">Também correste ou caminhaste na rua? (opcional)</label>
-      <input id="km-reais" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="km"
-        [(ngModel)]="kmReais">
-    </div>
     }
 
-    <p class="km-ganhos">
-      <span class="etiqueta">Distância ganha</span>
-      <strong>{{ kmTotal | number: '1.0-1' }} km</strong>
-    </p>
-  </section>
+    <!-- ===== Fase 2: sessão ===== -->
+    @case ('sessao') {
+      <header class="sessao-topo">
+        <div class="relogio" role="timer" aria-live="off">
+          <span class="tempo">{{ tempoFormatado }}</span>
+          <span class="contador">{{ feitos }} {{ feitos === 1 ? 'feito' : 'feitos' }}</span>
+        </div>
+        <div class="barra" aria-hidden="true">
+          <div class="barra-preenchida" [style.width.%]="progressoTempo * 100"></div>
+        </div>
+        <button type="button" class="botao-contorno" (click)="alternarPausa()">
+          {{ pausado ? '▶ Retomar' : '❚❚ Pausar' }}
+        </button>
+      </header>
 
-  <button type="button" class="botao-principal" (click)="guardar()" [disabled]="guardado">
-    Guardar e voltar ao Condado
-  </button>
-  }
+      @if (pausado) {
+        <p class="estado" role="status">Em pausa. Respira, bebe água e retoma quando estiveres pronto.</p>
+      } @else {
+        <app-cartao-exercicio
+          [exercicio]="exercicioAtual"
+          [numero]="indice + 1"
+          (concluido)="concluirExercicio()"
+          (trocado)="trocarExercicio()" />
+      }
+
+      <button type="button" class="voltar terminar" (click)="terminarAntes()">Terminar sessão</button>
+    }
+
+    <!-- ===== Fase 3: fim ===== -->
+    @case ('fim') {
+      <section class="cartao fim">
+        <p class="etiqueta">Sessão terminada</p>
+        <h2>{{ feitos }} {{ feitos === 1 ? 'exercício' : 'exercícios' }} em {{ minutosAtivos }} minutos</h2>
+
+        <p class="estado-dia">
+          @switch (estadoPrevisto) {
+            @case ('completo') { ✔ Avanço completo. A Sociedade orgulha-se de ti. }
+            @case ('falha') { ✖ Ainda não chegaste aos 30 minutos. Os km contam, e podes voltar a tentar ou acampar hoje. }
+          }
+        </p>
+
+        @if (tipo !== 'forca') {
+          <div class="campo-km">
+            <label for="km-reais">Também correste ou caminhaste na rua? (opcional)</label>
+            <input id="km-reais" type="number" min="0" max="100" step="0.1"
+                   inputmode="decimal" placeholder="km" [(ngModel)]="kmReais">
+          </div>
+        }
+
+        <p class="km-ganhos">
+          <span class="etiqueta">Distância ganha</span>
+          <strong>{{ kmTotal | number: '1.0-1' }} km</strong>
+        </p>
+      </section>
+
+      <button type="button" class="botao-principal" (click)="guardar()" [disabled]="guardado">
+        Guardar e voltar ao Condado
+      </button>
+    }
   }
 </main>

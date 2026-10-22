@@ -83,8 +83,12 @@ legend {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--fundo);
-  padding: 0.75rem 0;
+  background: var(--gradiente), var(--fundo);
+  background-attachment: fixed;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.5rem), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.5rem), transparent);
+  padding: 0.75rem 0 1.5rem;
+  margin-bottom: -1rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -160,7 +164,7 @@ legend {
   min-height: 44px;
   max-width: 160px;
   padding: 0.6rem 0.75rem;
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   border-radius: var(--raio-pequeno);
   background: var(--fundo);
   color: var(--texto);
@@ -186,6 +190,79 @@ legend {
   cursor: not-allowed;
 }
 
+/* Ilustração do tipo de treino */
+.escolha-com-ilustracao {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ilustracao {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: entrar 0.35s ease;
+}
+
+.ilustracao img {
+  width: auto;
+  height: 220px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.ilustracao figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.ilustracao strong {
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  color: var(--destaque);
+}
+
+.ilustracao span {
+  font-family: var(--fonte-titulo);
+  font-style: italic;
+  color: var(--texto-sec);
+}
+
+.voltar {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding-inline: 0.5rem;
+  border-radius: var(--raio-pequeno);
+}
+
+@media (hover: hover) {
+  .voltar:hover {
+    color: var(--destaque);
+    text-decoration-thickness: 2px;
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ilustracao {
+    animation: none;
+  }
+}
+
 /* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .pagina {
@@ -203,5 +280,23 @@ legend {
   .botao-principal {
     align-self: center;
     min-width: 320px;
+  }
+
+  .escolha-com-ilustracao {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .ilustracao {
+    flex: 0 0 240px;
+  }
+
+  .ilustracao img {
+    height: 320px;
+  }
+
+  .escolha-com-ilustracao .escolhas {
+    flex: 1;
+    justify-content: space-around;
   }
 }

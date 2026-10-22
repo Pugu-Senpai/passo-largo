@@ -21,6 +21,7 @@ export class FormularioPerfil implements OnInit {
   seletorAberto = false;
 
   @ViewChild('zonaAvatar') zonaAvatar?: ElementRef<HTMLElement>;
+  @ViewChild('formulario') formulario?: ElementRef<HTMLFormElement>;
 
   niveis: { valor: NivelFisico; rotulo: string }[] = [
     { valor: 'sedentario', rotulo: 'Sedentário' },
@@ -67,9 +68,12 @@ export class FormularioPerfil implements OnInit {
   submeter(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      setTimeout(() => {
+        const primeiro = this.formulario?.nativeElement.querySelector<HTMLElement>('[aria-invalid="true"]');
+        primeiro?.focus();
+      });
       return;
     }
-
     const valores = this.form.getRawValue();
     this.submetido.emit({
       nome: valores.nome.trim(),
@@ -88,7 +92,7 @@ export class FormularioPerfil implements OnInit {
     this.cancelado.emit();
   }
 
-    alternarSeletor(): void {
+  alternarSeletor(): void {
     this.seletorAberto = !this.seletorAberto;
   }
 

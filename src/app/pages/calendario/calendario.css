@@ -1,4 +1,4 @@
-/* ===== Telemóvel (base) ===== */
+/* ===== Telemóvel ===== */
 .pagina {
   max-width: 640px;
   margin: 0 auto;
@@ -25,7 +25,7 @@
   padding: 1rem;
 }
 
-/* Navegação entre meses */
+/* ===== NAVEGAÇÃO ===== */
 .navegacao {
   display: flex;
   justify-content: space-between;
@@ -43,7 +43,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   background: none;
   color: var(--destaque);
   font-size: 1.5rem;
@@ -55,7 +55,6 @@
   cursor: not-allowed;
 }
 
-/* Grelha de 7 colunas */
 .grelha {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -97,11 +96,21 @@
   font-weight: 700;
 }
 
-/* Cores por estado (sempre com ícone, por causa do daltonismo) */
-.estado-completo { color: var(--estado-completo); }
-.estado-suave    { color: var(--estado-suave); }
-.estado-descanso { color: var(--estado-descanso); }
-.estado-falha    { color: var(--estado-falha); }
+.estado-completo {
+  color: var(--estado-completo);
+}
+
+.estado-suave {
+  color: var(--estado-suave);
+}
+
+.estado-descanso {
+  color: var(--estado-descanso);
+}
+
+.estado-falha {
+  color: var(--estado-falha);
+}
 
 .dia.estado-completo,
 .dia.estado-suave,
@@ -110,7 +119,7 @@
   background: var(--cartao-alt);
 }
 
-/* Legenda e resumo */
+/* ===== LEGENDA & RESUMO ===== */
 .legenda {
   list-style: none;
   margin: 0;
@@ -130,6 +139,17 @@
 .legenda strong {
   margin-left: auto;
   color: var(--texto);
+}
+
+@media (hover: hover) {
+  .seta:hover:not(:disabled) {
+    border-color: var(--destaque);
+    background: var(--destaque-suave);
+  }
+}
+
+.seta:active:not(:disabled) {
+  transform: scale(0.92);
 }
 
 /* ===== Tablet e computador ===== */

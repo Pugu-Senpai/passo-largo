@@ -17,9 +17,10 @@
   --cartao-alt: #EFE5CF;
   --texto: #3B3228;
   --texto-titulo: #2A2016;
-  --texto-sec: #6E6252;
-  --destaque: #8A6A2A;
+  --texto-sec: #655949;
+  --destaque: #735621;
   --borda: #D6C9AC;
+  --borda-controlo: #8F7F60;
   --divisor: #DDD1B6;
 
   --estado-completo: #2F6B3A;
@@ -39,6 +40,10 @@
   --marco-pendente: #C9BB9C;
   --silhueta-topo: rgba(138, 106, 42, 0.35);
   --silhueta-meio: rgba(138, 106, 42, 0.12);
+
+  --superficie-hover: #E2D2AE;
+  --destaque-suave: color-mix(in srgb, var(--destaque) 18%, transparent);
+  --destaque-hover: #5A4318;
 }
 
 /* ===== Modo escuro ===== */
@@ -56,6 +61,7 @@
     --texto-sec: #A69F92;
     --destaque: #D9BE73;
     --borda: #3D3526;
+    --borda-controlo: #7A6A4E;
     --divisor: #262219;
     --estado-completo: #7FC08A;
     --estado-suave: #B5CF8A;
@@ -65,6 +71,9 @@
     --marco-pendente: #4A4234;
     --silhueta-topo: rgba(217, 190, 115, 0.28);
     --silhueta-meio: rgba(217, 190, 115, 0.08);
+    --superficie-hover: #24201A;
+    --destaque-suave: color-mix(in srgb, var(--destaque) 14%, transparent);
+    --destaque-hover: #E8CF8A;
   }
 }
 
@@ -82,6 +91,7 @@
   --texto-sec: #A69F92;
   --destaque: #D9BE73;
   --borda: #3D3526;
+  --borda-controlo: #7A6A4E;
   --divisor: #262219;
   --estado-completo: #7FC08A;
   --estado-suave: #B5CF8A;
@@ -91,6 +101,9 @@
   --marco-pendente: #4A4234;
   --silhueta-topo: rgba(217, 190, 115, 0.28);
   --silhueta-meio: rgba(217, 190, 115, 0.08);
+  --superficie-hover: #24201A;
+  --destaque-suave: color-mix(in srgb, var(--destaque) 14%, transparent);
+  --destaque-hover: #E8CF8A;
 }
 
 /* ===== Base ===== */
@@ -140,6 +153,15 @@ button {
   cursor: pointer;
 }
 
+:focus-visible {
+  outline: 3px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+main:focus {
+  outline: none;
+}
+
 /* ===== Utilitários reutilizáveis ===== */
 
 .etiqueta {
@@ -150,11 +172,10 @@ button {
   color: var(--destaque);
 }
 
-/* Botão em forma de pílula com contorno dourado, como o "Enter →" */
 .botao-contorno {
   background: transparent;
   color: var(--destaque);
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   border-radius: 999px;
   padding: 0.45rem 1.1rem;
   font-weight: 700;
@@ -162,12 +183,6 @@ button {
   transition: border-color 0.2s, background 0.2s;
 }
 
-.botao-contorno:hover {
-  border-color: var(--destaque);
-  background: rgba(217, 190, 115, 0.08);
-}
-
-/* Título de secção espaçado, como "THE JOURNEY IS THE POINT" */
 .titulo-seccao {
   font-family: var(--fonte-seccao);
   font-weight: 700;
@@ -247,7 +262,7 @@ input[type="number"] {
   align-items: center;
   min-height: 44px;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--borda);
+  border: 1px solid var(--borda-controlo);
   border-radius: 999px;
   background: var(--fundo);
   color: var(--texto);
@@ -297,4 +312,42 @@ input[type="number"] {
   background: currentColor;
   -webkit-mask: var(--icone) center / contain no-repeat;
   mask: var(--icone) center / contain no-repeat;
+}
+
+/* ===== HOVER ===== */
+
+.botao-principal,
+.chip span,
+.icone-marco,
+button,
+a {
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, transform 0.15s, filter 0.2s;
+}
+
+.botao-principal:active:not(:disabled),
+.botao-contorno:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  .botao-principal:hover:not(:disabled) {
+    background: var(--destaque-hover);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--destaque) 35%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .botao-contorno:hover:not(:disabled) {
+    border-color: var(--destaque);
+    background: var(--destaque-suave);
+  }
+
+  .chip:hover input:not(:checked)+span {
+    border-color: var(--destaque);
+    background: var(--destaque-suave);
+  }
+
+  a:hover {
+    color: var(--texto-titulo);
+  }
 }

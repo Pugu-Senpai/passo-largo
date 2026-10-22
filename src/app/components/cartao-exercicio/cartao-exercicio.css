@@ -66,6 +66,12 @@ h2 {
   min-height: 44px;
 }
 
+@media (hover: hover) {
+  .video:hover {
+    color: var(--texto-titulo);
+  }
+}
+
 @media (min-width: 600px) {
   .cartao {
     padding: 1.75rem;
