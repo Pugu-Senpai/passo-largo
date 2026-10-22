@@ -7,6 +7,7 @@ import { Exercicios } from './pages/exercicios/exercicios';
 import { ExercicioDetalhe } from './pages/exercicio-detalhe/exercicio-detalhe';
 import { Perfil } from './pages/perfil/perfil';
 import { Calendario } from './pages/calendario/calendario';
+import { Definicoes } from './pages/definicoes/definicoes';
 
 export const routes: Routes = [
   { path: '', component: SelecaoPerfil, title: 'Quem vem lá?' },
@@ -17,5 +18,6 @@ export const routes: Routes = [
   { path: 'exercicios/:id', component: ExercicioDetalhe, title: 'Exercício' },
   { path: 'perfil', component: Perfil, title: 'Perfil' },
   { path: 'calendario', component: Calendario, title: 'Calendário' },
+  { path: 'definicoes', component: Definicoes, title: 'Definições' },
   { path: '**', redirectTo: '' }
 ];

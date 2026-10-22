@@ -9,7 +9,6 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
-import { TemaService, Tema } from '../../services/tema.service';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
 import { caminhoAvatar } from '../../models/avatares';
 
@@ -27,7 +26,6 @@ export class Perfil implements OnInit {
   classificacaoImc = '';
   editar = false;
   mensagem = '';
-  tema: Tema = 'automatico';
 
   readonly caminhoAvatar = caminhoAvatar;
 
@@ -36,7 +34,6 @@ export class Perfil implements OnInit {
     private jornadaService: JornadaService,
     private registoService: RegistoService,
     private router: Router,
-    private temaService: TemaService,
     private confirmacao: ConfirmacaoService,
   ) { }
 
@@ -47,7 +44,6 @@ export class Perfil implements OnInit {
       return;
     }
     this.carregarDados();
-    this.tema = this.temaService.obter();
   }
 
   carregarDados(): void {
@@ -74,10 +70,6 @@ export class Perfil implements OnInit {
     this.carregarDados();
     this.editar = false;
     this.mensagem = 'Alterações guardadas.';
-  }
-
-  mudarTema(tema: Tema): void {
-    this.temaService.definir(tema);
   }
 
   async apagarPerfil(): Promise<void> {

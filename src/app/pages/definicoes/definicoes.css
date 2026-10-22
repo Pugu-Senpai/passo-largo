@@ -1,0 +1,63 @@
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.titulo-seccao {
+  font-size: 1rem;
+  margin: 0 0 0.75rem;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+}
+
+.definicao {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.definicao legend {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.nota {
+  margin: 0.75rem 0 0;
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+  font-style: italic;
+}
+
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+
+  .cartao {
+    padding: 1.25rem;
+  }
+}

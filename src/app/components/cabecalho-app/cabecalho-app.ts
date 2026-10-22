@@ -2,7 +2,10 @@ import { Component, OnInit, HostListener, ElementRef, ViewChild, Injector, after
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
+import { NivelFisico } from '../../models/tipos';
 import { caminhoAvatar } from '../../models/avatares';
+
+type MenuAberto = 'principal' | 'perfil' | null;
 
 @Component({
   selector: 'app-cabecalho-app',
@@ -11,21 +14,29 @@ import { caminhoAvatar } from '../../models/avatares';
   styleUrl: './cabecalho-app.css'
 })
 export class CabecalhoApp implements OnInit {
-  aberto = false;
+  aberto: MenuAberto = null;
   utilizador?: Utilizador;
 
   readonly links = [
     { rota: '/condado', texto: 'Condado', icone: 'imagens/marcos/porta.svg' },
     { rota: '/jornada', texto: 'Jornada de hoje', icone: 'imagens/icones/jornada.svg' },
     { rota: '/exercicios', texto: 'Exercícios', icone: 'imagens/icones/livro.svg' },
-    { rota: '/calendario', texto: 'Calendário', icone: 'imagens/icones/calendario.svg' },
-    { rota: '/perfil', texto: 'Perfil', icone: 'imagens/icones/perfil.svg' }
+    { rota: '/calendario', texto: 'Calendário', icone: 'imagens/icones/calendario.svg' }
   ];
+
+  readonly rotuloNivel: Record<NivelFisico, string> = {
+    'sedentario': 'Sedentário',
+    'pouco-ativo': 'Pouco ativo',
+    'ativo': 'Ativo',
+    'muito-ativo': 'Muito ativo'
+  };
 
   readonly caminhoAvatar = caminhoAvatar;
 
   @ViewChild('botaoMenu') botaoMenu?: ElementRef<HTMLButtonElement>;
-  @ViewChild('menu') menu?: ElementRef<HTMLElement>;
+  @ViewChild('botaoPerfil') botaoPerfil?: ElementRef<HTMLButtonElement>;
+  @ViewChild('menuPrincipal') menuPrincipal?: ElementRef<HTMLElement>;
+  @ViewChild('menuPerfil') menuPerfil?: ElementRef<HTMLElement>;
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -38,8 +49,19 @@ export class CabecalhoApp implements OnInit {
     this.utilizador = this.utilizadorService.obterAtivo();
   }
 
+  alternar(qual: 'principal' | 'perfil'): void {
+    this.aberto = this.aberto === qual ? null : qual;
+
+    if (this.aberto) {
+      const painel = this.aberto === 'principal' ? this.menuPrincipal : this.menuPerfil;
+      afterNextRender(() => {
+        painel?.nativeElement.querySelector<HTMLElement>('a, button')?.focus();
+      }, { injector: this.injector });
+    }
+  }
+
   fechar(): void {
-    this.aberto = false;
+    this.aberto = null;
   }
 
   trocarAventureiro(): void {
@@ -48,21 +70,14 @@ export class CabecalhoApp implements OnInit {
     this.router.navigate(['/']);
   }
 
-  alternar(): void {
-    this.aberto = !this.aberto;
-    if (this.aberto) {
-      afterNextRender(() => {
-        this.menu?.nativeElement.querySelector<HTMLElement>('a')?.focus();
-      }, { injector: this.injector });
-    }
-  }
-
   @HostListener('document:keydown.escape')
   aoCarregarEscape(): void {
-    if (this.aberto) {
-      this.fechar();
-      this.botaoMenu?.nativeElement.focus();
+    if (!this.aberto) {
+      return;
     }
+    const botao = this.aberto === 'principal' ? this.botaoMenu : this.botaoPerfil;
+    this.fechar();
+    botao?.nativeElement.focus();
   }
 
   @HostListener('document:click', ['$event'])

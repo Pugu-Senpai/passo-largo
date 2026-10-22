@@ -1,13 +1,25 @@
 <header class="cabecalho">
   <a routerLink="/condado" class="logotipo" (click)="fechar()">Passo Largo</a>
 
-  <button type="button" class="botao-menu" #botaoMenu [attr.aria-expanded]="aberto" aria-controls="menu-principal"
-    (click)="alternar()">
-    <span aria-hidden="true">{{ aberto ? '✕' : '☰' }}</span>
-    <span class="sr-only">{{ aberto ? 'Fechar menu' : 'Abrir menu' }}</span>
-  </button>
+  <div class="acoes">
+    @if (utilizador) {
+    <button type="button" class="botao-perfil" #botaoPerfil [attr.aria-expanded]="aberto === 'perfil'"
+      aria-controls="menu-perfil" (click)="alternar('perfil')">
+      <img [src]="caminhoAvatar(utilizador.avatar)" alt="" width="44" height="44">
+      <span class="sr-only">Menu do perfil de {{ utilizador.nome }}</span>
+    </button>
+    }
 
-  <nav id="menu-principal" class="menu" #menu [class.aberto]="aberto" aria-label="Navegação principal">
+    <button type="button" class="botao-menu" #botaoMenu [attr.aria-expanded]="aberto === 'principal'"
+      aria-controls="menu-principal" (click)="alternar('principal')">
+      <span aria-hidden="true">{{ aberto === 'principal' ? '✕' : '☰' }}</span>
+      <span class="sr-only">{{ aberto === 'principal' ? 'Fechar menu' : 'Abrir menu' }}</span>
+    </button>
+  </div>
+
+  <!-- ===== Menu principal ===== -->
+  <nav id="menu-principal" class="menu" #menuPrincipal [class.aberto]="aberto === 'principal'"
+    aria-label="Navegação principal">
     <ul>
       @for (link of links; track link.rota) {
       <li>
@@ -18,15 +30,39 @@
       </li>
       }
     </ul>
-
-    <div class="menu-rodape">
-      @if (utilizador) {
-      <span class="quem">
-        <img class="mini-avatar" [src]="caminhoAvatar(utilizador.avatar)" alt="" width="32" height="32">
-        {{ utilizador.nome }}
-      </span>
-      }
-      <button type="button" class="botao-contorno" (click)="trocarAventureiro()">Trocar aventureiro</button>
-    </div>
   </nav>
+
+  <!-- ===== Menu do perfil ===== -->
+  @if (utilizador) {
+  <div id="menu-perfil" class="menu menu-perfil" #menuPerfil [class.aberto]="aberto === 'perfil'" role="region"
+    aria-label="Perfil">
+    <div class="perfil-topo">
+      <img [src]="caminhoAvatar(utilizador.avatar)" alt="" width="56" height="56">
+      <div>
+        <strong>{{ utilizador.nome }}</strong>
+        <span>{{ rotuloNivel[utilizador.nivelFisico] }}</span>
+      </div>
+    </div>
+
+    <ul>
+      <li>
+        <a routerLink="/perfil" routerLinkActive="ativo" (click)="fechar()">
+          <span class="icone" aria-hidden="true" style="--icone: url(imagens/icones/perfil.svg)"></span>
+          Ver perfil
+        </a>
+      </li>
+    </ul>
+
+    <li>
+      <a routerLink="/definicoes" routerLinkActive="ativo" (click)="fechar()">
+        <span class="icone" aria-hidden="true" style="--icone: url(imagens/icones/definicoes.svg)"></span>
+        Definições
+      </a>
+    </li>
+
+    <button type="button" class="botao-contorno trocar" (click)="trocarAventureiro()">
+      Trocar aventureiro
+    </button>
+  </div>
+  }
 </header>
