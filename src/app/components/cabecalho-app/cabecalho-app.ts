@@ -15,11 +15,11 @@ export class CabecalhoApp implements OnInit {
   utilizador?: Utilizador;
 
   readonly links = [
-    { rota: '/condado', texto: 'Condado', icone: '🏡' },
-    { rota: '/jornada', texto: 'Jornada de hoje', icone: '⚔' },
-    { rota: '/exercicios', texto: 'Exercícios', icone: '📜' },
-    { rota: '/calendario', texto: 'Calendário', icone: '📅' },
-    { rota: '/perfil', texto: 'Perfil', icone: '🧝' }
+    { rota: '/condado', texto: 'Condado', icone: 'imagens/marcos/porta.svg' },
+    { rota: '/jornada', texto: 'Jornada de hoje', icone: 'imagens/icones/jornada.svg' },
+    { rota: '/exercicios', texto: 'Exercícios', icone: 'imagens/icones/livro.svg' },
+    { rota: '/calendario', texto: 'Calendário', icone: 'imagens/icones/calendario.svg' },
+    { rota: '/perfil', texto: 'Perfil', icone: 'imagens/icones/perfil.svg' }
   ];
 
   readonly caminhoAvatar = caminhoAvatar;

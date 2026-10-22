@@ -12,7 +12,8 @@
       @for (link of links; track link.rota) {
       <li>
         <a [routerLink]="link.rota" routerLinkActive="ativo" (click)="fechar()">
-          <span aria-hidden="true">{{ link.icone }}</span> {{ link.texto }}
+          <span class="icone" aria-hidden="true" [style.--icone]="'url(' + link.icone + ')'"></span>
+          {{ link.texto }}
         </a>
       </li>
       }
