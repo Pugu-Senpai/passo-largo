@@ -9,7 +9,6 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { FormularioPerfil } from '../../components/formulario-perfil/formulario-perfil';
-import { ConfirmacaoService } from '../../services/confirmacao.service';
 import { caminhoAvatar } from '../../models/avatares';
 
 @Component({
@@ -34,7 +33,6 @@ export class Perfil implements OnInit {
     private jornadaService: JornadaService,
     private registoService: RegistoService,
     private router: Router,
-    private confirmacao: ConfirmacaoService,
   ) { }
 
   ngOnInit(): void {
@@ -70,19 +68,5 @@ export class Perfil implements OnInit {
     this.carregarDados();
     this.editar = false;
     this.mensagem = 'Alterações guardadas.';
-  }
-
-  async apagarPerfil(): Promise<void> {
-    const confirmar = await this.confirmacao.perguntar({
-      titulo: 'Apagar perfil?',
-      mensagem: `Todo o progresso de ${this.utilizador!.nome} será eliminado e não pode ser recuperado.`,
-      textoConfirmar: 'Apagar',
-      perigoso: true
-    });
-
-    if (confirmar) {
-      this.utilizadorService.apagar(this.utilizador!.id);
-      this.router.navigate(['/']);
-    }
   }
 }

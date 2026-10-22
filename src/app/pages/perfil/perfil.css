@@ -143,21 +143,6 @@
   border-color: var(--estado-falha);
 }
 
-.perigo p {
-  margin: 0 0 1rem;
-  color: var(--texto-sec);
-}
-
-.botao-perigo {
-  min-height: 44px;
-  padding: 0.5rem 1.1rem;
-  background: transparent;
-  color: var(--estado-falha);
-  border: 1px solid var(--estado-falha);
-  border-radius: 999px;
-  font-weight: 700;
-}
-
 @media (hover: hover) {
   .botao-perigo:hover {
     background: var(--estado-falha);

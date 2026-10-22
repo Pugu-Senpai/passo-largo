@@ -51,14 +51,13 @@
           Ver perfil
         </a>
       </li>
+      <li>
+        <a routerLink="/definicoes" routerLinkActive="ativo" (click)="fechar()">
+          <span class="icone" aria-hidden="true" style="--icone: url(imagens/icones/definicoes.svg)"></span>
+          Definições
+        </a>
+      </li>
     </ul>
-
-    <li>
-      <a routerLink="/definicoes" routerLinkActive="ativo" (click)="fechar()">
-        <span class="icone" aria-hidden="true" style="--icone: url(imagens/icones/definicoes.svg)"></span>
-        Definições
-      </a>
-    </li>
 
     <button type="button" class="botao-contorno trocar" (click)="trocarAventureiro()">
       Trocar aventureiro
