@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 
 type Modo = 'entrar' | 'registar';
 
-const PASSWORD_FORTE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+const PASSWORD_FORTE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};'\\:"|<>?,./`~]).{8,}$/;
 
 function passwordsIguais(grupo: AbstractControl): ValidationErrors | null {
   const password = grupo.get('password')?.value;

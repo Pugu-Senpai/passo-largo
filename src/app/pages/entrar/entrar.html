@@ -7,25 +7,23 @@
   <form #formulario [formGroup]="form" (ngSubmit)="submeter()" class="cartao" novalidate>
 
     @if (mensagem()) {
-      <p class="mensagem" role="status">✔ {{ mensagem() }}</p>
+    <p class="mensagem" role="status">✔ {{ mensagem() }}</p>
     }
 
     <!-- ===== Email ===== -->
     <div class="campo">
       <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email"
-             autocomplete="email" inputmode="email" spellcheck="false"
-             aria-required="true"
-             [attr.aria-invalid]="campoInvalido('email')"
-             [attr.aria-describedby]="campoInvalido('email') ? 'erro-email' : null">
+      <input id="email" type="email" formControlName="email" autocomplete="email" inputmode="email" spellcheck="false"
+        aria-required="true" [attr.aria-invalid]="campoInvalido('email')"
+        [attr.aria-describedby]="campoInvalido('email') ? 'erro-email' : null">
       @if (campoInvalido('email')) {
-        <span class="erro" id="erro-email">
-          @if (form.controls.email.hasError('required')) {
-            O email é obrigatório.
-          } @else {
-            Indica um email válido.
-          }
-        </span>
+      <span class="erro" id="erro-email">
+        @if (form.controls.email.hasError('required')) {
+        O email é obrigatório.
+        } @else {
+        Indica um email válido.
+        }
+      </span>
       }
     </div>
 
@@ -33,74 +31,70 @@
     <div class="campo">
       <label for="password">Palavra-passe</label>
       <div class="com-botao">
-        <input id="password" formControlName="password"
-               [type]="mostrarPassword() ? 'text' : 'password'"
-               [attr.autocomplete]="modo() === 'entrar' ? 'current-password' : 'new-password'"
-               aria-required="true"
-               [attr.aria-invalid]="campoInvalido('password')"
-               [attr.aria-describedby]="modo() === 'registar' ? 'regras-password' + (campoInvalido('password') ? ' erro-password' : '') : (campoInvalido('password') ? 'erro-password' : null)">
-        <button type="button" class="mostrar"
-                [attr.aria-pressed]="mostrarPassword()"
-                (click)="mostrarPassword.set(!mostrarPassword())">
+        <input id="password" formControlName="password" [type]="mostrarPassword() ? 'text' : 'password'"
+          [attr.autocomplete]="modo() === 'entrar' ? 'current-password' : 'new-password'" aria-required="true"
+          [attr.aria-invalid]="campoInvalido('password')"
+          [attr.aria-describedby]="modo() === 'registar' ? 'regras-password' + (campoInvalido('password') ? ' erro-password' : '') : (campoInvalido('password') ? 'erro-password' : null)">
+        <button type="button" class="mostrar" [attr.aria-pressed]="mostrarPassword()"
+          (click)="mostrarPassword.set(!mostrarPassword())">
           {{ mostrarPassword() ? 'Ocultar' : 'Mostrar' }}
         </button>
       </div>
 
       @if (modo() === 'registar') {
-        <span class="dica" id="regras-password">Mínimo 8 caracteres, com maiúsculas, minúsculas e números.</span>
+      <span class="dica" id="regras-password">Mínimo 8 caracteres, com maiúsculas, minúsculas, números e um símbolo
+        (ex.: ! ? # @).</span>
       }
 
       @if (campoInvalido('password')) {
-        <span class="erro" id="erro-password">
-          @if (form.controls.password.hasError('required')) {
-            A palavra-passe é obrigatória.
-          } @else if (form.controls.password.hasError('maxlength')) {
-            A palavra-passe pode ter no máximo 72 caracteres.
-          } @else {
-            A palavra-passe não cumpre os requisitos.
-          }
-        </span>
+      <span class="erro" id="erro-password">
+        @if (form.controls.password.hasError('required')) {
+        A palavra-passe é obrigatória.
+        } @else if (form.controls.password.hasError('maxlength')) {
+        A palavra-passe pode ter no máximo 72 caracteres.
+        } @else {
+        A palavra-passe não cumpre os requisitos.
+        }
+      </span>
       }
     </div>
 
     <!-- ===== Confirmar (só no registo) ===== -->
     @if (modo() === 'registar') {
-      <div class="campo">
-        <label for="confirmar">Confirmar palavra-passe</label>
-        <input id="confirmar" formControlName="confirmar"
-               [type]="mostrarPassword() ? 'text' : 'password'"
-               autocomplete="new-password"
-               aria-required="true"
-               [attr.aria-invalid]="campoInvalido('confirmar') || passwordsDiferentes"
-               [attr.aria-describedby]="campoInvalido('confirmar') || passwordsDiferentes ? 'erro-confirmar' : null">
-        @if (campoInvalido('confirmar') || passwordsDiferentes) {
-          <span class="erro" id="erro-confirmar">
-            {{ passwordsDiferentes ? 'As palavras-passe não coincidem.' : 'Confirma a palavra-passe.' }}
-          </span>
-        }
-      </div>
+    <div class="campo">
+      <label for="confirmar">Confirmar palavra-passe</label>
+      <input id="confirmar" formControlName="confirmar" [type]="mostrarPassword() ? 'text' : 'password'"
+        autocomplete="new-password" aria-required="true"
+        [attr.aria-invalid]="campoInvalido('confirmar') || passwordsDiferentes"
+        [attr.aria-describedby]="campoInvalido('confirmar') || passwordsDiferentes ? 'erro-confirmar' : null">
+      @if (campoInvalido('confirmar') || passwordsDiferentes) {
+      <span class="erro" id="erro-confirmar">
+        {{ passwordsDiferentes ? 'As palavras-passe não coincidem.' : 'Confirma a palavra-passe.' }}
+      </span>
+      }
+    </div>
     }
 
     @if (erro()) {
-      <p class="erro-geral" role="alert">⚠ {{ erro() }}</p>
+    <p class="erro-geral" role="alert">⚠ {{ erro() }}</p>
     }
 
     <button type="submit" class="botao-principal" [attr.aria-busy]="carregando()">
       @if (carregando()) {
-        A abrir os portões...
+      A abrir os portões...
       } @else {
-        {{ modo() === 'entrar' ? 'Entrar' : 'Criar conta' }}
+      {{ modo() === 'entrar' ? 'Entrar' : 'Criar conta' }}
       }
     </button>
   </form>
 
   <p class="trocar-modo">
     @if (modo() === 'entrar') {
-      Ainda não tens conta?
-      <button type="button" class="link" (click)="mudarModo('registar')">Regista-te</button>
+    Ainda não tens conta?
+    <button type="button" class="link" (click)="mudarModo('registar')">Regista-te</button>
     } @else {
-      Já tens conta?
-      <button type="button" class="link" (click)="mudarModo('entrar')">Entra</button>
+    Já tens conta?
+    <button type="button" class="link" (click)="mudarModo('entrar')">Entra</button>
     }
   </p>
 </main>
