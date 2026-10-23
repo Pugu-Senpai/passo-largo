@@ -330,6 +330,15 @@ a {
   transform: scale(0.97);
 }
 
+.erro-geral {
+  margin: 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--estado-falha);
+  background: var(--cartao-alt);
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
 @media (hover: hover) {
   .botao-principal:hover:not(:disabled) {
     background: var(--destaque-hover);

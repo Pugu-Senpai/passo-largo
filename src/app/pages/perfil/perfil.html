@@ -61,6 +61,10 @@
     <p class="mensagem" role="status">✔ {{ mensagem }}</p>
     }
 
+    @if (erro) {
+    <p class="erro-geral" role="alert">⚠ {{ erro }}</p>
+    }
+
     @if (editar) {
     <app-formulario-perfil [valoresIniciais]="utilizador" textoBotao="Guardar alterações"
       (submetido)="guardarAlteracoes($event)" (cancelado)="cancelarEdicao()" />

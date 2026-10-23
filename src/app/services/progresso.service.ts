@@ -19,20 +19,20 @@ export class ProgressoService {
   constructor(
     private jornadaService: JornadaService,
     private registoService: RegistoService
-  ) {}
+  ) { }
 
-  aplicarRegrasDiarias(utilizador: Utilizador, jornada: Jornada, marcos: Marco[]): ResultadoDiario {
-    this.registoService.preencherDiasEmFalta(utilizador, jornada);
+  async aplicarRegrasDiarias(utilizador: Utilizador, jornada: Jornada, marcos: Marco[]): Promise<ResultadoDiario> {
+    await this.registoService.preencherDiasEmFalta(utilizador, jornada);
 
     if (this.registoService.diasSeguidosSemTreinar(jornada.id) >= REGRAS.diasSeguidosParaDerrota) {
-      this.jornadaService.marcarComoFalhada(jornada);
-      const nova = this.jornadaService.obterOuCriar(utilizador.id);
+      await this.jornadaService.marcarComoFalhada(jornada);
+      const nova = await this.jornadaService.obterOuCriar(utilizador.id);
       return { jornada: nova, derrota: true, houveRecuo: false, kmRecuados: 0 };
     }
 
     if (this.registoService.falhasAtivas(jornada) >= REGRAS.falhasParaRecuo) {
       const kmAntes = jornada.kmPercorridos;
-      const atualizada = this.jornadaService.recuar(jornada, marcos);
+      const atualizada = await this.jornadaService.recuar(jornada, marcos);
       const kmRecuados = Math.round((kmAntes - atualizada.kmPercorridos) * 10) / 10;
       return { jornada: atualizada, derrota: false, houveRecuo: true, kmRecuados };
     }

@@ -4,6 +4,17 @@
     <h1 class="titulo-seccao">Quem vem lá?</h1>
   </header>
 
+  @if (erroCarga) {
+  <p class="erro-geral" role="alert">
+    ⚠ {{ erroCarga }}
+    <button type="button" class="link-sair" (click)="tentarDeNovo()">Tentar novamente</button>
+  </p>
+  }
+
+  @if (erro()) {
+  <p class="erro-geral" role="alert">⚠ {{ erro() }}</p>
+  }
+
   <section class="grelha" aria-label="Perfis">
     @for (u of utilizadores; track u.id) {
     <app-cartao-perfil [utilizador]="u" [modoGestao]="modoGestao" (selecionado)="entrar($event)"

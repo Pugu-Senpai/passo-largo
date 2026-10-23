@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DecimalPipe, DatePipe } from '@angular/common';
@@ -25,6 +25,8 @@ export class Perfil implements OnInit {
   classificacaoImc = '';
   editar = false;
   mensagem = '';
+  erro = '';
+  aGuardar = false;
 
   readonly caminhoAvatar = caminhoAvatar;
 
@@ -33,6 +35,7 @@ export class Perfil implements OnInit {
     private jornadaService: JornadaService,
     private registoService: RegistoService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
@@ -46,7 +49,7 @@ export class Perfil implements OnInit {
 
   carregarDados(): void {
     const u = this.utilizador!;
-    this.jornada = this.jornadaService.obterOuCriar(u.id);
+    this.jornada = this.jornadaService.obterAtiva(u.id) ?? this.jornadaService.obterUltima(u.id);
     this.resumo = this.registoService.resumo(u.id);
     this.imc = this.utilizadorService.calcularImc(u);
     this.classificacaoImc = this.utilizadorService.classificarImc(this.imc);
@@ -55,18 +58,30 @@ export class Perfil implements OnInit {
   iniciarEdicao(): void {
     this.editar = true;
     this.mensagem = '';
+    this.erro = '';
   }
 
   cancelarEdicao(): void {
     this.editar = false;
   }
 
-  guardarAlteracoes(dados: NovoUtilizador): void {
-    const atualizado: Utilizador = { ...this.utilizador!, ...dados };
-    this.utilizadorService.atualizar(atualizado);
-    this.utilizador = atualizado;
-    this.carregarDados();
-    this.editar = false;
-    this.mensagem = 'Alterações guardadas.';
+  async guardarAlteracoes(dados: NovoUtilizador): Promise<void> {
+    if (this.aGuardar) {
+      return;
+    }
+    this.aGuardar = true;
+    this.erro = '';
+
+    try {
+      this.utilizador = await this.utilizadorService.atualizar({ ...this.utilizador!, ...dados });
+      this.carregarDados();
+      this.editar = false;
+      this.mensagem = 'Alterações guardadas.';
+    } catch (e) {
+      this.erro = (e as Error).message;
+    } finally {
+      this.aGuardar = false;
+      this.cdr.markForCheck();
+    }
   }
 }

@@ -12,7 +12,7 @@
   } @else if (erro) {
   <div class="estado" role="alert">
     <p>Não foi possível carregar o mapa da jornada.</p>
-    <button type="button" class="botao-contorno" (click)="carregarMarcos()">Tentar novamente</button>
+    <button type="button" class="botao-contorno" (click)="carregar()">Tentar novamente</button>
   </div>
 
   } @else {
@@ -46,7 +46,11 @@
       </div>
     </dl>
 
-    <button type="button" class="botao-principal" (click)="novaJornada()">
+    @if (erroNovaJornada) {
+    <p class="erro-geral" role="alert">⚠ {{ erroNovaJornada }}</p>
+    }
+
+    <button type="button" class="botao-principal" (click)="novaJornada()" [disabled]="aCriar">
       Começar uma nova jornada
     </button>
   </section>
@@ -118,7 +122,8 @@
     }
 
     @if (podeAcampar) {
-    <button type="button" class="botao-contorno acampar" (click)="acampar()" [disabled]="descansosRestantes === 0">
+    <button type="button" class="botao-contorno acampar" (click)="acampar()"
+      [disabled]="descansosRestantes === 0 || aAcampar">
       <span class="acampar-titulo">
         <span class="icone" aria-hidden="true" style="--icone: url(imagens/icones/tenda.svg)"></span>
         Acampar
@@ -143,6 +148,10 @@
 
   @if (mensagemDescanso) {
   <p class="mensagem" role="status">{{ mensagemDescanso }}</p>
+
+  @if (erroDescanso) {
+  <p class="erro-geral" role="alert">⚠ {{ erroDescanso }}</p>
+  }
   }
   }
   }

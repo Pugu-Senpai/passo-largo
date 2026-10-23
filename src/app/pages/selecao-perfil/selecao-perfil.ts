@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
@@ -12,9 +12,9 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './selecao-perfil.html',
   styleUrl: './selecao-perfil.css'
 })
-export class SelecaoPerfil implements OnInit {
-  utilizadores: Utilizador[] = [];
+export class SelecaoPerfil {
   modoGestao = false;
+  readonly erro = signal<string | null>(null);
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -23,15 +23,16 @@ export class SelecaoPerfil implements OnInit {
     private auth: AuthService,
   ) { }
 
-  ngOnInit(): void {
-    this.carregar();
+  get utilizadores(): Utilizador[] {
+    return this.utilizadorService.aventureiros();
   }
 
-  carregar(): void {
-    this.utilizadores = this.utilizadorService.obterTodos();
-    if (this.utilizadores.length === 0) {
-      this.modoGestao = false;
-    }
+  get erroCarga(): string | null {
+    return this.utilizadorService.erroCarga();
+  }
+
+  async tentarDeNovo(): Promise<void> {
+    await this.utilizadorService.garantirCarregado();
   }
 
   alternarGestao(): void {
@@ -50,10 +51,18 @@ export class SelecaoPerfil implements OnInit {
       textoConfirmar: 'Apagar',
       perigoso: true
     });
+    if (!confirmar) {
+      return;
+    }
 
-    if (confirmar) {
-      this.utilizadorService.apagar(utilizador.id);
-      this.carregar();
+    this.erro.set(null);
+    try {
+      await this.utilizadorService.apagar(utilizador.id);
+      if (this.utilizadores.length === 0) {
+        this.modoGestao = false;
+      }
+    } catch (e) {
+      this.erro.set((e as Error).message);
     }
   }
 

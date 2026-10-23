@@ -36,6 +36,9 @@
     <div class="cartao">
       <p>Apagar este perfil remove para sempre a jornada, os treinos e todo o progresso de {{ utilizador.nome }}.</p>
       <button type="button" class="botao-perigo" (click)="apagarPerfil()">✖ Apagar perfil</button>
+      @if (erro()) {
+      <p class="erro-geral" role="alert">⚠ {{ erro() }}</p>
+      }
     </div>
   </section>
   }

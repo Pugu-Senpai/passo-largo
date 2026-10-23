@@ -9,6 +9,7 @@ import { ProgressoService } from '../../services/progresso.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { Jornada } from '../../models/jornada.model';
 import { Marco } from '../../models/marco.model';
+import { firstValueFrom } from 'rxjs';
 import { RegistoDia } from '../../models/registo-dia.model';
 import { hoje, diferencaDias } from '../../utils/datas';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
@@ -37,6 +38,10 @@ export class Condado implements OnInit {
   concluida = false;
   treinosJornada = 0;
   descansosRestantes = 0;
+  aCriar = false;
+  erroNovaJornada = '';
+  aAcampar = false;
+  erroDescanso = '';
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -54,57 +59,68 @@ export class Condado implements OnInit {
       this.router.navigate(['/']);
       return;
     }
-    const ultima = this.jornadaService.obterUltima(this.utilizador.id);
-    if (ultima?.estado === 'concluida') {
-      this.jornada = ultima;
-      this.concluida = true;
-      this.treinosJornada = this.registoService.treinosDaJornada(ultima.id);
-    } else {
-      this.jornada = this.jornadaService.obterOuCriar(this.utilizador.id);
-    }
-    this.carregarMarcos();
+    this.carregar();
   }
 
-  carregarMarcos(): void {
+  async carregar(): Promise<void> {
     this.carregando = true;
     this.erro = false;
+    this.cdr.markForCheck();
 
-    this.dadosService.obterMarcos().subscribe({
-      next: (marcos) => {
-        if (!Array.isArray(marcos) || marcos.length === 0) {
-          this.erro = true;
-          this.carregando = false;
-          this.cdr.markForCheck();
-          return;
-        }
-        this.marcos = marcos;
-
-        if (!this.concluida) {
-          const resultado = this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada!, marcos);
-          this.jornada = resultado.jornada;
-          this.derrota = resultado.derrota;
-          this.houveRecuo = resultado.houveRecuo;
-          this.kmRecuados = resultado.kmRecuados;
-        }
-
-        this.atualizarResumo();
-        this.carregando = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.erro = true;
-        this.carregando = false;
-        this.cdr.markForCheck();
+    try {
+      const ultima = this.jornadaService.obterUltima(this.utilizador!.id);
+      if (ultima?.estado === 'concluida') {
+        this.jornada = ultima;
+        this.concluida = true;
+        this.treinosJornada = this.registoService.treinosDaJornada(ultima.id);
+      } else {
+        this.jornada = await this.jornadaService.obterOuCriar(this.utilizador!.id);
       }
-    });
+
+      const marcos = await firstValueFrom(this.dadosService.obterMarcos());
+      if (marcos.length === 0) {
+        throw new Error('Sem marcos');
+      }
+      this.marcos = marcos;
+
+      if (!this.concluida) {
+        const resultado = await this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada, marcos);
+        this.jornada = resultado.jornada;
+        this.derrota = resultado.derrota;
+        this.houveRecuo = resultado.houveRecuo;
+        this.kmRecuados = resultado.kmRecuados;
+      }
+
+      this.atualizarResumo();
+    } catch (e) {
+      console.error('Erro ao preparar o Condado:', (e as Error).message);
+      this.erro = true;
+    } finally {
+      this.carregando = false;
+      this.cdr.markForCheck();
+    }
   }
 
-  acampar(): void {
-    const aceite = this.registoService.registarDescanso(this.utilizador!, this.jornada!.id);
-    this.mensagemDescanso = aceite
-      ? 'Montaste acampamento. Recupera forças para amanhã.'
-      : 'Já usaste os dias de descanso desta semana.';
-    this.atualizarResumo();
+  async acampar(): Promise<void> {
+    if (this.aAcampar) {
+      return;
+    }
+    this.aAcampar = true;
+    this.mensagemDescanso = '';
+    this.erroDescanso = '';
+
+    try {
+      const aceite = await this.registoService.registarDescanso(this.utilizador!, this.jornada!.id);
+      this.mensagemDescanso = aceite
+        ? 'Montaste acampamento. Recupera forças para amanhã.'
+        : 'Já usaste os dias de descanso desta semana.';
+      this.atualizarResumo();
+    } catch (e) {
+      this.erroDescanso = (e as Error).message;
+    } finally {
+      this.aAcampar = false;
+      this.cdr.markForCheck();
+    }
   }
 
   private atualizarResumo(): void {
@@ -139,9 +155,22 @@ export class Condado implements OnInit {
     return !estado || estado === 'falha';
   }
 
-  novaJornada(): void {
-    this.concluida = false;
-    this.jornada = this.jornadaService.obterOuCriar(this.utilizador!.id);
-    this.atualizarResumo();
+  async novaJornada(): Promise<void> {
+    if (this.aCriar) {
+      return;
+    }
+    this.aCriar = true;
+    this.erroNovaJornada = '';
+
+    try {
+      this.jornada = await this.jornadaService.obterOuCriar(this.utilizador!.id);
+      this.concluida = false;
+      this.atualizarResumo();
+    } catch (e) {
+      this.erroNovaJornada = (e as Error).message;
+    } finally {
+      this.aCriar = false;
+      this.cdr.markForCheck();
+    }
   }
 }

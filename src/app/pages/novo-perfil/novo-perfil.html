@@ -2,8 +2,12 @@
   <h1>Novo aventureiro</h1>
   <p class="subtitulo">Toda a jornada começa com um primeiro passo.</p>
 
+  @if (erro()) {
+  <p class="erro-geral" role="alert">⚠ {{ erro() }}</p>
+  }
+
   <app-formulario-perfil
-    textoBotao="Começar a jornada"
+    [textoBotao]="aGuardar() ? 'A preparar a jornada...' : 'Começar a jornada'"
     (submetido)="criar($event)"
     (cancelado)="voltar()" />
 </main>

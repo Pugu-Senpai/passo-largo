@@ -96,15 +96,6 @@ input[aria-invalid="true"] {
   content: "⚠ ";
 }
 
-.erro-geral {
-  margin: 0;
-  padding: 0.75rem;
-  border-left: 3px solid var(--estado-falha);
-  background: var(--cartao-alt);
-  color: var(--texto);
-  font-size: 0.9rem;
-}
-
 .mensagem {
   margin: 0;
   padding: 0.75rem;

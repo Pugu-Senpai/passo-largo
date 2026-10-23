@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
-import { ArmazenamentoService } from './armazenamento.service';
+import { Injectable, inject, signal } from '@angular/core';
+import { SupabaseService } from './supabase.service';
 import { RegistoDia } from '../models/registo-dia.model';
-import { EstadoDia } from '../models/tipos';
+import { EstadoDia, TipoTreino } from '../models/tipos';
 import { Utilizador } from '../models/utilizador.model';
 import { REGRAS } from '../models/regras';
 import { Jornada } from '../models/jornada.model';
 import { hoje, inicioSemana, somarDias, diferencaDias } from '../utils/datas';
 
 export type NovoTreino = Omit<RegistoDia, 'id' | 'data' | 'estado'>;
+type NovoRegisto = Omit<RegistoDia, 'id'>;
 
 export interface ResumoAtividade {
   treinos: number;
@@ -17,30 +18,83 @@ export interface ResumoAtividade {
   falhas: number;
 }
 
+interface LinhaRegisto {
+  id: number;
+  aventureiro_id: number;
+  jornada_id: number;
+  data: string;
+  estado: EstadoDia;
+  tipo_treino: TipoTreino | null;
+  minutos_ativos: number;
+  exercicios_feitos: number;
+  km_ganhos: number;
+  km_reais: number | null;
+}
+
+const COLUNAS =
+  'id, aventureiro_id, jornada_id, data, estado, tipo_treino, minutos_ativos, exercicios_feitos, km_ganhos, km_reais';
+
+const CHAVE_UNICA = 'aventureiro_id,data';
+
 @Injectable({ providedIn: 'root' })
 export class RegistoService {
-  private readonly CHAVE = 'pl_registos';
+  private readonly supabase = inject(SupabaseService);
 
-  constructor(private armazenamento: ArmazenamentoService) { }
+  private readonly lista = signal<RegistoDia[]>([]);
+  private aventureiroCarregado: number | null = null;
+  private pedidoEmCurso: Promise<void> | null = null;
 
-  // ===== Consultas =====
+  constructor() {
+    this.supabase.cliente.auth.onAuthStateChange((evento) => {
+      if (evento === 'SIGNED_OUT') {
+        this.limparMemoria();
+      }
+    });
+  }
+
+  // ===== Carregamento =====
+
+  async garantirCarregado(aventureiroId: number): Promise<void> {
+    if (this.aventureiroCarregado === aventureiroId) {
+      return;
+    }
+    this.pedidoEmCurso ??= this.carregar(aventureiroId).finally(() => (this.pedidoEmCurso = null));
+    return this.pedidoEmCurso;
+  }
+
+  private async carregar(aventureiroId: number): Promise<void> {
+    this.limparMemoria();
+
+    const { data, error } = await this.supabase.cliente
+      .from('registos')
+      .select(COLUNAS)
+      .eq('aventureiro_id', aventureiroId)
+      .order('data')
+      .returns<LinhaRegisto[]>();
+
+    if (error) {
+      console.error('Erro ao carregar registos:', error.message);
+      return;
+    }
+
+    this.lista.set((data ?? []).map(paraRegisto));
+    this.aventureiroCarregado = aventureiroId;
+  }
+
+  // ===== Consultas (síncronas, a partir da memória) =====
 
   obterDoUtilizador(utilizadorId: number): RegistoDia[] {
-    return this.obterTodos()
+    return this.lista()
       .filter(r => r.utilizadorId === utilizadorId)
       .sort((a, b) => a.data.localeCompare(b.data));
   }
 
   obterDia(utilizadorId: number, data: string): RegistoDia | undefined {
-    return this.obterTodos().find(r => r.utilizadorId === utilizadorId && r.data === data);
+    return this.lista().find(r => r.utilizadorId === utilizadorId && r.data === data);
   }
 
   descansosNaSemana(utilizadorId: number, data: string): number {
-    const segunda = inicioSemana(data);
-    const domingo = somarDias(segunda, 6);
-    return this.obterDoUtilizador(utilizadorId)
-      .filter(r => r.estado === 'descanso' && r.data >= segunda && r.data <= domingo)
-      .length;
+    return this.contarDescansos(this.obterDoUtilizador(utilizadorId), data);
   }
 
   podeDescansar(utilizador: Utilizador, data: string = hoje()): boolean {
@@ -66,9 +120,17 @@ export class RegistoService {
     return Math.max(utilizador.diasDescansoSemana - this.descansosNaSemana(utilizador.id, data), 0);
   }
 
-  // ===== Registar o dia de hoje =====
+  // ===== Registar o dia de hoje (assíncrono, no Supabase) =====
 
-  registarTreino(dados: NovoTreino): RegistoDia {
+  private async exigirCarregado(aventureiroId: number): Promise<void> {
+    await this.garantirCarregado(aventureiroId);
+    if (this.aventureiroCarregado !== aventureiroId) {
+      throw new Error('Não foi possível carregar os registos. Tenta novamente.');
+    }
+  }
+
+  async registarTreino(dados: NovoTreino): Promise<RegistoDia> {
+    await this.exigirCarregado(dados.utilizadorId);
     const data = hoje();
     const existente = this.obterDia(dados.utilizadorId, data);
     const jaTreinou = !!existente && existente.minutosAtivos > 0;
@@ -76,20 +138,19 @@ export class RegistoService {
     const kmGanhos = (jaTreinou ? existente.kmGanhos : 0) + dados.kmGanhos;
     const exerciciosFeitos = (jaTreinou ? existente.exerciciosFeitos : 0) + dados.exerciciosFeitos;
 
-    const registo: RegistoDia = {
+    const [guardado] = await this.guardar([{
       ...dados,
-      id: existente?.id ?? this.armazenamento.proximoId(this.obterTodos()),
       data,
       estado: this.estadoPorMinutos(minutosAtivos),
       minutosAtivos,
       kmGanhos: Math.round(kmGanhos * 10) / 10,
       exerciciosFeitos
-    };
-    this.guardarRegisto(registo);
-    return registo;
+    }]);
+    return guardado;
   }
 
-  registarDescanso(utilizador: Utilizador, jornadaId: number): boolean {
+  async registarDescanso(utilizador: Utilizador, jornadaId: number): Promise<boolean> {
+    await this.exigirCarregado(utilizador.id);
     const data = hoje();
     const existente = this.obterDia(utilizador.id, data);
 
@@ -100,30 +161,37 @@ export class RegistoService {
       return false;
     }
 
-    if (existente) {
-      this.guardarRegisto({ ...existente, estado: 'descanso' });
-    } else {
-      this.guardarRegisto(this.criarRegistoVazio(utilizador.id, jornadaId, data, 'descanso'));
-    }
+    await this.guardar([
+      existente
+        ? { ...existente, estado: 'descanso' }
+        : this.criarRegistoVazio(utilizador.id, jornadaId, data, 'descanso')
+    ]);
     return true;
   }
 
   // ===== Cálculos da jornada =====
 
-  preencherDiasEmFalta(utilizador: Utilizador, jornada: Jornada): number {
+  async preencherDiasEmFalta(utilizador: Utilizador, jornada: Jornada): Promise<number> {
+    await this.exigirCarregado(utilizador.id);
     const registos = this.registosDaJornada(jornada.id);
     const ultimo = registos[registos.length - 1];
     const ontem = somarDias(hoje(), -1);
     let data = ultimo ? somarDias(ultimo.data, 1) : jornada.dataInicio;
-    let preenchidos = 0;
+
+    const existentes = this.obterDoUtilizador(utilizador.id);
+    const novos: NovoRegisto[] = [];
 
     while (data <= ontem) {
-      const estado: EstadoDia = this.podeDescansar(utilizador, data) ? 'descanso' : 'falha';
-      this.guardarRegisto(this.criarRegistoVazio(utilizador.id, jornada.id, data, estado));
+      const descansos = this.contarDescansos([...existentes, ...novos], data);
+      const estado: EstadoDia = descansos < utilizador.diasDescansoSemana ? 'descanso' : 'falha';
+      novos.push(this.criarRegistoVazio(utilizador.id, jornada.id, data, estado));
       data = somarDias(data, 1);
-      preenchidos++;
     }
-    return preenchidos;
+
+    if (novos.length > 0) {
+      await this.guardar(novos, true);
+    }
+    return novos.length;
   }
 
   streak(jornadaId: number): number {
@@ -169,24 +237,19 @@ export class RegistoService {
     return contagem;
   }
 
-  private registosDaJornada(jornadaId: number): RegistoDia[] {
-    return this.obterTodos()
-      .filter(r => r.jornadaId === jornadaId)
-      .sort((a, b) => a.data.localeCompare(b.data));
-  }
-
   // ===== Limpeza =====
 
   apagarDoUtilizador(utilizadorId: number): void {
-    const restantes = this.obterTodos().filter(r => r.utilizadorId !== utilizadorId);
-    this.armazenamento.guardar(this.CHAVE, restantes);
+    this.lista.update(lista => lista.filter(r => r.utilizadorId !== utilizadorId));
+    if (this.aventureiroCarregado === utilizadorId) {
+      this.aventureiroCarregado = null;
+    }
   }
 
-  // ===== Auxiliares =====
+  // ===== Auxiliares privados =====
 
-  criarRegistoVazio(utilizadorId: number, jornadaId: number, data: string, estado: EstadoDia): RegistoDia {
+  private criarRegistoVazio(utilizadorId: number, jornadaId: number, data: string, estado: EstadoDia): NovoRegisto {
     return {
-      id: this.armazenamento.proximoId(this.obterTodos()),
       utilizadorId,
       jornadaId,
       data,
@@ -197,21 +260,73 @@ export class RegistoService {
     };
   }
 
-  guardarRegisto(registo: RegistoDia): void {
-    const todos = this.obterTodos();
-    const existe = todos.some(r => r.id === registo.id);
-    const lista = existe
-      ? todos.map(r => r.id === registo.id ? registo : r)
-      : [...todos, registo];
-    this.armazenamento.guardar(this.CHAVE, lista);
+  private async guardar(registos: NovoRegisto[], soNovos = false): Promise<RegistoDia[]> {
+    const { data, error } = await this.supabase.cliente
+      .from('registos')
+      .upsert(registos.map(paraLinha), { onConflict: CHAVE_UNICA, ignoreDuplicates: soNovos })
+      .select(COLUNAS)
+      .returns<LinhaRegisto[]>();
+
+    if (error || !data || (!soNovos && data.length !== registos.length)) {
+      console.error('Erro ao guardar registo:', error?.message ?? 'resposta incompleta');
+      throw new Error('Não foi possível guardar o registo do dia. Tenta novamente.');
+    }
+
+    const guardados = data.map(paraRegisto);
+    this.lista.update(lista => [
+      ...lista.filter(r => !guardados.some(g => g.utilizadorId === r.utilizadorId && g.data === r.data)),
+      ...guardados
+    ]);
+    return guardados;
+  }
+
+  private registosDaJornada(jornadaId: number): RegistoDia[] {
+    return this.lista()
+      .filter(r => r.jornadaId === jornadaId)
+      .sort((a, b) => a.data.localeCompare(b.data));
+  }
+
+  private contarDescansos(registos: { data: string; estado: EstadoDia }[], data: string): number {
+    const segunda = inicioSemana(data);
+    const domingo = somarDias(segunda, 6);
+    return registos.filter(r => r.estado === 'descanso' && r.data >= segunda && r.data <= domingo).length;
   }
 
   private estadoPorMinutos(minutos: number): EstadoDia {
     return minutos >= REGRAS.minutosCompleto ? 'completo' : 'falha';
   }
 
-  private obterTodos(): RegistoDia[] {
-    return this.armazenamento.ler<RegistoDia[]>(this.CHAVE, []);
+  private limparMemoria(): void {
+    this.lista.set([]);
+    this.aventureiroCarregado = null;
   }
 }
 
+function paraRegisto(linha: LinhaRegisto): RegistoDia {
+  return {
+    id: linha.id,
+    utilizadorId: linha.aventureiro_id,
+    jornadaId: linha.jornada_id,
+    data: linha.data,
+    estado: linha.estado,
+    tipoTreino: linha.tipo_treino ?? undefined,
+    minutosAtivos: linha.minutos_ativos,
+    exerciciosFeitos: linha.exercicios_feitos,
+    kmGanhos: Number(linha.km_ganhos),
+    kmReais: linha.km_reais === null ? undefined : Number(linha.km_reais),
+  };
+}
+
+function paraLinha(registo: NovoRegisto) {
+  return {
+    aventureiro_id: registo.utilizadorId,
+    jornada_id: registo.jornadaId,
+    data: registo.data,
+    estado: registo.estado,
+    tipo_treino: registo.tipoTreino ?? null,
+    minutos_ativos: registo.minutosAtivos,
+    exercicios_feitos: registo.exerciciosFeitos,
+    km_ganhos: registo.kmGanhos,
+    km_reais: registo.kmReais ?? null,
+  };
+}

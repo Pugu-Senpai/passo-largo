@@ -11,7 +11,7 @@ import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
 import { TipoTreino, Zona, Intensidade, EstadoDia } from '../../models/tipos';
 import { DecimalPipe } from '@angular/common';
-import { forkJoin } from 'rxjs';
+import { forkJoin, firstValueFrom } from 'rxjs';
 import { RegistoService } from '../../services/registo.service';
 import { Marco } from '../../models/marco.model';
 import { REGRAS } from '../../models/regras';
@@ -36,6 +36,10 @@ export class Jornada implements OnInit, OnDestroy {
   marcos: Marco[] = [];
   kmReais: number | null = null;
   guardado = false;
+  erroGuardar = '';
+  private registoGuardado = false;
+  private kmAdicionados = false;
+  private kmGuardados = 0;
 
   carregando = true;
   erro = false;
@@ -99,8 +103,6 @@ export class Jornada implements OnInit, OnDestroy {
       this.router.navigate(['/']);
       return;
     }
-    this.jornada = this.jornadaService.obterOuCriar(this.utilizador.id);
-
     this.opcoesFoco = this.treinoService.opcoesFoco(this.utilizador.nivelFisico);
     this.opcoesIntensidade = this.treinoService.opcoesIntensidade(this.utilizador.nivelFisico);
     this.foco = this.opcoesFoco[0];
@@ -109,30 +111,30 @@ export class Jornada implements OnInit, OnDestroy {
     this.carregarExercicios();
   }
 
-  carregarExercicios(): void {
+  async carregarExercicios(): Promise<void> {
     this.carregando = true;
     this.erro = false;
+    this.cdr.markForCheck();
 
-    forkJoin({
-      exercicios: this.dadosService.obterExercicios(),
-      marcos: this.dadosService.obterMarcos()
-    }).subscribe({
-      next: ({ exercicios, marcos }) => {
-        if (!Array.isArray(exercicios) || exercicios.length === 0 || !Array.isArray(marcos)) {
-          this.erro = true;
-        } else {
-          this.exercicios = exercicios;
-          this.marcos = marcos;
-        }
-        this.carregando = false;
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.erro = true;
-        this.carregando = false;
-        this.cdr.markForCheck();
+    try {
+      this.jornada = await this.jornadaService.obterOuCriar(this.utilizador!.id);
+
+      const { exercicios, marcos } = await firstValueFrom(forkJoin({
+        exercicios: this.dadosService.obterExercicios(),
+        marcos: this.dadosService.obterMarcos()
+      }));
+      if (exercicios.length === 0 || marcos.length === 0) {
+        throw new Error('Sem exercícios ou marcos');
       }
-    });
+      this.exercicios = exercicios;
+      this.marcos = marcos;
+    } catch (e) {
+      console.error('Erro ao preparar a jornada:', (e as Error).message);
+      this.erro = true;
+    } finally {
+      this.carregando = false;
+      this.cdr.markForCheck();
+    }
   }
 
   comecar(): void {
@@ -258,24 +260,39 @@ export class Jornada implements OnInit, OnDestroy {
     return `imagens/boneco/boneco-${this.racaPorTipo[this.tipo]}-${this.variante}.png`;
   }
 
-  guardar(): void {
+  async guardar(): Promise<void> {
     if (this.guardado) {
       return;
     }
     this.guardado = true;
+    this.erroGuardar = '';
 
-    this.registoService.registarTreino({
-      utilizadorId: this.utilizador!.id,
-      jornadaId: this.jornada!.id,
-      tipoTreino: this.tipo,
-      minutosAtivos: this.minutosAtivos,
-      exerciciosFeitos: this.feitos,
-      kmGanhos: this.kmTotal,
-      kmReais: this.kmReaisValidos || undefined
-    });
+    try {
+      if (!this.registoGuardado) {
+        this.kmGuardados = this.kmTotal;
+        await this.registoService.registarTreino({
+          utilizadorId: this.utilizador!.id,
+          jornadaId: this.jornada!.id,
+          tipoTreino: this.tipo,
+          minutosAtivos: this.minutosAtivos,
+          exerciciosFeitos: this.feitos,
+          kmGanhos: this.kmGuardados,
+          kmReais: this.kmReaisValidos || undefined
+        });
+        this.registoGuardado = true;
+      }
 
-    this.jornadaService.adicionarKm(this.jornada!, this.kmTotal, this.marcos);
-    this.router.navigate(['/condado']);
+      if (!this.kmAdicionados) {
+        await this.jornadaService.adicionarKm(this.jornada!, this.kmGuardados, this.marcos);
+        this.kmAdicionados = true;
+      }
+
+      await this.router.navigate(['/condado']);
+    } catch (e) {
+      this.erroGuardar = (e as Error).message;
+      this.guardado = false;
+      this.cdr.markForCheck();
+    }
   }
 
   ngOnDestroy(): void {

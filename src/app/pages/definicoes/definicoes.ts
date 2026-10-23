@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UtilizadorService } from '../../services/utilizador.service';
@@ -24,6 +24,8 @@ export class Definicoes implements OnInit {
     private confirmacao: ConfirmacaoService,
   ) { }
 
+  readonly erro = signal<string | null>(null);
+
   ngOnInit(): void {
     this.utilizador = this.utilizadorService.obterAtivo();
     if (!this.utilizador) {
@@ -41,9 +43,16 @@ export class Definicoes implements OnInit {
       perigoso: true
     });
 
-    if (confirmar) {
-      this.utilizadorService.apagar(this.utilizador!.id);
-      this.router.navigate(['/']);
+    if (!confirmar) {
+      return;
+    }
+
+    this.erro.set(null);
+    try {
+      await this.utilizadorService.apagar(this.utilizador!.id);
+      await this.router.navigate(['/']);
+    } catch (e) {
+      this.erro.set((e as Error).message);
     }
   }
 
