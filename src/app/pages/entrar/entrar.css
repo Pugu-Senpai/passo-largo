@@ -1,0 +1,152 @@
+.pagina {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 2.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cabecalho {
+  text-align: center;
+}
+
+.logotipo {
+  font-family: var(--fonte-decorativa);
+  font-size: 2.2rem;
+  color: var(--destaque);
+  margin: 0;
+}
+
+.cabecalho .titulo-seccao {
+  font-size: 1.05rem;
+  margin: 0.5rem 0 0;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+label {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borda-controlo);
+  border-radius: var(--raio-pequeno);
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: inherit;
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--estado-falha);
+}
+
+/* Campo da palavra-passe com o botão Mostrar ao lado */
+.com-botao {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.com-botao input {
+  flex: 1;
+  min-width: 0;
+}
+
+.mostrar {
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border: 1px solid var(--borda-controlo);
+  border-radius: var(--raio-pequeno);
+  background: transparent;
+  color: var(--texto-sec);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.dica {
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+}
+
+.erro {
+  color: var(--estado-falha);
+  font-size: 0.85rem;
+}
+
+.erro::before {
+  content: "⚠ ";
+}
+
+.erro-geral {
+  margin: 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--estado-falha);
+  background: var(--cartao-alt);
+  color: var(--texto);
+  font-size: 0.9rem;
+}
+
+.mensagem {
+  margin: 0;
+  padding: 0.75rem;
+  border-left: 3px solid var(--estado-completo);
+  background: var(--cartao-alt);
+  font-size: 0.9rem;
+}
+
+.botao-principal {
+  width: 100%;
+}
+
+.botao-principal[aria-busy="true"] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.trocar-modo {
+  margin: 0;
+  text-align: center;
+  color: var(--texto-sec);
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  color: var(--destaque);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .mostrar:hover {
+    border-color: var(--destaque);
+    color: var(--destaque);
+  }
+
+  .link:hover {
+    color: var(--texto-titulo);
+  }
+}
