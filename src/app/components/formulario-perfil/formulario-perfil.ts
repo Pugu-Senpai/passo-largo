@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ViewChild, ElementRef, HostListener, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { NovoUtilizador } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
@@ -18,7 +18,9 @@ export class FormularioPerfil implements OnInit {
   @Output() submetido = new EventEmitter<NovoUtilizador>();
   @Output() cancelado = new EventEmitter<void>();
 
-  seletorAberto = false;
+  // Signals: o Angular (sem Zone.js) redesenha sempre que mudam
+  readonly seletorAberto = signal(false);
+  readonly avatarEscolhido = signal(AVATAR_PADRAO);
 
   @ViewChild('zonaAvatar') zonaAvatar?: ElementRef<HTMLElement>;
   @ViewChild('formulario') formulario?: ElementRef<HTMLFormElement>;
@@ -58,6 +60,7 @@ export class FormularioPerfil implements OnInit {
     if (this.valoresIniciais) {
       this.form.patchValue(this.valoresIniciais);
     }
+    this.avatarEscolhido.set(this.form.controls.avatar.value);
   }
 
   campoInvalido(campo: keyof typeof this.form.controls): boolean {
@@ -93,24 +96,32 @@ export class FormularioPerfil implements OnInit {
   }
 
   alternarSeletor(): void {
-    this.seletorAberto = !this.seletorAberto;
+    this.seletorAberto.update(aberto => !aberto);
   }
 
-  escolherAvatar(): void {
-    this.seletorAberto = false;
+  escolherAvatar(avatar: string): void {
+    // Atualiza o formulário e a pré-visualização no mesmo momento
+    this.form.controls.avatar.setValue(avatar);
+    this.avatarEscolhido.set(avatar);
+    this.seletorAberto.set(false);
   }
 
   @HostListener('document:click', ['$event'])
   @HostListener('document:focusin', ['$event'])
   aoInteragirFora(evento: Event): void {
     const zona = this.zonaAvatar?.nativeElement;
-    if (this.seletorAberto && zona && !zona.contains(evento.target as Node)) {
-      this.seletorAberto = false;
+    const alvo = evento.target as Node;
+    if (!this.seletorAberto() || !zona) {
+      return;
     }
+    if (alvo.contains(zona) || zona.contains(alvo)) {
+      return;
+    }
+    this.seletorAberto.set(false);
   }
 
   @HostListener('document:keydown.escape')
   aoCarregarEscape(): void {
-    this.seletorAberto = false;
+    this.seletorAberto.set(false);
   }
 }

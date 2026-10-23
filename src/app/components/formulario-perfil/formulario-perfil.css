@@ -183,7 +183,7 @@ select:focus {
   border: 3px solid var(--destaque);
   border-radius: 50%;
   background: var(--cartao-alt);
-  transition: transform 0.2s;
+  transition: box-shadow 0.2s;
 }
 
 .avatar-atual img {
@@ -265,11 +265,9 @@ select[aria-invalid="true"] {
   .opcao-avatar:hover img {
     border-color: color-mix(in srgb, var(--destaque) 50%, transparent);
   }
-}
 
-@media (hover: hover) {
   .avatar-atual:hover {
-    transform: scale(1.04);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--destaque) 35%, transparent);
   }
 }
 

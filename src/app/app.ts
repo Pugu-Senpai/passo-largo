@@ -40,6 +40,7 @@ export class App {
     if (principal) {
       principal.setAttribute('tabindex', '-1');
       principal.focus({ preventScroll: true });
+      principal.addEventListener('blur', () => principal.removeAttribute('tabindex'), { once: true });
     }
   }
 

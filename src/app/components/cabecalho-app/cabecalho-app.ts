@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ElementRef, ViewChild, Injector, afterNextRender } from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild, Injector, afterNextRender } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
@@ -14,9 +14,8 @@ type MenuAberto = 'principal' | 'perfil' | null;
   templateUrl: './cabecalho-app.html',
   styleUrl: './cabecalho-app.css'
 })
-export class CabecalhoApp implements OnInit {
+export class CabecalhoApp {
   aberto: MenuAberto = null;
-  utilizador?: Utilizador;
 
   readonly links = [
     { rota: '/condado', texto: 'Condado', icone: 'imagens/marcos/porta.svg' },
@@ -47,8 +46,9 @@ export class CabecalhoApp implements OnInit {
     private auth: AuthService,
   ) { }
 
-  ngOnInit(): void {
-    this.utilizador = this.utilizadorService.obterAtivo();
+  // Lido do signal do serviço: atualiza-se sozinho quando o perfil é editado
+  get utilizador(): Utilizador | undefined {
+    return this.utilizadorService.obterAtivo();
   }
 
   alternar(qual: 'principal' | 'perfil'): void {

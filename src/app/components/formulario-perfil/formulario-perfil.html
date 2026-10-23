@@ -2,21 +2,21 @@
 
   <!-- ===== Avatar ===== -->
   <div class="zona-avatar" #zonaAvatar>
-    <button type="button" class="avatar-atual" (click)="alternarSeletor()" [attr.aria-expanded]="seletorAberto"
+    <button type="button" class="avatar-atual" (click)="alternarSeletor()" [attr.aria-expanded]="seletorAberto()"
       aria-controls="seletor-avatares">
-      <img [src]="caminhoAvatar(form.controls.avatar.value)" alt="" width="120" height="120">
+      <img [src]="caminhoAvatar(avatarEscolhido())" alt="" width="120" height="120">
       <span class="lapis" aria-hidden="true">✎</span>
       <span class="sr-only">Escolher avatar</span>
     </button>
-    <span class="dica">{{ seletorAberto ? 'Escolhe o teu avatar' : 'Toca no avatar para o mudar' }}</span>
+    <span class="dica">{{ seletorAberto() ? 'Escolhe o teu avatar' : 'Toca no avatar para o mudar' }}</span>
 
-    @if (seletorAberto) {
+    @if (seletorAberto()) {
     <fieldset id="seletor-avatares" class="seletor">
       <legend class="sr-only">Avatar</legend>
       <div class="avatares">
         @for (a of avatares; track a; let i = $index) {
         <label class="opcao-avatar">
-          <input type="radio" formControlName="avatar" [value]="a" (change)="escolherAvatar()">
+          <input type="radio" formControlName="avatar" [value]="a" (change)="escolherAvatar(a)">
           <img [src]="caminhoAvatar(a)" [alt]="i === 0 ? 'Avatar genérico' : 'Avatar ' + i" width="96" height="96"
             loading="lazy">
         </label>
