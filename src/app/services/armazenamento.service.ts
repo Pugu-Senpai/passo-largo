@@ -23,8 +23,4 @@ export class ArmazenamentoService {
   remover(chave: string): void {
     localStorage.removeItem(chave);
   }
-
-  proximoId(lista: { id: number }[]): number {
-    return lista.length ? Math.max(...lista.map(item => item.id)) + 1 : 1;
-  }
 }

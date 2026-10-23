@@ -6,7 +6,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { TemaService } from './services/tema.service';
 import { DialogoConfirmacao } from './components/dialogo-confirmacao/dialogo-confirmacao';
-import { SupabaseService } from './services/supabase.service';
 
 @Component({
   imports: [RouterOutlet, DialogoConfirmacao],
@@ -24,7 +23,6 @@ export class App {
     private router: Router,
     private titulo: Title,
     private injector: Injector,
-    private supabase: SupabaseService,
     @Inject(DOCUMENT) private documento: Document
   ) {
     this.temaService.aplicar();
