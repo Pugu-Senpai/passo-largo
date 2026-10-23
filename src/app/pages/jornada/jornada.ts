@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CartaoExercicio } from '../../components/cartao-exercicio/cartao-exercicio';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { UtilizadorService } from '../../services/utilizador.service';
 import { JornadaService } from '../../services/jornada.service';
 import { DadosService } from '../../services/dados.service';
@@ -9,7 +9,7 @@ import { TreinoService } from '../../services/treino.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
-import { TipoTreino, Zona, Intensidade, EstadoDia } from '../../models/tipos';
+import { TipoTreino, Zona, Intensidade, EstadoDia, ModoCardio } from '../../models/tipos';
 import { DecimalPipe } from '@angular/common';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { RegistoService } from '../../services/registo.service';
@@ -18,11 +18,11 @@ import { REGRAS } from '../../models/regras';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
 
-type Fase = 'escolha' | 'sessao' | 'fim';
+type Fase = 'escolha' | 'sessao' | 'fim' | 'distancia';
 
 @Component({
   selector: 'app-jornada',
-  imports: [RouterLink, FormsModule, CartaoExercicio, DecimalPipe, CabecalhoApp],
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, CartaoExercicio, DecimalPipe, CabecalhoApp],
   templateUrl: './jornada.html',
   styleUrl: './jornada.css'
 })
@@ -34,7 +34,6 @@ export class Jornada implements OnInit, OnDestroy {
   exercicios: Exercicio[] = [];
   sessao: Exercicio[] = [];
   marcos: Marco[] = [];
-  kmReais: number | null = null;
   guardado = false;
   erroGuardar = '';
   private registoGuardado = false;
@@ -55,6 +54,23 @@ export class Jornada implements OnInit, OnDestroy {
   tipo: TipoTreino = 'forca';
   foco: Zona = 'full-body';
   intensidade: Intensidade = 'leve';
+  modoCardio: ModoCardio = 'exercicios';
+
+  readonly modosCardio: ModoCardio[] = ['exercicios', 'corrida', 'caminhada'];
+
+  readonly rotuloModoCardio: Record<ModoCardio, string> = {
+    exercicios: 'Exercícios',
+    corrida: 'Corrida',
+    caminhada: 'Caminhada'
+  };
+
+  // Corrida e caminhada: a pessoa introduz a distância e o tempo
+  readonly formDistancia = new FormGroup({
+    km: new FormControl<number | null>(null, [Validators.required, Validators.min(0.1), Validators.max(100)]),
+    minutos: new FormControl<number | null>(null, [
+      Validators.required, Validators.min(1), Validators.max(300), Validators.pattern(/^\d+$/)
+    ])
+  });
 
   opcoesFoco: Zona[] = [];
   opcoesIntensidade: Intensidade[] = [];
@@ -137,7 +153,19 @@ export class Jornada implements OnInit, OnDestroy {
     }
   }
 
+  // Corrida ou caminhada: não há sessão com exercícios, só o registo da distância
+  get eDistancia(): boolean {
+    return this.tipo === 'cardio' && this.modoCardio !== 'exercicios';
+  }
+
   comecar(): void {
+    if (this.eDistancia) {
+      this.formDistancia.reset();
+      this.semExercicios = false;
+      this.fase = 'distancia';
+      return;
+    }
+
     this.sessao = this.treinoService.sortear(this.exercicios, this.utilizador!, {
       tipo: this.tipo,
       foco: this.foco,
@@ -241,19 +269,29 @@ export class Jornada implements OnInit, OnDestroy {
     return this.treinoService.calcularKm(this.minutosAtivos, this.feitos);
   }
 
-  get kmReaisValidos(): number {
-    if (this.tipo === 'forca' || !this.kmReais || this.kmReais < 0) {
-      return 0;
+  // Na corrida e na caminhada contam os km introduzidos; nas sessões, o cálculo por minutos
+  get kmTotal(): number {
+    if (this.eDistancia) {
+      const km = this.formDistancia.controls.km.valid ? this.formDistancia.controls.km.value ?? 0 : 0;
+      return Math.round(km * 10) / 10;
     }
-    return Math.min(this.kmReais, 100);
+    return this.kmTreino;
   }
 
-  get kmTotal(): number {
-    return Math.round((this.kmTreino + this.kmReaisValidos) * 10) / 10;
+  get minutosDoDia(): number {
+    if (this.eDistancia) {
+      return this.formDistancia.controls.minutos.valid ? this.formDistancia.controls.minutos.value ?? 0 : 0;
+    }
+    return this.minutosAtivos;
   }
 
   get estadoPrevisto(): EstadoDia {
-    return this.minutosAtivos >= REGRAS.minutosCompleto ? 'completo' : 'falha';
+    return this.minutosDoDia >= REGRAS.minutosCompleto ? 'completo' : 'falha';
+  }
+
+  campoDistanciaInvalido(campo: 'km' | 'minutos'): boolean {
+    const controlo = this.formDistancia.controls[campo];
+    return controlo.invalid && (controlo.touched || controlo.dirty);
   }
 
   get imagemTipo(): string {
@@ -264,6 +302,13 @@ export class Jornada implements OnInit, OnDestroy {
     if (this.guardado) {
       return;
     }
+
+    // Corrida ou caminhada: só guarda com valores válidos
+    if (this.eDistancia && this.formDistancia.invalid) {
+      this.formDistancia.markAllAsTouched();
+      return;
+    }
+
     this.guardado = true;
     this.erroGuardar = '';
 
@@ -274,10 +319,11 @@ export class Jornada implements OnInit, OnDestroy {
           utilizadorId: this.utilizador!.id,
           jornadaId: this.jornada!.id,
           tipoTreino: this.tipo,
-          minutosAtivos: this.minutosAtivos,
-          exerciciosFeitos: this.feitos,
+          minutosAtivos: this.minutosDoDia,
+          exerciciosFeitos: this.eDistancia ? 0 : this.feitos,
           kmGanhos: this.kmGuardados,
-          kmReais: this.kmReaisValidos || undefined
+          // Os km reais ficam registados à parte (só na corrida e na caminhada)
+          kmReais: this.eDistancia ? this.kmGuardados : undefined
         });
         this.registoGuardado = true;
       }

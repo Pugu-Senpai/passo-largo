@@ -64,7 +64,21 @@
       </fieldset>
       }
 
-      @if (tipo !== 'forca' && opcoesIntensidade.length > 1) {
+      @if (tipo === 'cardio') {
+      <fieldset>
+        <legend>Tipo de cardio</legend>
+        <div class="chips">
+          @for (modo of modosCardio; track modo) {
+          <label class="chip">
+            <input type="radio" name="modoCardio" [value]="modo" [(ngModel)]="modoCardio">
+            <span>{{ rotuloModoCardio[modo] }}</span>
+          </label>
+          }
+        </div>
+      </fieldset>
+      }
+
+      @if (tipo !== 'forca' && !eDistancia && opcoesIntensidade.length > 1) {
       <fieldset>
         <legend>Intensidade do cardio</legend>
         <div class="chips">
@@ -79,7 +93,12 @@
       }
 
       <p class="resumo">
+        @if (eDistancia) {
+        Já fizeste a tua {{ rotuloModoCardio[modoCardio].toLowerCase() }}? Regista os <strong>km</strong> e os
+        <strong>minutos</strong>. Com 30 minutos ou mais, o dia fica completo.
+        } @else {
         Sessão de <strong>30 minutos</strong>. Faz o máximo de exercícios que conseguires.
+        }
       </p>
     </section>
   </div>
@@ -88,7 +107,7 @@
   <p class="aviso" role="alert">⚠ Não há exercícios para esta combinação. Experimenta outra opção.</p>
   }
 
-  <button type="button" class="botao-principal" (click)="comecar()">Começar</button>
+  <button type="button" class="botao-principal" (click)="comecar()">{{ eDistancia ? 'Registar distância' : 'Começar' }}</button>
   <a routerLink="/condado" class="voltar">Voltar ao Condado</a>
   }
   }
@@ -131,14 +150,6 @@
       }
     </p>
 
-    @if (tipo !== 'forca') {
-    <div class="campo-km">
-      <label for="km-reais">Também correste ou caminhaste na rua? (opcional)</label>
-      <input id="km-reais" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="km"
-        [(ngModel)]="kmReais">
-    </div>
-    }
-
     <p class="km-ganhos">
       <span class="etiqueta">Distância ganha</span>
       <strong>{{ kmTotal | number: '1.0-1' }} km</strong>
@@ -152,6 +163,57 @@
   <button type="button" class="botao-principal" (click)="guardar()" [disabled]="guardado">
     Guardar e voltar ao Condado
   </button>
+  }
+
+  <!-- ===== Corrida e caminhada: registo da distância ===== -->
+  @case ('distancia') {
+  <form class="cartao fim" [formGroup]="formDistancia" (ngSubmit)="guardar()" novalidate>
+    <p class="etiqueta">{{ rotuloModoCardio[modoCardio] }}</p>
+    <h2>Quanto percorreste hoje?</h2>
+
+    <div class="campos-distancia">
+      <div class="campo-km">
+        <label for="km">Distância (km)</label>
+        <input id="km" type="number" formControlName="km" min="0.1" max="100" step="0.1" inputmode="decimal"
+          aria-required="true" [attr.aria-invalid]="campoDistanciaInvalido('km')"
+          [attr.aria-describedby]="campoDistanciaInvalido('km') ? 'erro-km' : null">
+        @if (campoDistanciaInvalido('km')) {
+        <span class="erro" id="erro-km">⚠ Indica entre 0,1 e 100 km.</span>
+        }
+      </div>
+
+      <div class="campo-km">
+        <label for="minutos">Tempo (minutos)</label>
+        <input id="minutos" type="number" formControlName="minutos" min="1" max="300" step="1" inputmode="numeric"
+          aria-required="true" [attr.aria-invalid]="campoDistanciaInvalido('minutos')"
+          [attr.aria-describedby]="campoDistanciaInvalido('minutos') ? 'erro-minutos' : null">
+        @if (campoDistanciaInvalido('minutos')) {
+        <span class="erro" id="erro-minutos">⚠ Indica um número inteiro entre 1 e 300.</span>
+        }
+      </div>
+    </div>
+
+    @if (formDistancia.valid) {
+    <p class="estado-dia">
+      @switch (estadoPrevisto) {
+      @case ('completo') { ✔ Avanço completo. A Sociedade orgulha-se de ti. }
+      @case ('falha') { ✖ Menos de 30 minutos. Os km contam, e podes voltar a tentar ou acampar hoje. }
+      }
+    </p>
+    }
+
+    <p class="km-ganhos">
+      <span class="etiqueta">Distância ganha</span>
+      <strong>{{ kmTotal | number: '1.0-1' }} km</strong>
+    </p>
+
+    @if (erroGuardar) {
+    <p class="erro-geral" role="alert">⚠ {{ erroGuardar }}</p>
+    }
+
+    <button type="submit" class="botao-principal" [disabled]="guardado">Guardar e voltar ao Condado</button>
+    <button type="button" class="voltar" (click)="fase = 'escolha'">Voltar</button>
+  </form>
   }
   }
 </main>

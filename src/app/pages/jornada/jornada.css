@@ -300,3 +300,100 @@ legend {
     justify-content: space-around;
   }
 }
+
+/* ===== Corrida e caminhada ===== */
+.campos-distancia {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.campos-distancia .campo-km {
+  margin-bottom: 0;
+}
+
+.erro {
+  color: var(--estado-falha);
+  font-size: 0.85rem;
+}
+
+form.fim .botao-principal {
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .campos-distancia {
+    flex-direction: row;
+  }
+}
+
+/* ===== Opções da escolha numa só linha, com a mesma largura ===== */
+.escolhas .chips {
+  display: grid;
+  grid-auto-flow: column;
+  /* todas as opções na mesma linha */
+  grid-auto-columns: minmax(0, 1fr);
+  /* colunas iguais, mesmo com textos de tamanhos diferentes */
+  gap: 0.5rem;
+}
+
+.escolhas .chip {
+  min-width: 0;
+}
+
+.escolhas .chip span {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  /* botões da mesma linha com a mesma altura */
+  justify-content: center;
+  text-align: center;
+  padding: 0.4rem 0.3rem;
+  line-height: 1.2;
+  font-size: 0.9rem;
+}
+
+/* O ✓ fica sempre colado à palavra, mesmo quando o texto passa a duas linhas */
+.escolhas .chip input:checked+span::before {
+  content: "✓\00a0";
+}
+
+/* Telemóveis pequenos */
+@media (max-width: 359px) {
+  .escolhas {
+    padding: 1rem;
+  }
+
+  .escolhas .chips {
+    gap: 0.3rem;
+  }
+
+  .escolhas .chip span {
+    font-size: 0.75rem;
+    padding-inline: 0.15rem;
+  }
+}
+
+/* Tablet: ilustração por cima e cartão com a largura toda */
+@media (min-width: 600px) and (max-width: 899px) {
+  .escolha-com-ilustracao {
+    flex-direction: column;
+  }
+
+  .ilustracao {
+    flex: none;
+  }
+
+  .ilustracao img {
+    height: 260px;
+  }
+}
+
+/* Computador: só o ecrã de escolha fica mais largo (a sessão e o fim mantêm os 640px) */
+@media (min-width: 900px) {
+  .pagina:has(.escolha-com-ilustracao) {
+    max-width: 860px;
+  }
+}
