@@ -176,6 +176,19 @@
   margin-top: 0.75rem;
 }
 
+.link-sair {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--texto-sec);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
 @media (hover: hover) {
   .botao-menu:hover {
     border-color: var(--destaque);
@@ -188,6 +201,10 @@
 
   .botao-perfil:hover {
     box-shadow: 0 0 0 3px var(--destaque-suave);
+  }
+
+  .link-sair:hover {
+    color: var(--estado-falha);
   }
 }
 

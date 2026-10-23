@@ -4,6 +4,7 @@ import { UtilizadorService } from '../../services/utilizador.service';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { CartaoPerfil } from '../../components/cartao-perfil/cartao-perfil';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-selecao-perfil',
@@ -18,8 +19,9 @@ export class SelecaoPerfil implements OnInit {
   constructor(
     private utilizadorService: UtilizadorService,
     private confirmacao: ConfirmacaoService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private auth: AuthService,
+  ) { }
 
   ngOnInit(): void {
     this.carregar();
@@ -53,5 +55,13 @@ export class SelecaoPerfil implements OnInit {
       this.utilizadorService.apagar(utilizador.id);
       this.carregar();
     }
+  }
+
+  get emailConta(): string {
+    return this.auth.sessao()?.user.email ?? '';
+  }
+
+  async terminarSessao(): Promise<void> {
+    await this.auth.sair();
   }
 }

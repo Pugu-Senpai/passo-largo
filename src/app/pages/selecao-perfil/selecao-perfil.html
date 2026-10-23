@@ -6,24 +6,28 @@
 
   <section class="grelha" aria-label="Perfis">
     @for (u of utilizadores; track u.id) {
-      <app-cartao-perfil
-        [utilizador]="u"
-        [modoGestao]="modoGestao"
-        (selecionado)="entrar($event)"
-        (apagar)="apagar($event)" />
+    <app-cartao-perfil [utilizador]="u" [modoGestao]="modoGestao" (selecionado)="entrar($event)"
+      (apagar)="apagar($event)" />
     }
 
     @if (!modoGestao) {
-      <a routerLink="/novo-perfil" class="novo">
-        <span class="mais" aria-hidden="true">+</span>
-        <span>Novo aventureiro</span>
-      </a>
+    <a routerLink="/novo-perfil" class="novo">
+      <span class="mais" aria-hidden="true">+</span>
+      <span>Novo aventureiro</span>
+    </a>
     }
   </section>
 
   @if (utilizadores.length > 0) {
-    <button type="button" class="botao-contorno" (click)="alternarGestao()">
-      {{ modoGestao ? 'Concluído' : 'Gerir perfis' }}
-    </button>
+  <button type="button" class="botao-contorno" (click)="alternarGestao()">
+    {{ modoGestao ? 'Concluído' : 'Gerir perfis' }}
+  </button>
   }
+
+  <p class="conta">
+    @if (emailConta) {
+    Sessão iniciada como <strong>{{ emailConta }}</strong> ·
+    }
+    <button type="button" class="link-sair" (click)="terminarSessao()">Terminar sessão</button>
+  </p>
 </main>

@@ -4,6 +4,7 @@ import { UtilizadorService } from '../../services/utilizador.service';
 import { Utilizador } from '../../models/utilizador.model';
 import { NivelFisico } from '../../models/tipos';
 import { caminhoAvatar } from '../../models/avatares';
+import { AuthService } from '../../services/auth.service';
 
 type MenuAberto = 'principal' | 'perfil' | null;
 
@@ -42,7 +43,8 @@ export class CabecalhoApp implements OnInit {
     private utilizadorService: UtilizadorService,
     private router: Router,
     private injector: Injector,
-    private host: ElementRef<HTMLElement>
+    private host: ElementRef<HTMLElement>,
+    private auth: AuthService,
   ) { }
 
   ngOnInit(): void {
@@ -85,5 +87,10 @@ export class CabecalhoApp implements OnInit {
     if (this.aberto && !this.host.nativeElement.contains(evento.target as Node)) {
       this.fechar();
     }
+  }
+
+  async terminarSessao(): Promise<void> {
+    this.fechar();
+    await this.auth.sair();
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { Session } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase.service';
+import { Router } from '@angular/router';
 
 export interface ResultadoRegisto {
   erro: string | null;
@@ -12,15 +13,23 @@ export class AuthService {
   readonly sessao = signal<Session | null>(null);
   private readonly pronto: Promise<void>;
 
-  constructor(private supabase: SupabaseService) {
+  constructor(
+    private supabase: SupabaseService,
+    private router: Router
+  ) {
     const auth = this.supabase.cliente.auth;
 
     this.pronto = auth.getSession().then(({ data }) => {
       this.sessao.set(data.session);
     });
 
-    auth.onAuthStateChange((_evento, sessao) => {
+    auth.onAuthStateChange((evento, sessao) => {
       this.sessao.set(sessao);
+
+      if (evento === 'SIGNED_OUT') {
+        this.limparDadosLocais();
+        this.router.navigate(['/entrar']);
+      }
     });
   }
 
@@ -44,7 +53,6 @@ export class AuthService {
 
   async sair(): Promise<void> {
     await this.supabase.cliente.auth.signOut();
-    localStorage.removeItem('pl_utilizador_ativo');
   }
 
   private traduzirErro(mensagem: string): string {
@@ -55,5 +63,9 @@ export class AuthService {
     if (texto.includes('password')) return 'A palavra-passe não cumpre os requisitos de segurança.';
     if (texto.includes('rate limit')) return 'Demasiadas tentativas. Espera um pouco e tenta de novo.';
     return 'Não foi possível concluir o pedido. Tenta novamente.';
+  }
+
+  private limparDadosLocais(): void {
+    localStorage.removeItem('pl_utilizador_ativo');
   }
 }
