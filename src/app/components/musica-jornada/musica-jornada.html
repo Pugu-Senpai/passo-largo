@@ -13,8 +13,7 @@
         <iframe
           src="https://www.youtube-nocookie.com/embed/DKP16d_WdZM?autoplay=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3"
           title="Vídeo do YouTube: They're taking the Hobbits to Isengard"
-          allow="autoplay; encrypted-media; picture-in-picture"
-          referrerpolicy="strict-origin-when-cross-origin"
+          allow="autoplay; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"
           sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"></iframe>
       </div>
 
@@ -40,5 +39,6 @@
 <button type="button" class="botao-som" (click)="alternarSom()" [attr.aria-pressed]="somLigado()"
   [attr.aria-label]="somLigado() ? 'Som ligado. Carrega para desligar' : 'Som desligado. Carrega para ligar'"
   [title]="somLigado() ? 'Desligar som' : 'Ligar som'">
-  <span aria-hidden="true">{{ somLigado() ? '🔊' : '🔇' }}</span>
+  <span class="icone" aria-hidden="true"
+    [style.--icone]="somLigado() ? 'url(imagens/icones/audio.svg)' : 'url(imagens/icones/noaudio.svg)'"></span>
 </button>

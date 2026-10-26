@@ -12,16 +12,18 @@
   border-radius: 50%;
   background: var(--cartao);
   box-shadow: var(--sombra);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
+  color: var(--destaque);
   cursor: pointer;
 }
 
 .botao-som[aria-pressed="false"] {
   border-color: var(--borda-controlo);
+  color: var(--texto-sec);
   opacity: 0.85;
 }
 
-/* ===== Telemóvel: o vídeo no meio da página, entre o cronómetro e o exercício ===== */
+/* ===== Telemóvel ===== */
 .fundo {
   display: none;
 }
@@ -59,7 +61,6 @@
   display: block;
 }
 
-/* No telemóvel o exercício já aparece logo a seguir na página */
 .exercicio-na-janela {
   display: none;
 }
@@ -70,7 +71,6 @@
   gap: 0.75rem;
 }
 
-/* Telemóvel: um botão por baixo do outro (como estava) */
 .acoes-video {
   display: grid;
   grid-template-columns: 1fr;
@@ -89,17 +89,12 @@
   padding: 0.5rem;
 }
 
-/* Segunda linha do botão, mais pequena: explica o que acontece ao som */
 .nota-botao {
   font-weight: 400;
   font-size: 0.8em;
   opacity: 0.85;
 }
 
-/*
- * Janela minimizada: o vídeo continua a tocar, mas fica invisível e sem cliques.
- * Mantém um tamanho real (o YouTube não toca em leitores com menos de 200px).
- */
 .janela-video.minimizada {
   position: fixed;
   left: 0;
@@ -123,7 +118,7 @@
   }
 }
 
-/* ===== Tablet e computador: janela grande por cima da página ===== */
+/* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   .fundo.visivel {
     display: block;
@@ -157,7 +152,6 @@
     display: block;
   }
 
-  /* Tablet e computador: os dois botões lado a lado, com a mesma largura, por baixo do vídeo */
   .acoes-video {
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
@@ -165,7 +159,7 @@
 
 }
 
-/* Tablet: vídeo em cima e exercício por baixo */
+/*===== Tablet =====*/
 @media (min-width: 600px) and (max-width: 1023px) {
   .conteudo {
     display: flex;
@@ -174,7 +168,7 @@
   }
 }
 
-/* Computador: vídeo à esquerda e exercício à direita */
+/*===== Computador =====*/
 @media (min-width: 1024px) {
   .conteudo {
     display: grid;

@@ -1,0 +1,142 @@
+/* ===== Telemóvel: ilustração em cima, texto por baixo ===== */
+.aviso {
+  width: min(560px, calc(100vw - 2rem));
+  max-height: calc(100dvh - 2rem);
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--estado-falha);
+  border-radius: var(--raio);
+  background: var(--cartao);
+  color: var(--texto);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--estado-falha) 25%, transparent), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.aviso.conquista {
+  border-color: var(--destaque);
+  box-shadow: 0 0 0 4px var(--destaque-suave), 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* Fundo escurecido por trás da janela */
+.aviso::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.aviso[open] {
+  animation: aparecer 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.aviso[open]::backdrop {
+  animation: escurecer 0.35s ease-out;
+}
+
+.ilustracao {
+  display: block;
+  width: 100%;
+  height: 38dvh;
+  object-fit: contain;
+  background: color-mix(in srgb, #000 35%, var(--cartao));
+}
+
+.paisagem .ilustracao {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.texto {
+  padding: 1.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.etiqueta {
+  margin: 0;
+}
+
+h2 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.6rem;
+  line-height: 1.2;
+  color: var(--texto-titulo);
+}
+
+.mensagem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--texto);
+}
+
+.botao-principal {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes escurecer {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso[open],
+  .aviso[open]::backdrop {
+    animation: none;
+  }
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 700px) {
+  /* Retrato: ilustração à esquerda, texto à direita */
+  .aviso:not(.paisagem) {
+    width: min(820px, calc(100vw - 3rem));
+  }
+
+  /* Só quando está aberta: um <dialog> fechado tem de continuar escondido */
+  .aviso:not(.paisagem)[open] {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    align-items: center;
+  }
+
+  .aviso:not(.paisagem) .ilustracao {
+    height: min(70dvh, 560px);
+  }
+
+  .aviso:not(.paisagem) .texto {
+    padding: 2rem;
+  }
+
+  /* Paisagem: ilustração larga por cima */
+  .aviso.paisagem {
+    width: min(860px, calc(100vw - 3rem));
+  }
+
+  .botao-principal {
+    width: auto;
+    align-self: flex-start;
+    min-width: 200px;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+}

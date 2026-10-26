@@ -16,14 +16,16 @@ import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { MapaPercurso } from '../../components/mapa-percurso/mapa-percurso';
 import { CartaoMissao } from '../../components/cartao-missao/cartao-missao';
 import { ConselhoMago } from '../../components/conselho-mago/conselho-mago';
+import { CartaoAviso } from '../../components/cartao-aviso/cartao-aviso';
 import { ArmazenamentoService } from '../../services/armazenamento.service';
 import { FRASES_MAGO } from '../../models/frases-mago';
+import { REGRAS } from '../../models/regras';
 import { MissaoService } from '../../services/missao.service';
 import { Missao, MissaoDaSemana } from '../../models/missao.model';
 
 @Component({
   selector: 'app-condado',
-  imports: [RouterLink, DecimalPipe, PercentPipe, DatePipe, CabecalhoApp, MapaPercurso, CartaoMissao, ConselhoMago],
+  imports: [RouterLink, DecimalPipe, PercentPipe, DatePipe, CabecalhoApp, MapaPercurso, CartaoMissao, ConselhoMago, CartaoAviso],
   templateUrl: './condado.html',
   styleUrl: './condado.css'
 })
@@ -56,6 +58,16 @@ export class Condado implements OnInit {
   private readonly CHAVE_VISITAS = 'pl_visitas_condado';
   private readonly CHAVE_ULTIMA_FRASE = 'pl_ultima_frase_mago';
   readonly mostrarMago = signal(false);
+
+  // Aviso de falhas: aparece uma vez por cada falha nova
+  readonly mostrarAvisoFalhas = signal(false);
+  readonly mostrarAvanco = signal(false);
+  readonly mostrarDerrota = signal(false);
+  readonly mostrarConquista = signal(false);
+  kmJornadaFalhada = 0;
+  marcoJornadaFalhada = '';
+  falhasAtivas = 0;
+  private ultimaFalhaAvisada = '';
   fraseMago = '';
 
   constructor(
@@ -109,6 +121,83 @@ export class Condado implements OnInit {
     this.mostrarMago.set(false);
   }
 
+  // ===== Aviso de falhas =====
+
+  private chaveAvisoFalhas(): string {
+    return `pl_aviso_falha_${this.utilizador!.id}`;
+  }
+
+  /** Mostra o aviso se houver uma falha ativa que ainda não foi avisada neste dispositivo */
+  private verificarAvisoFalhas(): void {
+    // O recuo e a derrota têm os seus próprios avisos
+    if (this.derrota || this.houveRecuo) {
+      return;
+    }
+    const ultima = this.registoService.ultimaFalhaAtiva(this.jornada!);
+    if (!ultima) {
+      return;
+    }
+
+    // O localStorage pode ser alterado à mão: só aceitamos uma data AAAA-MM-DD
+    const lida = this.armazenamento.ler<string>(this.chaveAvisoFalhas(), '');
+    const avisada = typeof lida === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(lida) ? lida : '';
+    if (avisada >= ultima) {
+      return;
+    }
+
+    this.falhasAtivas = this.registoService.falhasAtivas(this.jornada!);
+    this.ultimaFalhaAvisada = ultima;
+    this.mostrarAvisoFalhas.set(true);
+  }
+
+  fecharAvisoFalhas(): void {
+    this.armazenamento.guardar(this.chaveAvisoFalhas(), this.ultimaFalhaAvisada);
+    this.mostrarAvisoFalhas.set(false);
+  }
+
+  // ===== Conquista =====
+
+  private chaveConquista(): string {
+    return `pl_conquista_vista_${this.utilizador!.id}`;
+  }
+
+  /** A janela de parabéns aparece uma vez por cada jornada concluída (neste dispositivo) */
+  private verificarConquista(jornadaId: number): void {
+    // O localStorage pode ser alterado à mão: só aceitamos um número inteiro
+    const lida = this.armazenamento.ler<number>(this.chaveConquista(), 0);
+    const vista = Number.isInteger(lida) ? lida : 0;
+    if (vista !== jornadaId) {
+      this.mostrarConquista.set(true);
+    }
+  }
+
+  fecharConquista(): void {
+    this.armazenamento.guardar(this.chaveConquista(), this.jornada!.id);
+    this.mostrarConquista.set(false);
+  }
+
+  // ===== Jornada falhada =====
+
+  fecharDerrota(): void {
+    this.mostrarDerrota.set(false);
+  }
+
+  // ===== Avanço do inimigo =====
+
+  fecharAvanco(): void {
+    this.mostrarAvanco.set(false);
+  }
+
+  /** Quantos km recua se voltar a acontecer (aumenta a cada recuo, volta ao início num marco novo) */
+  get proximoRecuoKm(): number {
+    return REGRAS.recuoInicialKm + REGRAS.recuoIncrementoKm * (this.jornada?.numeroRecuos ?? 0);
+  }
+
+  /** Quantas falhas faltam para o inimigo avançar */
+  get falhasAteRecuo(): number {
+    return Math.max(REGRAS.falhasParaRecuo - this.falhasAtivas, 0);
+  }
+
   async carregar(): Promise<void> {
     this.carregando = true;
     this.erro = false;
@@ -120,6 +209,7 @@ export class Condado implements OnInit {
         this.jornada = ultima;
         this.concluida = true;
         this.treinosJornada = this.registoService.treinosDaJornada(ultima.id);
+        this.verificarConquista(ultima.id);
       } else {
         this.jornada = await this.jornadaService.obterOuCriar(this.utilizador!.id);
       }
@@ -131,11 +221,23 @@ export class Condado implements OnInit {
       this.marcos = marcos;
 
       if (!this.concluida) {
+        // Guardar como estava a jornada, para o caso de falhar (a seguir passa a ser uma nova)
+        const kmAntes = this.jornada.kmPercorridos;
         const resultado = await this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada, marcos);
         this.jornada = resultado.jornada;
         this.derrota = resultado.derrota;
         this.houveRecuo = resultado.houveRecuo;
         this.kmRecuados = resultado.kmRecuados;
+        // Só uma janela de cada vez: derrota, depois avanço, depois aviso de falhas
+        if (this.derrota) {
+          this.kmJornadaFalhada = kmAntes;
+          // O Condado (0 km) não conta como marco alcançado
+          const marco = this.jornadaService.marcoAtual(kmAntes, marcos);
+          this.marcoJornadaFalhada = marco && marco.km > 0 ? marco.nome : '';
+          this.mostrarDerrota.set(true);
+        }
+        this.mostrarAvanco.set(this.houveRecuo && !this.derrota);
+        this.verificarAvisoFalhas();
       }
 
       this.atualizarResumo();

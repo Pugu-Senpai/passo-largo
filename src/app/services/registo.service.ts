@@ -214,13 +214,24 @@ export class RegistoService {
   }
 
   falhasAtivas(jornada: Jornada): number {
+    return this.listaFalhasAtivas(jornada).length;
+  }
+
+  /** Data da falha ativa mais recente (para o aviso de falhas no Condado) */
+  ultimaFalhaAtiva(jornada: Jornada): string | undefined {
+    const falhas = this.listaFalhasAtivas(jornada);
+    return falhas[falhas.length - 1]?.data;
+  }
+
+  /** Falhas de dias anteriores, ainda dentro da validade e depois do último recuo */
+  private listaFalhasAtivas(jornada: Jornada): RegistoDia[] {
     const dataHoje = hoje();
     return this.registosDaJornada(jornada.id).filter(r =>
       r.estado === 'falha' &&
       r.data < dataHoje &&
       diferencaDias(r.data, dataHoje) <= REGRAS.diasValidadeFalha &&
       (!jornada.dataUltimoRecuo || r.data >= jornada.dataUltimoRecuo)
-    ).length;
+    );
   }
 
   diasSeguidosSemTreinar(jornadaId: number): number {

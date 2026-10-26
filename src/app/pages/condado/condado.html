@@ -57,21 +57,6 @@
 
   } @else {
   <!-- ===== Jornada em curso ===== -->
-  @if (derrota) {
-  <div class="aviso aviso-grave" role="alert">
-    <strong>☠ O inimigo venceu.</strong>
-    <p>Passaram demasiados dias sem treinar. A tua jornada recomeça no Condado.</p>
-  </div>
-  } @else if (houveRecuo) {
-  <div class="aviso" role="alert">
-    <strong>⚠ As forças das trevas avançam.</strong>
-    @if (kmRecuados > 0) {
-    <p>Aproveitaram o teu desleixo e recuaste {{ kmRecuados | number: '1.0-1' }} km.</p>
-    } @else {
-    <p>Aproveitaram o teu desleixo, mas o teu último marco protegeu-te.</p>
-    }
-  </div>
-  }
 
   <section class="jornada" aria-labelledby="titulo-jornada">
     <div class="local">
@@ -179,6 +164,76 @@
 </main>
 
 <!-- Conselho do Mago Branco: fora do <main>, fixo no canto inferior esquerdo -->
-@if (mostrarMago()) {
+<!-- Aviso de falhas (janela com a ilustração aviso.png) -->
+@if (mostrarAvisoFalhas()) {
+<app-cartao-aviso imagem="imagens/conquista/aviso.png" etiqueta="As sombras observam-te"
+  titulo="O caminho escurece..." textoBotao="Vou treinar" (continuar)="fecharAvisoFalhas()">
+  <p>
+    Tens <strong>{{ falhasAtivas }} de 5 falhas</strong>.
+    @if (falhasAteRecuo === 1) {
+    Mais <strong>uma</strong> e as forças das trevas avançam: vais recuar no caminho.
+    } @else {
+    Faltam <strong>{{ falhasAteRecuo }}</strong> para as forças das trevas avançarem e te fazerem recuar.
+    }
+  </p>
+  <p>Cada falha desaparece ao fim de 30 dias. Treina hoje para as manter à distância.</p>
+</app-cartao-aviso>
+}
+
+<!-- Avanço do inimigo (janela com a ilustração avanco.png): aparece na visita em que houve recuo -->
+@if (mostrarAvanco()) {
+<app-cartao-aviso imagem="imagens/conquista/avanco.png" etiqueta="O inimigo avança"
+  titulo="As forças das trevas avançaram" textoBotao="Retomar a jornada" (continuar)="fecharAvanco()">
+  @if (kmRecuados > 0) {
+  <p>Aproveitaram as tuas <strong>5 falhas</strong> e recuaste <strong>{{ kmRecuados | number: '1.0-1' }} km</strong>.</p>
+  } @else {
+  <p>Aproveitaram as tuas <strong>5 falhas</strong>, mas o teu último marco protegeu-te: não recuaste.</p>
+  }
+  <p>
+    Se voltar a acontecer, o recuo será de <strong>{{ proximoRecuoKm }} km</strong>.
+    Alcança um novo marco para o inimigo voltar ao início.
+  </p>
+  <p>As falhas foram apagadas. É tempo de recomeçar.</p>
+</app-cartao-aviso>
+}
+
+<!-- Jornada falhada (janela com a ilustração a-falha.png): 30 dias seguidos sem treinar -->
+@if (mostrarDerrota()) {
+<app-cartao-aviso imagem="imagens/conquista/a-falha.png" formato="paisagem" etiqueta="O inimigo venceu"
+  titulo="A tua jornada falhou" textoBotao="Recomeçar no Condado" (continuar)="fecharDerrota()">
+  <p>Passaram <strong>30 dias seguidos</strong> sem treinar e as forças das trevas tomaram o caminho.</p>
+  @if (kmJornadaFalhada > 0) {
+  <p>
+    Tinhas percorrido <strong>{{ kmJornadaFalhada | number: '1.0-1' }} km</strong>
+    @if (marcoJornadaFalhada) {
+    e chegado a <strong>{{ marcoJornadaFalhada }}</strong>
+    }.
+    Esses passos não se perdem: ficam no teu resumo do Perfil.
+  </p>
+  }
+  <p>Uma nova jornada começa hoje no Condado. Até os maiores heróis recomeçaram uma vez.</p>
+</app-cartao-aviso>
+}
+
+<!-- Conquista (janela com a ilustração fim-jornada.png): uma vez, na primeira visita depois de chegar a Mount Doom -->
+@if (mostrarConquista()) {
+<app-cartao-aviso imagem="imagens/conquista/fim-jornada.png" formato="paisagem" tom="conquista"
+  etiqueta="Jornada completa" titulo="Chegaste a Mount Doom!" textoBotao="Ver a minha conquista"
+  (continuar)="fecharConquista()">
+  <p>
+    Parabéns, <strong>{{ utilizador?.nome }}</strong>! Percorreste
+    <strong>{{ jornada?.kmPercorridos | number: '1.0-0' }} km</strong> em
+    <strong>{{ diasDeJornada }} dias</strong> e <strong>{{ treinosJornada }} treinos</strong>.
+  </p>
+  <p>
+    Nenhum dia foi fácil, e mesmo assim continuaste. A tua dedicação e o teu esforço levaram-te
+    do Condado até ao fim da Terra Média. Poucos aventureiros chegam até aqui.
+  </p>
+  <p>O Condado espera-te para a próxima aventura, quando estiveres pronto.</p>
+</app-cartao-aviso>
+}
+
+<!-- O Mago só aparece depois de fechar os avisos -->
+@if (mostrarMago() && !mostrarAvisoFalhas() && !mostrarAvanco() && !mostrarDerrota() && !mostrarConquista()) {
 <app-conselho-mago [frase]="fraseMago" (fechar)="fecharMago()" />
 }

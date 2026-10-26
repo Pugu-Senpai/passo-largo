@@ -110,31 +110,7 @@
   font-size: inherit;
 }
 
-/* Avisos de recuo e derrota */
-.aviso {
-  border: 1px solid var(--estado-falha);
-  border-left-width: 4px;
-  border-radius: var(--raio-pequeno);
-  background: var(--cartao);
-  padding: 1rem;
-  color: var(--texto);
-}
-
-.aviso strong {
-  color: var(--estado-falha);
-}
-
-.aviso p {
-  margin: 0.25rem 0 0;
-}
-
-.aviso-grave {
-  border-width: 2px;
-  border-left-width: 6px;
-}
-
-/* Streak */
-/* Linha de ações do dia: streak e botões */
+/* ===== Streak =====*/
 .acoes-dia {
   display: flex;
   flex-direction: column;
@@ -253,6 +229,10 @@
   font-family: var(--fonte-titulo);
   font-size: 1.5rem;
   color: var(--destaque);
+}
+
+app-cartao-aviso p {
+  margin: 0;
 }
 
 @keyframes revelar {

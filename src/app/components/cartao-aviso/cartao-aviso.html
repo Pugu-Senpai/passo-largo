@@ -1,0 +1,17 @@
+<dialog #dialogo class="aviso" [class.paisagem]="formato === 'paisagem'" [class.conquista]="tom === 'conquista'"
+  aria-labelledby="titulo-aviso" (close)="aoFechar()">
+  <img class="ilustracao" [src]="imagem" alt="">
+
+  <div class="texto">
+    @if (etiqueta) {
+    <p class="etiqueta">{{ etiqueta }}</p>
+    }
+    <h2 id="titulo-aviso">{{ titulo }}</h2>
+
+    <div class="mensagem">
+      <ng-content />
+    </div>
+
+    <button type="button" class="botao-principal" (click)="fechar()">{{ textoBotao }}</button>
+  </div>
+</dialog>
