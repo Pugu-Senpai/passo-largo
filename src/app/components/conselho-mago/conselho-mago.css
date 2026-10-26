@@ -1,0 +1,129 @@
+/* ===== Telemóvel: encostado à esquerda, parte do mago fica fora do ecrã ===== */
+:host {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+  max-width: 100%;
+  pointer-events: none; /* só o botão recebe cliques */
+}
+
+.mago {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  animation: entrar-mago 0.5s ease-out;
+}
+
+.mago img {
+  flex-shrink: 0;
+  width: auto;
+  height: 210px;
+  margin-left: -34px; /* "mais encostado": um pouco do mago fica fora do ecrã */
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+
+.balao {
+  position: relative;
+  max-width: min(220px, calc(100vw - 150px));
+  margin: 0 0.75rem 140px -14px;
+  padding: 0.75rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--cartao);
+  border: 1px solid var(--destaque);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+/* Bico do balão, a apontar para o mago */
+.balao::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  bottom: 18px;
+  width: 14px;
+  height: 14px;
+  background: var(--cartao);
+  border-left: 1px solid var(--destaque);
+  border-bottom: 1px solid var(--destaque);
+  transform: rotate(45deg);
+}
+
+.quem {
+  font-family: var(--fonte-seccao);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--destaque);
+}
+
+.frase {
+  font-family: var(--fonte-titulo);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--texto-titulo);
+}
+
+.dica {
+  font-size: 0.75rem;
+  color: var(--texto-sec);
+}
+
+.mago:focus-visible {
+  outline: none;
+}
+
+.mago:focus-visible .balao {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+@keyframes entrar-mago {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mago {
+    animation: none;
+  }
+}
+
+/* ===== Tablet e computador: o mago inteiro, do lado esquerdo ===== */
+@media (min-width: 600px) {
+  :host {
+    left: 1rem;
+  }
+
+  .mago img {
+    height: 340px;
+    margin-left: 0;
+  }
+
+  .balao {
+    max-width: 280px;
+    margin-bottom: 230px;
+    padding: 1rem 1.15rem;
+  }
+
+  .frase {
+    font-size: 1.1rem;
+  }
+}

@@ -49,6 +49,28 @@
     </div>
   </section>
 
+  <section aria-labelledby="titulo-missoes">
+    <div class="titulo-com-acao">
+      <h2 id="titulo-missoes" class="titulo-seccao">Missões</h2>
+      <a routerLink="/missoes" class="botao-contorno">Ver missões</a>
+    </div>
+
+    @if (erroMissoes) {
+    <p class="erro-geral" role="alert">⚠ Não foi possível carregar os pontos das missões.</p>
+    } @else {
+    <div class="grelha">
+      <div class="cartao estatistica destaque">
+        <strong>{{ pontosTotais }}</strong>
+        <span>{{ pontosTotais === 1 ? 'ponto' : 'pontos' }}</span>
+      </div>
+      <div class="cartao estatistica">
+        <strong>{{ missoesConcluidas }}</strong>
+        <span>{{ missoesConcluidas === 1 ? 'missão concluída' : 'missões concluídas' }}</span>
+      </div>
+    </div>
+    }
+  </section>
+
   <section aria-labelledby="titulo-corpo">
     <div class="titulo-com-acao">
       <h2 id="titulo-corpo" class="titulo-seccao">Corpo</h2>

@@ -1,0 +1,215 @@
+/* ===== Botão flutuante do som ===== */
+.botao-som {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 30;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--destaque);
+  border-radius: 50%;
+  background: var(--cartao);
+  box-shadow: var(--sombra);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.botao-som[aria-pressed="false"] {
+  border-color: var(--borda-controlo);
+  opacity: 0.85;
+}
+
+/* ===== Telemóvel: o vídeo no meio da página, entre o cronómetro e o exercício ===== */
+.fundo {
+  display: none;
+}
+
+.janela-video {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: var(--cartao);
+  border: 1px solid var(--destaque);
+  border-radius: var(--raio);
+  box-shadow: 0 0 0 4px var(--destaque-suave), var(--sombra);
+  animation: aparecer-telemovel 0.45s ease-out;
+}
+
+.titulo-video {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.3rem;
+  color: var(--texto-titulo);
+}
+
+.ecra {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--raio-pequeno);
+  overflow: hidden;
+  background: #000;
+}
+
+.ecra iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* No telemóvel o exercício já aparece logo a seguir na página */
+.exercicio-na-janela {
+  display: none;
+}
+
+.coluna-video {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Telemóvel: um botão por baixo do outro (como estava) */
+.acoes-video {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.acoes-video button {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  padding: 0.5rem;
+}
+
+/* Segunda linha do botão, mais pequena: explica o que acontece ao som */
+.nota-botao {
+  font-weight: 400;
+  font-size: 0.8em;
+  opacity: 0.85;
+}
+
+/*
+ * Janela minimizada: o vídeo continua a tocar, mas fica invisível e sem cliques.
+ * Mantém um tamanho real (o YouTube não toca em leitores com menos de 200px).
+ */
+.janela-video.minimizada {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+  animation: none;
+}
+
+@keyframes aparecer-telemovel {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Tablet e computador: janela grande por cima da página ===== */
+@media (min-width: 600px) {
+  .fundo.visivel {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    background: rgba(0, 0, 0, 0.65);
+    animation: escurecer 0.35s ease-out;
+  }
+
+  .janela-video:not(.minimizada) {
+    position: fixed;
+    z-index: 40;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(1100px, calc(100vw - 3rem));
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    gap: 1rem;
+    box-shadow: 0 0 0 4px var(--destaque-suave), 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: aparecer-janela 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .titulo-video {
+    font-size: 1.6rem;
+  }
+
+  .exercicio-na-janela {
+    display: block;
+  }
+
+  /* Tablet e computador: os dois botões lado a lado, com a mesma largura, por baixo do vídeo */
+  .acoes-video {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+}
+
+/* Tablet: vídeo em cima e exercício por baixo */
+@media (min-width: 600px) and (max-width: 1023px) {
+  .conteudo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+/* Computador: vídeo à esquerda e exercício à direita */
+@media (min-width: 1024px) {
+  .conteudo {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+}
+
+@keyframes escurecer {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes aparecer-janela {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .janela-video,
+  .janela-video:not(.minimizada),
+  .fundo.visivel {
+    animation: none;
+  }
+}

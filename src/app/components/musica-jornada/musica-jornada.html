@@ -1,0 +1,44 @@
+<audio #audio src="audio/jornada.mp3" loop preload="auto"></audio>
+
+@if (somLigado() && modo() === 'video') {
+<div class="fundo" [class.visivel]="janelaAberta()" aria-hidden="true"></div>
+
+<section class="janela-video" [class.minimizada]="!janelaAberta()" [attr.inert]="janelaAberta() ? null : ''"
+  role="dialog" aria-modal="false" aria-labelledby="titulo-video">
+  <h2 id="titulo-video" class="titulo-video">Notícias de Rohan...</h2>
+
+  <div class="conteudo">
+    <div class="coluna-video">
+      <div class="ecra">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/DKP16d_WdZM?autoplay=1&rel=0&playsinline=1&fs=0&disablekb=1&iv_load_policy=3"
+          title="Vídeo do YouTube: They're taking the Hobbits to Isengard"
+          allow="autoplay; encrypted-media; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"></iframe>
+      </div>
+
+      <div class="acoes-video">
+        <button type="button" class="botao-principal" (click)="minimizar()">
+          Minimizar janela
+          <span class="nota-botao">a música continua</span>
+        </button>
+        <button type="button" class="botao-contorno" (click)="desligarSom()">
+          Fechar
+          <span class="nota-botao">desliga o som</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="exercicio-na-janela">
+      <ng-content />
+    </div>
+  </div>
+</section>
+}
+
+<button type="button" class="botao-som" (click)="alternarSom()" [attr.aria-pressed]="somLigado()"
+  [attr.aria-label]="somLigado() ? 'Som ligado. Carrega para desligar' : 'Som desligado. Carrega para ligar'"
+  [title]="somLigado() ? 'Desligar som' : 'Ligar som'">
+  <span aria-hidden="true">{{ somLigado() ? '🔊' : '🔇' }}</span>
+</button>

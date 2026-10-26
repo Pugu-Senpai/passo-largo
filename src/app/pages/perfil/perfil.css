@@ -177,4 +177,8 @@
   .dados {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  .estatistica.destaque {
+    border-color: var(--destaque);
+  }
 }

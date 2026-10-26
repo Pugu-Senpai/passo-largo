@@ -21,7 +21,8 @@ export class CabecalhoApp {
     { rota: '/condado', texto: 'Condado', icone: 'imagens/marcos/porta.svg' },
     { rota: '/jornada', texto: 'Jornada de hoje', icone: 'imagens/icones/jornada.svg' },
     { rota: '/exercicios', texto: 'Exercícios', icone: 'imagens/icones/livro.svg' },
-    { rota: '/calendario', texto: 'Calendário', icone: 'imagens/icones/calendario.svg' }
+    { rota: '/calendario', texto: 'Calendário', icone: 'imagens/icones/calendario.svg' },
+    { rota: '/missoes', texto: 'Missões', icone: 'imagens/icones/pergaminho.svg' },
   ];
 
   readonly rotuloNivel: Record<NivelFisico, string> = {

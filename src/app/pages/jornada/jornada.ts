@@ -16,13 +16,14 @@ import { RegistoService } from '../../services/registo.service';
 import { Marco } from '../../models/marco.model';
 import { REGRAS } from '../../models/regras';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
+import { MusicaJornada } from '../../components/musica-jornada/musica-jornada';
 import { ConfirmacaoService } from '../../services/confirmacao.service';
 
 type Fase = 'escolha' | 'sessao' | 'fim' | 'distancia';
 
 @Component({
   selector: 'app-jornada',
-  imports: [RouterLink, FormsModule, ReactiveFormsModule, CartaoExercicio, DecimalPipe, CabecalhoApp],
+  imports: [RouterLink, FormsModule, ReactiveFormsModule, CartaoExercicio, DecimalPipe, CabecalhoApp, MusicaJornada],
   templateUrl: './jornada.html',
   styleUrl: './jornada.css'
 })

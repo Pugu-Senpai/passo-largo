@@ -1,0 +1,30 @@
+<article class="missao" [class.grande]="item.missao.tamanho === 'grande'" [class.concluida]="item.concluida"
+  [attr.aria-labelledby]="'missao-' + item.missao.id">
+  <header class="topo">
+    <p class="etiqueta">
+      {{ item.missao.tamanho === 'grande' ? 'Missão grande' : 'Missão' }} · {{ item.missao.personagem }}
+    </p>
+    <span class="pontos">{{ item.missao.pontos }} pontos</span>
+  </header>
+
+  <h3 [id]="'missao-' + item.missao.id">{{ item.missao.titulo }}</h3>
+  <p class="descricao">{{ item.missao.descricao }}</p>
+
+  <div class="progresso">
+    <div class="barra" role="progressbar" aria-valuemin="0" [attr.aria-valuemax]="item.missao.meta"
+      [attr.aria-valuenow]="valor" [attr.aria-label]="'Progresso: ' + valor + ' de ' + item.missao.meta + ' ' + unidade">
+      <div class="preenchida" [style.width.%]="percentagem"></div>
+    </div>
+    <span class="numeros">
+      {{ valor | number: '1.0-1' }} / {{ item.missao.meta | number: '1.0-1' }} {{ unidade }}
+    </span>
+  </div>
+
+  @if (item.concluida) {
+  <p class="estado-missao">✔ Concluída: +{{ item.missao.pontos }} pontos</p>
+  } @else if (item.cumprida) {
+  <button type="button" class="botao-principal" (click)="aoReceber()" [disabled]="aReceber">
+    {{ aReceber ? 'A confirmar...' : 'Receber ' + item.missao.pontos + ' pontos' }}
+  </button>
+  }
+</article>

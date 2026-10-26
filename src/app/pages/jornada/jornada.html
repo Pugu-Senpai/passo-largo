@@ -107,7 +107,8 @@
   <p class="aviso" role="alert">⚠ Não há exercícios para esta combinação. Experimenta outra opção.</p>
   }
 
-  <button type="button" class="botao-principal" (click)="comecar()">{{ eDistancia ? 'Registar distância' : 'Começar' }}</button>
+  <button type="button" class="botao-principal" (click)="comecar()">{{ eDistancia ? 'Registar distância' : 'Começar'
+    }}</button>
   <a routerLink="/condado" class="voltar">Voltar ao Condado</a>
   }
   }
@@ -126,6 +127,21 @@
       {{ pausado ? '▶ Retomar' : '❚❚ Pausar' }}
     </button>
   </header>
+
+  <app-musica-jornada [pausado]="pausado">
+    <div class="tempo-janela">
+      <span>⏱ {{ tempoFormatado }} · {{ feitos }} {{ feitos === 1 ? 'feito' : 'feitos' }}</span>
+      <button type="button" class="botao-contorno" (click)="alternarPausa()">
+        {{ pausado ? '▶ Retomar' : '❚❚ Pausar' }}
+      </button>
+    </div>
+    @if (pausado) {
+    <p class="estado">Em pausa.</p>
+    } @else {
+    <app-cartao-exercicio [exercicio]="exercicioAtual" [numero]="indice + 1" (concluido)="concluirExercicio()"
+      (trocado)="trocarExercicio()" />
+    }
+  </app-musica-jornada>
 
   @if (pausado) {
   <p class="estado" role="status">Em pausa. Respira, bebe água e retoma quando estiveres pronto.</p>

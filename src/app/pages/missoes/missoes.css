@@ -1,0 +1,157 @@
+/* ===== Telemóvel ===== */
+.pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cabecalho h1 {
+  font-size: 1.8rem;
+  margin: 0.25rem 0 0;
+}
+
+.cabecalho .etiqueta {
+  margin: 0;
+}
+
+.estado {
+  margin: 0;
+  text-align: center;
+  color: var(--texto-sec);
+  padding: 1rem;
+}
+
+.cartao {
+  background: var(--cartao);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 1rem 1.25rem;
+}
+
+/* ===== Resumo ===== */
+.resumo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  text-align: center;
+}
+
+.resumo div {
+  display: flex;
+  flex-direction: column;
+}
+
+.numero {
+  font-family: var(--fonte-titulo);
+  font-size: 2rem;
+  line-height: 1.1;
+  color: var(--destaque);
+}
+
+.resumo span {
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+}
+
+/* ===== Blocos ===== */
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bloco .titulo-seccao {
+  margin: 0;
+}
+
+.titulo-bloco {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.prazo {
+  font-size: 0.85rem;
+  color: var(--texto-sec);
+}
+
+.explicacao {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--texto-sec);
+}
+
+/* ===== Histórico ===== */
+.topo-semana {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.topo-semana h3 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 1.1rem;
+}
+
+.pontos-semana {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--destaque);
+}
+
+.semana ul {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.semana li {
+  list-style: none;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.5rem;
+}
+
+.semana li > span:first-child {
+  color: var(--estado-completo);
+}
+
+.detalhe {
+  grid-column: 2;
+  font-size: 0.8rem;
+  color: var(--texto-sec);
+}
+
+.link-tentar {
+  margin-left: 0.5rem;
+  padding: 0;
+  min-height: 44px;
+  border: none;
+  background: none;
+  color: var(--destaque);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ===== Tablet e computador ===== */
+@media (min-width: 600px) {
+  .pagina {
+    padding: 2.5rem 1.5rem 3rem;
+  }
+
+  .cabecalho h1 {
+    font-size: 2.4rem;
+  }
+}

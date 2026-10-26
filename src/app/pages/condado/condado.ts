@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { DecimalPipe, PercentPipe, DatePipe } from '@angular/common';
 import { JornadaService } from '../../services/jornada.service';
@@ -14,10 +14,16 @@ import { RegistoDia } from '../../models/registo-dia.model';
 import { hoje, diferencaDias } from '../../utils/datas';
 import { CabecalhoApp } from '../../components/cabecalho-app/cabecalho-app';
 import { MapaPercurso } from '../../components/mapa-percurso/mapa-percurso';
+import { CartaoMissao } from '../../components/cartao-missao/cartao-missao';
+import { ConselhoMago } from '../../components/conselho-mago/conselho-mago';
+import { ArmazenamentoService } from '../../services/armazenamento.service';
+import { FRASES_MAGO } from '../../models/frases-mago';
+import { MissaoService } from '../../services/missao.service';
+import { Missao, MissaoDaSemana } from '../../models/missao.model';
 
 @Component({
   selector: 'app-condado',
-  imports: [RouterLink, DecimalPipe, PercentPipe, DatePipe, CabecalhoApp, MapaPercurso],
+  imports: [RouterLink, DecimalPipe, PercentPipe, DatePipe, CabecalhoApp, MapaPercurso, CartaoMissao, ConselhoMago],
   templateUrl: './condado.html',
   styleUrl: './condado.css'
 })
@@ -42,6 +48,15 @@ export class Condado implements OnInit {
   erroNovaJornada = '';
   aAcampar = false;
   erroDescanso = '';
+  carregandoMissoes = true;
+  erroMissoes = '';
+  missaoAReceber: number | null = null;
+
+  // Conselho do Mago Branco (1 em cada 3 visitas ao Condado, neste dispositivo)
+  private readonly CHAVE_VISITAS = 'pl_visitas_condado';
+  private readonly CHAVE_ULTIMA_FRASE = 'pl_ultima_frase_mago';
+  readonly mostrarMago = signal(false);
+  fraseMago = '';
 
   constructor(
     private utilizadorService: UtilizadorService,
@@ -49,6 +64,8 @@ export class Condado implements OnInit {
     private dadosService: DadosService,
     private registoService: RegistoService,
     private progressoService: ProgressoService,
+    private missaoService: MissaoService,
+    private armazenamento: ArmazenamentoService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) { }
@@ -59,7 +76,37 @@ export class Condado implements OnInit {
       this.router.navigate(['/']);
       return;
     }
+    this.decidirMago();
     this.carregar();
+  }
+
+  // ===== Mago Branco =====
+
+  private decidirMago(): void {
+    // O localStorage pode ser alterado à mão: só aceitamos inteiros válidos
+    const lidas = this.armazenamento.ler<number>(this.CHAVE_VISITAS, 0);
+    const visitas = Number.isInteger(lidas) && lidas >= 0 ? lidas : 0;
+    this.armazenamento.guardar(this.CHAVE_VISITAS, visitas + 1);
+
+    // Aparece na 1.ª, 4.ª, 7.ª... visita
+    if (visitas % 3 !== 0) {
+      return;
+    }
+
+    // Frase ao acaso, nunca igual à da última vez
+    const ultima = this.armazenamento.ler<number>(this.CHAVE_ULTIMA_FRASE, -1);
+    let indice = Math.floor(Math.random() * FRASES_MAGO.length);
+    if (indice === ultima) {
+      indice = (indice + 1) % FRASES_MAGO.length;
+    }
+    this.armazenamento.guardar(this.CHAVE_ULTIMA_FRASE, indice);
+
+    this.fraseMago = FRASES_MAGO[indice];
+    this.mostrarMago.set(true);
+  }
+
+  fecharMago(): void {
+    this.mostrarMago.set(false);
   }
 
   async carregar(): Promise<void> {
@@ -92,11 +139,53 @@ export class Condado implements OnInit {
       }
 
       this.atualizarResumo();
+      // As missões carregam à parte: se falharem, o resto do Condado continua a funcionar
+      this.carregarMissoes();
     } catch (e) {
       console.error('Erro ao preparar o Condado:', (e as Error).message);
       this.erro = true;
     } finally {
       this.carregando = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  // ===== Missões da semana =====
+
+  // Lê os signals do serviço: o progresso atualiza-se sozinho quando há um registo novo
+  get missoesSemana(): MissaoDaSemana[] {
+    return this.utilizador ? this.missaoService.missoesDaSemana(this.utilizador.id) : [];
+  }
+
+  async carregarMissoes(): Promise<void> {
+    this.carregandoMissoes = true;
+    this.erroMissoes = '';
+    this.cdr.markForCheck();
+
+    try {
+      await this.missaoService.garantirCarregado(this.utilizador!.id);
+    } catch (e) {
+      this.erroMissoes = (e as Error).message;
+    } finally {
+      this.carregandoMissoes = false;
+      this.cdr.markForCheck();
+    }
+  }
+
+  async receberPontos(missao: Missao): Promise<void> {
+    // Evita pedir os pontos duas vezes com um duplo clique
+    if (this.missaoAReceber !== null) {
+      return;
+    }
+    this.missaoAReceber = missao.id;
+    this.erroMissoes = '';
+
+    try {
+      await this.missaoService.receberPontos(this.utilizador!.id, missao.id);
+    } catch (e) {
+      this.erroMissoes = (e as Error).message;
+    } finally {
+      this.missaoAReceber = null;
       this.cdr.markForCheck();
     }
   }

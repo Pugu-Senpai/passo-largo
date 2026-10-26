@@ -9,6 +9,7 @@ import { Perfil } from './pages/perfil/perfil';
 import { Calendario } from './pages/calendario/calendario';
 import { Definicoes } from './pages/definicoes/definicoes';
 import { Entrar } from './pages/entrar/entrar';
+import { Missoes } from './pages/missoes/missoes';
 import { autenticadoGuard, visitanteGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -26,7 +27,8 @@ export const routes: Routes = [
       { path: 'exercicios/:id', component: ExercicioDetalhe, title: 'Exercício' },
       { path: 'perfil', component: Perfil, title: 'Perfil' },
       { path: 'definicoes', component: Definicoes, title: 'Definições' },
-      { path: 'calendario', component: Calendario, title: 'Calendário' }
+      { path: 'calendario', component: Calendario, title: 'Calendário' },
+      { path: 'missoes', component: Missoes, title: 'Missões' }
     ]
   },
 

@@ -1,0 +1,78 @@
+<app-cabecalho-app />
+
+<main class="pagina">
+  <header class="cabecalho">
+    <p class="etiqueta">O Conselho de Elrond</p>
+    <h1>Missões</h1>
+  </header>
+
+  @if (carregando) {
+  <p class="estado" role="status">A consultar o Conselho...</p>
+
+  } @else {
+  @if (erro) {
+  <div class="erro-geral" role="alert">
+    ⚠ {{ erro }}
+    <button type="button" class="link-tentar" (click)="carregar()">Tentar novamente</button>
+  </div>
+  }
+
+  <!-- ===== Resumo ===== -->
+  <section class="cartao resumo" aria-label="Resumo das missões">
+    <div>
+      <strong class="numero">{{ pontosTotais }}</strong>
+      <span>{{ pontosTotais === 1 ? 'ponto' : 'pontos' }}</span>
+    </div>
+    <div>
+      <strong class="numero">{{ totalConcluidas }}</strong>
+      <span>{{ totalConcluidas === 1 ? 'missão concluída' : 'missões concluídas' }}</span>
+    </div>
+  </section>
+
+  <!-- ===== Esta semana ===== -->
+  <section class="bloco" aria-labelledby="titulo-semana">
+    <div class="titulo-bloco">
+      <h2 id="titulo-semana" class="titulo-seccao">Esta semana</h2>
+      <span class="prazo">
+        {{ diasRestantes === 1 ? 'Termina hoje' : 'Faltam ' + diasRestantes + ' dias' }}
+      </span>
+    </div>
+    <p class="explicacao">
+      Missões de segunda a domingo. Missão pequena: 10 pontos. Missão grande: 30 pontos.
+    </p>
+
+    @for (item of missoesSemana; track item.missao.id) {
+    <app-cartao-missao [item]="item" [aReceber]="missaoAReceber === item.missao.id"
+      (receber)="receberPontos($event)" />
+    } @empty {
+    <p class="estado">Não há missões para esta semana.</p>
+    }
+  </section>
+
+  <!-- ===== Histórico ===== -->
+  <section class="bloco" aria-labelledby="titulo-historico">
+    <h2 id="titulo-historico" class="titulo-seccao">Histórico</h2>
+
+    @for (semana of historico; track semana.semana) {
+    <article class="cartao semana">
+      <header class="topo-semana">
+        <h3>Semana de {{ semana.semana | date: 'd MMM yyyy' }}</h3>
+        <span class="pontos-semana">+{{ semana.pontos }} pontos</span>
+      </header>
+      <ul>
+        @for (m of semana.missoes; track m.id) {
+        <li>
+          <span aria-hidden="true">✔</span>
+          <span class="nome-missao">{{ m.titulo }}</span>
+          <span class="detalhe">{{ m.personagem }} · {{ m.tamanho === 'grande' ? 'grande' : 'pequena' }} ·
+            +{{ m.pontos }}</span>
+        </li>
+        }
+      </ul>
+    </article>
+    } @empty {
+    <p class="estado">Ainda não concluíste nenhuma missão. A primeira é sempre a mais difícil!</p>
+    }
+  </section>
+  }
+</main>

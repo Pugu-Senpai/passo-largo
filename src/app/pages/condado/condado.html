@@ -148,11 +148,37 @@
 
   @if (mensagemDescanso) {
   <p class="mensagem" role="status">{{ mensagemDescanso }}</p>
+  }
 
   @if (erroDescanso) {
   <p class="erro-geral" role="alert">⚠ {{ erroDescanso }}</p>
   }
-  }
+
+  <!-- ===== Missões da semana ===== -->
+  <section class="missoes" aria-labelledby="titulo-missoes">
+    <h2 id="titulo-missoes" class="titulo-seccao">Missões da semana</h2>
+
+    @if (carregandoMissoes) {
+    <p class="mensagem" role="status">A consultar o Conselho...</p>
+    } @else {
+    @if (erroMissoes) {
+    <div class="erro-geral" role="alert">
+      ⚠ {{ erroMissoes }}
+      <button type="button" class="link-tentar" (click)="carregarMissoes()">Tentar novamente</button>
+    </div>
+    }
+
+    @for (item of missoesSemana; track item.missao.id) {
+    <app-cartao-missao [item]="item" [aReceber]="missaoAReceber === item.missao.id"
+      (receber)="receberPontos($event)" />
+    }
+    }
+  </section>
   }
   }
 </main>
+
+<!-- Conselho do Mago Branco: fora do <main>, fixo no canto inferior esquerdo -->
+@if (mostrarMago()) {
+<app-conselho-mago [frase]="fraseMago" (fechar)="fecharMago()" />
+}
