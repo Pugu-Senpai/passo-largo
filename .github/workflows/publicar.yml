@@ -1,0 +1,62 @@
+# =====================================================================
+# Passo Largo · Build de produção e publicação no GitHub Pages
+# Corre sozinho a cada push para a branch main (e pode ser lançado à mão).
+# A chave do Supabase vem dos Secrets do repositório, nunca do código.
+# =====================================================================
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissões mínimas: ler o código e publicar no Pages (nada mais)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Se houver dois pushes seguidos, só a publicação mais recente conta
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter o código
+        uses: actions/checkout@v5
+
+      - name: Instalar o Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependências (versões exatas do package-lock.json)
+        run: npm ci
+
+      - name: Build de produção
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        # O "prebuild" gera os ficheiros de ambiente a partir destes secrets.
+        # O base-href é o nome do repositório: a app fica em /passo-largo/
+        run: npm run build -- --base-href /passo-largo/
+
+      - name: Preparar os ficheiros para o Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/passo-largo/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: publicacao
+        uses: actions/deploy-pages@v4
