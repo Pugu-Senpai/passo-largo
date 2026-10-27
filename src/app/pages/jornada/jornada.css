@@ -78,7 +78,7 @@ legend {
   color: var(--texto-sec);
 }
 
-/* Sessão */
+/*===== Sessão =====*/
 .sessao-topo {
   position: sticky;
   top: 0;

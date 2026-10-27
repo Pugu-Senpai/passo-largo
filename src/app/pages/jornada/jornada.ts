@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Injector, afterNextRender } from '@angular/core';
 import { CartaoExercicio } from '../../components/cartao-exercicio/cartao-exercicio';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -10,7 +10,7 @@ import { Utilizador } from '../../models/utilizador.model';
 import { Jornada as JornadaModelo } from '../../models/jornada.model';
 import { Exercicio } from '../../models/exercicio.model';
 import { TipoTreino, Zona, Intensidade, EstadoDia, ModoCardio } from '../../models/tipos';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, ViewportScroller } from '@angular/common';
 import { forkJoin, firstValueFrom } from 'rxjs';
 import { RegistoService } from '../../services/registo.service';
 import { Marco } from '../../models/marco.model';
@@ -112,6 +112,8 @@ export class Jornada implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private registoService: RegistoService,
     private confirmacao: ConfirmacaoService,
+    private scroller: ViewportScroller,
+    private injector: Injector,
   ) { }
 
   ngOnInit(): void {
@@ -164,6 +166,7 @@ export class Jornada implements OnInit, OnDestroy {
       this.formDistancia.reset();
       this.semExercicios = false;
       this.fase = 'distancia';
+      this.irParaTopo();
       return;
     }
 
@@ -184,6 +187,11 @@ export class Jornada implements OnInit, OnDestroy {
     this.pausado = false;
     this.fase = 'sessao';
     this.iniciarTimer();
+    this.irParaTopo();
+  }
+
+  private irParaTopo(): void {
+    afterNextRender(() => this.scroller.scrollToPosition([0, 0]), { injector: this.injector });
   }
 
   // ===== Sessão =====
@@ -246,6 +254,7 @@ export class Jornada implements OnInit, OnDestroy {
     const segundosFeitos = this.DURACAO_SEGUNDOS - Math.max(this.segundosRestantes, 0);
     this.minutosAtivos = Math.round(segundosFeitos / 60);
     this.fase = 'fim';
+    this.irParaTopo();
   }
 
   private iniciarTimer(): void {
@@ -270,7 +279,6 @@ export class Jornada implements OnInit, OnDestroy {
     return this.treinoService.calcularKm(this.minutosAtivos, this.feitos);
   }
 
-  // Na corrida e na caminhada contam os km introduzidos; nas sessões, o cálculo por minutos
   get kmTotal(): number {
     if (this.eDistancia) {
       const km = this.formDistancia.controls.km.valid ? this.formDistancia.controls.km.value ?? 0 : 0;
@@ -304,7 +312,6 @@ export class Jornada implements OnInit, OnDestroy {
       return;
     }
 
-    // Corrida ou caminhada: só guarda com valores válidos
     if (this.eDistancia && this.formDistancia.invalid) {
       this.formDistancia.markAllAsTouched();
       return;
@@ -323,7 +330,6 @@ export class Jornada implements OnInit, OnDestroy {
           minutosAtivos: this.minutosDoDia,
           exerciciosFeitos: this.eDistancia ? 0 : this.feitos,
           kmGanhos: this.kmGuardados,
-          // Os km reais ficam registados à parte (só na corrida e na caminhada)
           kmReais: this.eDistancia ? this.kmGuardados : undefined
         });
         this.registoGuardado = true;
