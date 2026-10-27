@@ -78,7 +78,6 @@ export class Exercicios implements OnInit {
     this.filtroZona = 'todas';
   }
 
-  // Tira acentos e maiúsculas: "Glúteos" e "gluteos" ficam iguais
   private normalizar(texto: string): string {
     return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
   }

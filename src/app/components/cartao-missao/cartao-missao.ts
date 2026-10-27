@@ -14,7 +14,6 @@ export class CartaoMissao {
 
   @Output() receber = new EventEmitter<Missao>();
 
-  /** O progresso mostrado nunca passa da meta (ex.: 3 de 2 dias aparece como 2 de 2) */
   get valor(): number {
     return Math.min(this.item.progresso, this.item.missao.meta);
   }

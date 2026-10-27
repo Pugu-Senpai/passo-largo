@@ -47,7 +47,6 @@ export class CabecalhoApp {
     private auth: AuthService,
   ) { }
 
-  // Lido do signal do serviço: atualiza-se sozinho quando o perfil é editado
   get utilizador(): Utilizador | undefined {
     return this.utilizadorService.obterAtivo();
   }

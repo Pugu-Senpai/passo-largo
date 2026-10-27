@@ -5,7 +5,7 @@
   bottom: 0;
   z-index: 20;
   max-width: 100%;
-  pointer-events: none; /* só o botão recebe cliques */
+  pointer-events: none;
 }
 
 .mago {
@@ -26,7 +26,7 @@
   flex-shrink: 0;
   width: auto;
   height: 210px;
-  margin-left: -34px; /* "mais encostado": um pouco do mago fica fora do ecrã */
+  margin-left: -34px;
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
 }
 
@@ -44,7 +44,6 @@
   box-shadow: var(--sombra);
 }
 
-/* Bico do balão, a apontar para o mago */
 .balao::before {
   content: "";
   position: absolute;
@@ -106,7 +105,7 @@
   }
 }
 
-/* ===== Tablet e computador: o mago inteiro, do lado esquerdo ===== */
+/* ===== Tablet e computador ===== */
 @media (min-width: 600px) {
   :host {
     left: 1rem;

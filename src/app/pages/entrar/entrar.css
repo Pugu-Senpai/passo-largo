@@ -60,7 +60,7 @@ input[aria-invalid="true"] {
   border-color: var(--estado-falha);
 }
 
-/* Campo da palavra-passe com o botão Mostrar ao lado */
+/*===== Campo da palavra-passe =====*/
 .com-botao {
   display: flex;
   gap: 0.5rem;

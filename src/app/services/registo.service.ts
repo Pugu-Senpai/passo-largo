@@ -81,7 +81,7 @@ export class RegistoService {
     this.aventureiroCarregado = aventureiroId;
   }
 
-  // ===== Consultas (síncronas, a partir da memória) =====
+  // ===== Consultas =====
 
   obterDoUtilizador(utilizadorId: number): RegistoDia[] {
     return this.lista()
@@ -120,7 +120,7 @@ export class RegistoService {
     return Math.max(utilizador.diasDescansoSemana - this.descansosNaSemana(utilizador.id, data), 0);
   }
 
-  // ===== Registar o dia de hoje (assíncrono, no Supabase) =====
+  // ===== Registar o dia de hoje =====
 
   private async exigirCarregado(aventureiroId: number): Promise<void> {
     await this.garantirCarregado(aventureiroId);
@@ -217,13 +217,11 @@ export class RegistoService {
     return this.listaFalhasAtivas(jornada).length;
   }
 
-  /** Data da falha ativa mais recente (para o aviso de falhas no Condado) */
   ultimaFalhaAtiva(jornada: Jornada): string | undefined {
     const falhas = this.listaFalhasAtivas(jornada);
     return falhas[falhas.length - 1]?.data;
   }
 
-  /** Falhas de dias anteriores, ainda dentro da validade e depois do último recuo */
   private listaFalhasAtivas(jornada: Jornada): RegistoDia[] {
     const dataHoje = hoje();
     return this.registosDaJornada(jornada.id).filter(r =>

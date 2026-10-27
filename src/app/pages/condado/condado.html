@@ -163,8 +163,7 @@
   }
 </main>
 
-<!-- Conselho do Mago Branco: fora do <main>, fixo no canto inferior esquerdo -->
-<!-- Aviso de falhas (janela com a ilustração aviso.png) -->
+<!--===== Aviso de falhas =====-->
 @if (mostrarAvisoFalhas()) {
 <app-cartao-aviso imagem="imagens/conquista/aviso.png" etiqueta="As sombras observam-te"
   titulo="O caminho escurece..." textoBotao="Vou treinar" (continuar)="fecharAvisoFalhas()">
@@ -180,7 +179,7 @@
 </app-cartao-aviso>
 }
 
-<!-- Avanço do inimigo (janela com a ilustração avanco.png): aparece na visita em que houve recuo -->
+<!--===== Avanço do inimigo =====-->
 @if (mostrarAvanco()) {
 <app-cartao-aviso imagem="imagens/conquista/avanco.png" etiqueta="O inimigo avança"
   titulo="As forças das trevas avançaram" textoBotao="Retomar a jornada" (continuar)="fecharAvanco()">
@@ -197,7 +196,7 @@
 </app-cartao-aviso>
 }
 
-<!-- Jornada falhada (janela com a ilustração a-falha.png): 30 dias seguidos sem treinar -->
+<!--===== Jornada falhada =====-->
 @if (mostrarDerrota()) {
 <app-cartao-aviso imagem="imagens/conquista/a-falha.png" formato="paisagem" etiqueta="O inimigo venceu"
   titulo="A tua jornada falhou" textoBotao="Recomeçar no Condado" (continuar)="fecharDerrota()">
@@ -215,7 +214,7 @@
 </app-cartao-aviso>
 }
 
-<!-- Conquista (janela com a ilustração fim-jornada.png): uma vez, na primeira visita depois de chegar a Mount Doom -->
+<!--===== Conquista =====-->
 @if (mostrarConquista()) {
 <app-cartao-aviso imagem="imagens/conquista/fim-jornada.png" formato="paisagem" tom="conquista"
   etiqueta="Jornada completa" titulo="Chegaste a Mount Doom!" textoBotao="Ver a minha conquista"
@@ -233,7 +232,6 @@
 </app-cartao-aviso>
 }
 
-<!-- O Mago só aparece depois de fechar os avisos -->
 @if (mostrarMago() && !mostrarAvisoFalhas() && !mostrarAvanco() && !mostrarDerrota() && !mostrarConquista()) {
 <app-conselho-mago [frase]="fraseMago" (fechar)="fecharMago()" />
 }

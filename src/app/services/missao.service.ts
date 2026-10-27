@@ -22,7 +22,6 @@ interface LinhaConcluida {
   missoes: { titulo: string; personagem: string; tamanho: TamanhoMissao; pontos: number } | null;
 }
 
-/** Uma semana do histórico, com as missões concluídas nessa semana */
 export interface SemanaHistorico {
   semana: string;
   pontos: number;
@@ -36,7 +35,7 @@ export class MissaoService {
 
   private readonly missoes = signal<Missao[]>([]);
   private readonly concluidas = signal<LinhaConcluida[]>([]);
-  private chaveCarregada: string | null = null; // "aventureiro|semana"
+  private chaveCarregada: string | null = null;
   private pedidoEmCurso: Promise<void> | null = null;
 
   readonly pontosTotais = computed(() =>
@@ -45,7 +44,6 @@ export class MissaoService {
 
   readonly totalConcluidas = computed(() => this.concluidas().length);
 
-  /** Missões concluídas agrupadas por semana, da mais recente para a mais antiga */
   readonly historico = computed<SemanaHistorico[]>(() => {
     const porSemana = new Map<string, SemanaHistorico>();
     for (const c of this.concluidas()) {

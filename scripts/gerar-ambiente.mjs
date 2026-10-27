@@ -1,18 +1,8 @@
-// =====================================================================
-// Passo Largo · Gera os ficheiros de ambiente a partir de variáveis de ambiente
-//
-// A chave do Supabase NÃO fica no código nem no repositório:
-//  - no teu computador vem do ficheiro .env (que está no .gitignore);
-//  - no GitHub Actions vem dos Secrets do repositório.
-// Este script corre automaticamente antes do "npm start" e do "npm run build".
-// =====================================================================
 import { mkdirSync, writeFileSync } from 'node:fs';
 
-// No computador: lê o ficheiro .env, se existir (no GitHub Actions não existe)
 try {
   process.loadEnvFile('.env');
 } catch {
-  // sem .env: usa as variáveis que já estiverem definidas (ex.: GitHub Actions)
 }
 
 const url = (process.env.SUPABASE_URL ?? '').trim();
@@ -23,7 +13,7 @@ function parar(mensagem) {
   process.exit(1);
 }
 
-// ----- Validações -----
+//===== Validações ======
 if (!url || !chave) {
   parar('Faltam as variáveis SUPABASE_URL e/ou SUPABASE_KEY.\n' +
     '  No computador: copia o .env.example para .env e preenche os valores.\n' +
@@ -34,7 +24,7 @@ if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url)) {
   parar('SUPABASE_URL inválido. Deve ser só o endereço base, ex.: https://xxxx.supabase.co (sem /rest/v1).');
 }
 
-// Proteção: nunca aceitar a chave secreta, que ignora o RLS
+//===== Proteção =====
 if (chave.startsWith('sb_secret_')) {
   parar('Isto é uma chave SECRETA (sb_secret_...). Usa a chave publishable (sb_publishable_...) ou anon.');
 }
@@ -51,7 +41,7 @@ if (chave.startsWith('eyJ')) {
   parar('SUPABASE_KEY não parece uma chave do Supabase (sb_publishable_... ou anon eyJ...).');
 }
 
-// ----- Gerar os ficheiros -----
+//===== Gerar os ficheiros =====
 function conteudo(producao) {
   return `// Gerado automaticamente por scripts/gerar-ambiente.mjs. NÃO editar nem fazer commit.
 export const environment = {

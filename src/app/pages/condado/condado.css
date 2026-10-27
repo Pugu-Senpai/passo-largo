@@ -166,7 +166,6 @@
   cursor: not-allowed;
 }
 
-/* Estado de hoje e mensagens */
 .estado-hoje,
 .mensagem {
   margin: 0;
@@ -174,7 +173,7 @@
   color: var(--texto-sec);
 }
 
-/* Ecrã de conquista */
+/*===== Ecrã de conquista =====*/
 .conquista {
   display: flex;
   flex-direction: column;

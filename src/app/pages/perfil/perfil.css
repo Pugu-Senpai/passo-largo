@@ -1,4 +1,4 @@
-/* ===== Telemóvel (base) ===== */
+/* ===== Telemóvel ===== */
 .pagina {
   max-width: 720px;
   margin: 0 auto;
@@ -52,7 +52,6 @@
   padding: 1rem;
 }
 
-/* Estatísticas: 2 colunas no telemóvel */
 .grelha {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

@@ -10,7 +10,6 @@
   box-shadow: var(--sombra);
 }
 
-/* A missão grande destaca-se pela cor e pela etiqueta (não só pela cor) */
 .missao.grande {
   border-left-color: var(--destaque);
 }

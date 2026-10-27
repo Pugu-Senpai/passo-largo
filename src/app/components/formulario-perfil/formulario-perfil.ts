@@ -18,7 +18,7 @@ export class FormularioPerfil implements OnInit {
   @Output() submetido = new EventEmitter<NovoUtilizador>();
   @Output() cancelado = new EventEmitter<void>();
 
-  // Signals: o Angular (sem Zone.js) redesenha sempre que mudam
+  //===== Signals =====
   readonly seletorAberto = signal(false);
   readonly avatarEscolhido = signal(AVATAR_PADRAO);
 
@@ -100,7 +100,6 @@ export class FormularioPerfil implements OnInit {
   }
 
   escolherAvatar(avatar: string): void {
-    // Atualiza o formulário e a pré-visualização no mesmo momento
     this.form.controls.avatar.setValue(avatar);
     this.avatarEscolhido.set(avatar);
     this.seletorAberto.set(false);

@@ -22,12 +22,10 @@ export class MapaPercurso {
 
   readonly percurso = PERCURSO;
 
-  // Percentagem real da jornada, em km (para o texto de acessibilidade)
   get progresso(): number {
     return Math.min(this.km / REGRAS.distanciaTotalKm, 1);
   }
 
-  // Posição no desenho correspondente aos km feitos
   get fracaoMapa(): number {
     return this.converterKmParaMapa(this.km);
   }

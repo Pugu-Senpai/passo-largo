@@ -37,7 +37,7 @@ export class Missoes implements OnInit {
     this.carregar();
   }
 
-  // ===== Dados (lidos dos signals do serviço) =====
+  // ===== Dados =====
 
   get missoesSemana(): MissaoDaSemana[] {
     return this.utilizador ? this.missaoService.missoesDaSemana(this.utilizador.id) : [];
@@ -66,7 +66,6 @@ export class Missoes implements OnInit {
 
   // ===== Ações =====
 
-  // Também é chamado pelo botão "Tentar novamente"
   async carregar(): Promise<void> {
     this.carregando = true;
     this.erro = '';
@@ -83,7 +82,6 @@ export class Missoes implements OnInit {
   }
 
   async receberPontos(missao: Missao): Promise<void> {
-    // Evita pedir os pontos duas vezes com um duplo clique
     if (this.missaoAReceber !== null) {
       return;
     }

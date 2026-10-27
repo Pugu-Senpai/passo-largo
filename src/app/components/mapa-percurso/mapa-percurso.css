@@ -2,7 +2,7 @@
   display: block;
 }
 
-/* Telemóvel: o mapa tem largura mínima e desliza na horizontal */
+/*===== Telemóvel =====*/
 .contentor {
   overflow-x: auto;
   overflow-y: hidden;
@@ -17,7 +17,7 @@
   aspect-ratio: 6667 / 1667;
 }
 
-/* Silhueta: gradiente só na parte de cima, recortado pela forma do SVG */
+/*===== Silhueta =====*/
 .silhueta {
   position: absolute;
   inset: 0;
@@ -37,7 +37,7 @@
   overflow: visible;
 }
 
-/* Percurso completo: tracejado, como um trilho */
+/*===== Percurso completo =====*/
 .caminho {
   fill: none;
   stroke: var(--marco-pendente);
@@ -46,7 +46,7 @@
   stroke-dasharray: 6 8;
 }
 
-/* Progresso: linha contínua dourada */
+/*===== Progresso =====*/
 .progresso {
   fill: none;
   stroke: var(--destaque);
@@ -67,7 +67,7 @@
   stroke: var(--destaque);
 }
 
-/* Ícones dos marcos, por baixo da linha */
+/*===== Ícones dos marcos =====*/
 .marco {
   position: absolute;
   width: 4.5%;
@@ -83,7 +83,7 @@
   background: var(--destaque);
 }
 
-/* Viajante, de pé sobre a linha */
+/*===== Viajante =====*/
 .viajante {
   position: absolute;
   width: 5.5%;
@@ -101,7 +101,7 @@
   }
 }
 
-/* Tablet e computador: o mapa cabe inteiro */
+/*===== Tablet e computador =====*/
 @media (min-width: 600px) {
   .contentor {
     overflow: visible;

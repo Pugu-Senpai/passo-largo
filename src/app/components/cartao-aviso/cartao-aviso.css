@@ -1,4 +1,4 @@
-/* ===== Telemóvel: ilustração em cima, texto por baixo ===== */
+/* ===== Telemóvel ===== */
 .aviso {
   width: min(560px, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
@@ -16,7 +16,6 @@
   box-shadow: 0 0 0 4px var(--destaque-suave), 0 20px 60px rgba(0, 0, 0, 0.6);
 }
 
-/* Fundo escurecido por trás da janela */
 .aviso::backdrop {
   background: rgba(0, 0, 0, 0.7);
 }
@@ -105,12 +104,10 @@ h2 {
 
 /* ===== Tablet e computador ===== */
 @media (min-width: 700px) {
-  /* Retrato: ilustração à esquerda, texto à direita */
   .aviso:not(.paisagem) {
     width: min(820px, calc(100vw - 3rem));
   }
 
-  /* Só quando está aberta: um <dialog> fechado tem de continuar escondido */
   .aviso:not(.paisagem)[open] {
     display: grid;
     grid-template-columns: 2fr 3fr;
@@ -125,7 +122,6 @@ h2 {
     padding: 2rem;
   }
 
-  /* Paisagem: ilustração larga por cima */
   .aviso.paisagem {
     width: min(860px, calc(100vw - 3rem));
   }

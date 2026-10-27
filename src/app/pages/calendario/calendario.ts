@@ -92,7 +92,6 @@ export class Calendario implements OnInit {
     const ultimo = paraTextoData(new Date(ano, mes + 1, 0));
     const dataHoje = hoje();
 
-    // A grelha começa na segunda-feira da primeira semana e acaba no domingo da última
     let data = inicioSemana(primeiro);
     const fim = somarDias(inicioSemana(ultimo), 6);
 

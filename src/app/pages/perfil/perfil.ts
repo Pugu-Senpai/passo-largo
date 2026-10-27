@@ -51,7 +51,7 @@ export class Perfil implements OnInit {
     this.carregarMissoes();
   }
 
-  // ===== Missões (lidas dos signals do serviço) =====
+  // ===== Missões =====
 
   get pontosTotais(): number {
     return this.missaoService.pontosTotais();
@@ -65,7 +65,6 @@ export class Perfil implements OnInit {
     try {
       await this.missaoService.garantirCarregado(this.utilizador!.id);
     } catch {
-      // Os pontos não impedem o resto do Perfil de aparecer
       this.erroMissoes = true;
       this.cdr.markForCheck();
     }

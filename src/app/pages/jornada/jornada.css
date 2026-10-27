@@ -138,7 +138,7 @@ legend {
   font: inherit;
 }
 
-/* Fim da sessão */
+/*===== Fim da sessão =====*/
 .fim h2 {
   font-size: 1.6rem;
   margin: 0.25rem 0 0.75rem;
@@ -190,7 +190,7 @@ legend {
   cursor: not-allowed;
 }
 
-/* Ilustração do tipo de treino */
+/*===== Ilustração =====*/
 .escolha-com-ilustracao {
   display: flex;
   flex-direction: column;
@@ -382,7 +382,7 @@ form.fim .voltar {
   padding-inline: 1rem;
 }
 
-/* Telemóveis pequenos */
+/*===== Telemóveis pequenos =====*/
 @media (max-width: 359px) {
   .escolhas {
     padding: 1rem;

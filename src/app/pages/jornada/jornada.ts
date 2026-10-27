@@ -65,7 +65,7 @@ export class Jornada implements OnInit, OnDestroy {
     caminhada: 'Caminhada'
   };
 
-  // Corrida e caminhada: a pessoa introduz a distância e o tempo
+  //===== Corrida e caminhada =====
   readonly formDistancia = new FormGroup({
     km: new FormControl<number | null>(null, [Validators.required, Validators.min(0.1), Validators.max(100)]),
     minutos: new FormControl<number | null>(null, [
@@ -156,7 +156,6 @@ export class Jornada implements OnInit, OnDestroy {
     }
   }
 
-  // Corrida ou caminhada: não há sessão com exercícios, só o registo da distância
   get eDistancia(): boolean {
     return this.tipo === 'cardio' && this.modoCardio !== 'exercicios';
   }

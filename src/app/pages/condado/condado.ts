@@ -54,12 +54,10 @@ export class Condado implements OnInit {
   erroMissoes = '';
   missaoAReceber: number | null = null;
 
-  // Conselho do Mago Branco (1 em cada 3 visitas ao Condado, neste dispositivo)
   private readonly CHAVE_VISITAS = 'pl_visitas_condado';
   private readonly CHAVE_ULTIMA_FRASE = 'pl_ultima_frase_mago';
   readonly mostrarMago = signal(false);
 
-  // Aviso de falhas: aparece uma vez por cada falha nova
   readonly mostrarAvisoFalhas = signal(false);
   readonly mostrarAvanco = signal(false);
   readonly mostrarDerrota = signal(false);
@@ -100,12 +98,10 @@ export class Condado implements OnInit {
     const visitas = Number.isInteger(lidas) && lidas >= 0 ? lidas : 0;
     this.armazenamento.guardar(this.CHAVE_VISITAS, visitas + 1);
 
-    // Aparece na 1.ª, 4.ª, 7.ª... visita
     if (visitas % 3 !== 0) {
       return;
     }
 
-    // Frase ao acaso, nunca igual à da última vez
     const ultima = this.armazenamento.ler<number>(this.CHAVE_ULTIMA_FRASE, -1);
     let indice = Math.floor(Math.random() * FRASES_MAGO.length);
     if (indice === ultima) {
@@ -127,9 +123,7 @@ export class Condado implements OnInit {
     return `pl_aviso_falha_${this.utilizador!.id}`;
   }
 
-  /** Mostra o aviso se houver uma falha ativa que ainda não foi avisada neste dispositivo */
   private verificarAvisoFalhas(): void {
-    // O recuo e a derrota têm os seus próprios avisos
     if (this.derrota || this.houveRecuo) {
       return;
     }
@@ -138,7 +132,6 @@ export class Condado implements OnInit {
       return;
     }
 
-    // O localStorage pode ser alterado à mão: só aceitamos uma data AAAA-MM-DD
     const lida = this.armazenamento.ler<string>(this.chaveAvisoFalhas(), '');
     const avisada = typeof lida === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(lida) ? lida : '';
     if (avisada >= ultima) {
@@ -161,9 +154,7 @@ export class Condado implements OnInit {
     return `pl_conquista_vista_${this.utilizador!.id}`;
   }
 
-  /** A janela de parabéns aparece uma vez por cada jornada concluída (neste dispositivo) */
   private verificarConquista(jornadaId: number): void {
-    // O localStorage pode ser alterado à mão: só aceitamos um número inteiro
     const lida = this.armazenamento.ler<number>(this.chaveConquista(), 0);
     const vista = Number.isInteger(lida) ? lida : 0;
     if (vista !== jornadaId) {
@@ -188,12 +179,10 @@ export class Condado implements OnInit {
     this.mostrarAvanco.set(false);
   }
 
-  /** Quantos km recua se voltar a acontecer (aumenta a cada recuo, volta ao início num marco novo) */
   get proximoRecuoKm(): number {
     return REGRAS.recuoInicialKm + REGRAS.recuoIncrementoKm * (this.jornada?.numeroRecuos ?? 0);
   }
 
-  /** Quantas falhas faltam para o inimigo avançar */
   get falhasAteRecuo(): number {
     return Math.max(REGRAS.falhasParaRecuo - this.falhasAtivas, 0);
   }
@@ -221,17 +210,14 @@ export class Condado implements OnInit {
       this.marcos = marcos;
 
       if (!this.concluida) {
-        // Guardar como estava a jornada, para o caso de falhar (a seguir passa a ser uma nova)
         const kmAntes = this.jornada.kmPercorridos;
         const resultado = await this.progressoService.aplicarRegrasDiarias(this.utilizador!, this.jornada, marcos);
         this.jornada = resultado.jornada;
         this.derrota = resultado.derrota;
         this.houveRecuo = resultado.houveRecuo;
         this.kmRecuados = resultado.kmRecuados;
-        // Só uma janela de cada vez: derrota, depois avanço, depois aviso de falhas
         if (this.derrota) {
           this.kmJornadaFalhada = kmAntes;
-          // O Condado (0 km) não conta como marco alcançado
           const marco = this.jornadaService.marcoAtual(kmAntes, marcos);
           this.marcoJornadaFalhada = marco && marco.km > 0 ? marco.nome : '';
           this.mostrarDerrota.set(true);
@@ -241,7 +227,6 @@ export class Condado implements OnInit {
       }
 
       this.atualizarResumo();
-      // As missões carregam à parte: se falharem, o resto do Condado continua a funcionar
       this.carregarMissoes();
     } catch (e) {
       console.error('Erro ao preparar o Condado:', (e as Error).message);
@@ -254,7 +239,6 @@ export class Condado implements OnInit {
 
   // ===== Missões da semana =====
 
-  // Lê os signals do serviço: o progresso atualiza-se sozinho quando há um registo novo
   get missoesSemana(): MissaoDaSemana[] {
     return this.utilizador ? this.missaoService.missoesDaSemana(this.utilizador.id) : [];
   }
@@ -275,7 +259,6 @@ export class Condado implements OnInit {
   }
 
   async receberPontos(missao: Missao): Promise<void> {
-    // Evita pedir os pontos duas vezes com um duplo clique
     if (this.missaoAReceber !== null) {
       return;
     }
