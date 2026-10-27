@@ -1,7 +1,7 @@
 export const REGRAS = {
   distanciaTotalKm: 2855,
   taxaMin: 0.10,
-  taxaMax: 0.15,
+  taxaMax: 0.20,
   falhasParaRecuo: 5,
   diasValidadeFalha: 30,
   diasSeguidosParaDerrota: 30,
