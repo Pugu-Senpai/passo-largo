@@ -42,3 +42,10 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Variáveis de ambiente (chave do Supabase): NUNCA vão para o GitHub
+.env
+.env.*
+!.env.example
+/src/environments/environment.ts
+/src/environments/environment.development.ts
