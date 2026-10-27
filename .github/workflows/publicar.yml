@@ -46,7 +46,7 @@ jobs:
         run: npm run build -- --base-href /passo-largo/
 
       - name: Preparar os ficheiros para o Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist/passo-largo/browser
 
@@ -59,4 +59,4 @@ jobs:
     steps:
       - name: Publicar no GitHub Pages
         id: publicacao
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
